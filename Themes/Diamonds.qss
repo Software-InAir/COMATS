@@ -1,0 +1,108 @@
+/* === BASE RESET === */
+* {
+    font-family: "Cinzel", serif;
+    font-size: 11pt;
+    color: #2b2b2b;
+}
+
+/* === GENERAL BACKGROUND === */
+QWidget {
+    background-color: #fafaf8; /* Light diamond white */
+}
+
+/* === QPushButton === */
+QPushButton {
+    background-color: #fff8dc;
+    color: #2b2b2b;
+    border: 2px solid #f7c948;  /* golden highlight */
+    border-radius: 4px;
+    padding: 6px 20px;
+    min-width: 275px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #f7c948;
+    color: #000000;
+}
+QPushButton:pressed {
+    background-color: #d4af37;
+    border-color: #2b2b2b;
+    color: #ffffff;
+}
+
+/* === Small button override === */
+QPushButton[class="small"] {
+    min-width: 50px;
+    padding: 4px 8px;
+    font-size: 9.5pt;
+}
+
+/* === QLabel === */
+QLabel {
+    color: #2b2b2b;
+    font-family: "Cinzel", sans-serif;
+    font-weight: 500;
+}
+
+/* === QLineEdit and QTextEdit === */
+QLineEdit, QTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px;
+    color: #2b2b2b;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #f7c948;
+}
+
+/* === QComboBox === */
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 4px 6px;
+    color: #2b2b2b;
+}
+QComboBox:hover {
+    border-color: #f7c948;
+}
+QComboBox::drop-down {
+    width: 20px;
+    border-left: 1px solid #ccc;
+}
+QComboBox QAbstractItemView {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    selection-background-color: #f7c948;
+    selection-color: #000;
+}
+
+/* === QTabWidget === */
+QTabWidget::pane {
+    border: 1px solid #e0e0e0;
+}
+QTabBar::tab {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 6px 12px;
+    color: #777;
+    font-family: "Cinzel", sans-serif;
+}
+QTabBar::tab:selected {
+    background-color: #f7c948;
+    color: #000;
+    font-weight: bold;
+}
+
+/* === QToolTip === */
+QToolTip {
+    background-color: #f7c948;
+    color: #000000;
+    border: 1px solid #2b2b2b;
+    padding: 4px;
+    font-size: 10pt;
+    border-radius: 2px;
+}
