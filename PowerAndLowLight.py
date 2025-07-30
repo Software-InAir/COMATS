@@ -17,14 +17,16 @@ class PowerAndLowLightTest(QWidget):
         super().__init__()
 
 
-        self.powerandlowlight_passed = [False, False, False]
-        self.powerandlowlight_failed = [False, False, False]
+        self.powerandlowlight_passed = [False, False, False, False, False]
+        self.powerandlowlight_failed = [False, False, False, False, False]
         self.powerandlowlight_completed = False
         self.current_powerandlowlight_step = 0
 
         layout = QVBoxLayout()
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
+
+        self.powerandlowlightlayout = QHBoxLayout()
 
         self.powerandlowlighttestbuttonlayout = QHBoxLayout()
 
@@ -86,9 +88,12 @@ class PowerAndLowLightTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.powerandlowlightlabel = QLabel(
-            "<b> <br><br>"
-            "PowerAndLowLight step one.</b><br><br> "
-            "<i> PowerAndLowLight condition one.</i><br><br>"
+            "1. Connect the Beverage Maker to the power supply.<br><br>"
+            "<i>Ensure EDB is in the ON position.</i><br><br>"
+            "2. If connected, disconnect the water supply from the Beverage Maker by closing V10 and opening V11.<br><br>"
+            "3. Press the power button.<br><br>"
+            "4.<i>>Both the power and low water indicators should be lit without the heaters activating "
+            "<br>(as indicated by ~0 A readings for each phase of the power supply).</i><br><br>"
         )
 
         self.powerandlowlightlabel.setTextFormat(Qt.TextFormat.RichText)
@@ -102,7 +107,10 @@ class PowerAndLowLightTest(QWidget):
                                     """)
         self.powerandlowlightlabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.powerandlowlightlabel)
-        layout.addWidget(scroll)
+
+
+        self.powerandlowlightlayout.addWidget(scroll)
+        layout.addLayout(self.powerandlowlightlayout)
         layout.addLayout(self.powerandlowlighttestbuttonlayout)
         try:
             self.powerandlowlightbeginbutton = QPushButton("Begin")
@@ -148,12 +156,12 @@ class PowerAndLowLightTest(QWidget):
     def PowerAndLowLight(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_powerandlowlight_step == 0:
-                msg1.setWindowTitle("Check PowerAndLowLight")
-                msg1.setText("PowerAndLowLight step one.")
+                msg1.setWindowTitle("Power and Low Light Indicators")
+                msg1.setText("<i>Power and Low Light Indicators activated.</i><br><br>")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -171,8 +179,8 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 2 — 5.12 mΩ
             elif self.current_powerandlowlight_step == 1:
-                msg1.setWindowTitle("Check PowerAndLowLight")
-                msg1.setText("PowerAndLowLight step two.")
+                msg1.setWindowTitle("Power Indicator Deactivated")
+                msg1.setText("The power indicator light has been deactivated.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -190,8 +198,8 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 3 — 5.7 mΩ
             elif self.current_powerandlowlight_step == 2:
-                msg1.setWindowTitle("Check PowerAndLowLight")
-                msg1.setText("PowerAndLowLight step three.")
+                msg1.setWindowTitle("Power Indicator Activated")
+                msg1.setText("The power indicator light has been activated.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -199,7 +207,6 @@ class PowerAndLowLightTest(QWidget):
                 if msg1.clickedButton() == pass_button:
                     self.powerandlowlight_passed[2] = True
                     self.powerandlowlight_failed[2] = False
-                    self.powerandlowlight_completed = True
                     self.updatePowerAndLowLightStep()
                     self.current_powerandlowlight_step += 1
                 elif msg1.clickedButton() == fail_button:
@@ -208,10 +215,32 @@ class PowerAndLowLightTest(QWidget):
                     self.updatePowerAndLowLightStep()
                     self.current_powerandlowlight_step += 1
 
+            # STEP 3 — 5.7 mΩ
+            elif self.current_powerandlowlight_step == 3:
+                    msg1.setWindowTitle("Power Indicator Deactivated")
+                    msg1.setText("The power indicator light has been deactivated.")
+                    pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
+                    fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                    msg1.exec()
+
+                    if msg1.clickedButton() == pass_button:
+                        self.powerandlowlight_passed[3] = True
+                        self.powerandlowlight_failed[3] = False
+                        self.powerandlowlight_completed = True
+                        self.updatePowerAndLowLightStep()
+                        self.current_powerandlowlight_step += 1
+                    elif msg1.clickedButton() == fail_button:
+                        self.powerandlowlight_passed[3] = False
+                        self.powerandlowlight_failed[3] = True
+                        self.powerandlowlight_completed = True
+                        self.updatePowerAndLowLightStep()
+                        self.current_powerandlowlight_step += 1
+
+
             # Completed
             elif self.powerandlowlight_completed:
                 msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The PowerAndLowLight test has been completed successfully.")
+                msg1.setText("The Power And Low Light Indicator test has been completed successfully.")
                 msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
                 msg1.exec()
 
@@ -223,8 +252,8 @@ class PowerAndLowLightTest(QWidget):
     def updatePowerAndLowLightStep(self):
         if self.powerandlowlight_passed[0] or self.powerandlowlight_failed[0]:
             self.powerandlowlightlabel.setText(
-                "<b>PowerAndLowLight step two.</b><br><br>"
-                "<i>PowerAndLowLight condition two.</i><br><br>"
+                "5. Press the POWER button.<br><br>"
+                "<i>Power indicator should deactivate.</i><br><br>"
             )
 
             self.powerandlowlightbeginbutton.setText("Continue")
@@ -233,8 +262,12 @@ class PowerAndLowLightTest(QWidget):
 
         if self.powerandlowlight_passed[1] or self.powerandlowlight_failed[1]:
             self.powerandlowlightlabel.setText(
-                "<b>PowerAndLowLight step three.</b><br><br>"
-                "<i>PowerAndLowLight condition three.</i><br><br>"
+                "6. Connect the water supply to the Beverage Maker by closing V11 and opening V10.<br><br>"
+                "Once filled, ensure water pressure is set between 24 and 29 psig by assessing reading on PG2 (1.66 to 2.0 barg).<br><br>"
+                "7. Make sure the Beverage Maker tank fills and no leaks are present. (A full tank is indicated by a reading of 0 on the flow meter (FM))<br><br>"
+                "8. After the tank is filled, press the power button.<br><br>"
+                "<i>The power indicator light should be activated.</i><br><br>"
+
             )
 
             self.powerandlowlightbeginbutton.setText("Continue")
@@ -243,9 +276,19 @@ class PowerAndLowLightTest(QWidget):
 
         if self.powerandlowlight_passed[2] or self.powerandlowlight_failed[2]:
             self.powerandlowlightlabel.setText(
-                "<b>PowerAndLowLight Test Completed!</b><br><br>"
-                "<b>PowerAndLowLight completion step.<br><br>"
+                "Make sure the LOW WATER indicator light is off and press the power button.<br><br>"
+                "<i>The power light indicator should be deactivated.</i><br><br>"
             )
+            self.powerandlowlightbeginbutton.setText("Continue")
+            self.powerandlowlightbeginbutton.clicked.disconnect()
+            self.powerandlowlightbeginbutton.clicked.connect(self.PowerAndLowLight)
+
+
+        if self.powerandlowlight_passed[3] or self.powerandlowlight_failed[3]:
+            self.powerandlowlightlabel.setText(
+                "Test completed.<br><br>"
+                "<i>The Power and Low Light indicator Test has been completed succssfully!</i><br><br>"
+                )
             self.powerandlowlightbeginbutton.setText("Results")
             self.powerandlowlightbeginbutton.clicked.disconnect()
             self.powerandlowlightbeginbutton.clicked.connect(self.PowerAndLowLightResults)

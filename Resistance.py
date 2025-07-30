@@ -26,6 +26,7 @@ class ResistanceTest(QWidget):
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
 
+        self.resistancelabellayout = QHBoxLayout()
         resistancetestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
@@ -102,7 +103,9 @@ class ResistanceTest(QWidget):
                                     """)
         self.resistancelabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.resistancelabel)
-        layout.addWidget(scroll)
+
+        self.resistancelabellayout.addWidget(scroll)
+        layout.addLayout(self.resistancelabellayout)
         layout.addLayout(resistancetestbuttonlayout)
         try:
             self.resistancebeginbutton = QPushButton("Begin")
@@ -148,7 +151,7 @@ class ResistanceTest(QWidget):
     def Resistance(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_resistance_step == 0:
@@ -244,6 +247,7 @@ class ResistanceTest(QWidget):
         if self.resistance_passed[2] or self.resistance_failed[2]:
             self.resistancelabel.setText(
                 "<b>Resistance Test Completed!</b><br><br>"
+                "<b>The Resistance Test has been completed successfully!</b><br><br>"
                 "<b>Please Disconnect the IAS11003C plug from PP1 and turn off the milliohm meter.<br><br>"
             )
             self.resistancebeginbutton.setText("Results")

@@ -7,6 +7,9 @@ from PyQt6.QtWidgets import (
     QPushButton, QLineEdit
 )
 
+from PyQt6.QtWidgets import QTabBar
+from PyQt6.QtCore import QSize
+
 
 from PyQt6.QtCore import Qt, pyqtSignal, QObject
 #from PyQt6.QtWidgets.QWidget import setWindowFlag
@@ -57,7 +60,7 @@ class MainWindow(QMainWindow):
 
         self.welcomeLayout = QVBoxLayout()
 
-        logoimage = "InAir_Diamonds"
+        logoimage = "InAir"
 
         self.Logo = QPixmap(f"Images/{logoimage}.png")
         self.logoLabel = QLabel()
@@ -126,7 +129,7 @@ class MainWindow(QMainWindow):
     def CreateNewWorkorder(self):
         try:
             self.createNewWorkorder = True
-            self.setFixedSize(400, 200)
+            self.setMinimumSize(400, 200)
 
             self.workorderentry = QWidget()
             self.setCentralWidget(self.workorderentry)
@@ -241,7 +244,7 @@ class MainWindow(QMainWindow):
     def OpenExistingWorkorder(self):
         try:
             self.openExistingWorkorder = True
-            self.setFixedSize(300, 200)
+            self.setMinimumSize(300, 200)
 
             self.openWorkorder = QWidget()
             self.setCentralWidget(self.openWorkorder)
@@ -290,7 +293,7 @@ class MainWindow(QMainWindow):
 
     def RunIndividualTests(self):
         self.runIndividualTests = True
-        self.setFixedSize(1150, 600)
+        self.setMinimumSize(1150, 600)
 
 
         workorder_file = f"{self.workordernumberfield.text()}.txt"
@@ -302,8 +305,19 @@ class MainWindow(QMainWindow):
                             f"Part Number: {self.unitpartnumberfield.text()}\n"
                             f"Technician Name: {self.techfield.text()}\n\n\n")
         else:
-            with open(f"{test_path}", "r") as file:
-                print("You've opened an existing workorder!")
+            try:
+                with open(f"{test_path}", "a+") as file:
+                    lines = file.readlines()
+
+                    file.write("\n\n"
+                                "_Functional Tests_"
+                                "\n\n"
+                                ">>Dielectric Test<<"
+                                "\n"
+                            f"{DielectricTest.dielectric_results}")
+
+            except Exception as e:
+                print(f"error opening wo: {e}")
 
 
         # Create QTabWidget
@@ -356,16 +370,17 @@ class MainWindow(QMainWindow):
 
 
 
+
 # === Application entry point ===
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    theme = "Diamonds"
+    theme = "RetroTerminal"
     with open(f"Themes/{theme}.qss", "r") as f:
         app.setStyleSheet(f.read())
 
     # Load the font so Qt can recognize the name in QSS
-    font_id = QFontDatabase.addApplicationFont("fonts/Cinzel-Regular.ttf")
+    font_id = QFontDatabase.addApplicationFont("fonts/Staatliches-Regular.ttf.ttf")
     if font_id != -1:
         loaded_font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
         print(f"Loaded font: {loaded_font_family}")

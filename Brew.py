@@ -17,14 +17,16 @@ class BrewTest(QWidget):
         super().__init__()
 
 
-        self.brew_passed = [False, False, False]
-        self.brew_failed = [False, False, False]
+        self.brew_passed = [False, False, False, False, False, False]
+        self.brew_failed = [False, False, False, False, False, False]
         self.brew_completed = False
         self.current_brew_step = 0
 
         layout = QVBoxLayout()
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
+
+        self.brewlabellayout = QHBoxLayout()
 
         self.brewtestbuttonlayout = QHBoxLayout()
 
@@ -86,10 +88,19 @@ class BrewTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.brewlabel = QLabel(
-            "<b> <br><br>"
-            "Brew step one.</b><br><br> "
-            "<i> Brew condition one.</i><br><br>"
-        )
+            "<b>1. Start this test by making sure the tank is filled with water by closing V11 and opening V10.<br><br>"
+            "The water supply pressure should be set to 24 to 29 psig (1.66 to 2.0 barg) as indicated by reading gauge PG2.<br>"
+            "The power indicator light should be lit.<br><br>"
+            "(NOTE: The WARMER (where applicable) must be on before starting this test.)<br><br>"
+            "Put an empty server in the Beverage Maker and lower the brew handle.<br><br>"
+            "2. Press the BREW button and observe the flow meter (FM).<br><br>"
+            "When flow starts, simultaneously start the provided stopwatch.<br><br>"
+            "(NOTE: Brew does not start until the water in the tank is heated.<br>"
+            "After the start of flow, there will be an interruption for approximately 10 seconds.<br>"
+            "This is normal behaviour and the time is included and accounted for in the brew cycle time.)<br><br>"
+            "3. Stop the stopwatch when the flow meter (FM) reaches zero for the second time.</b><br><br>"
+            "<i>Elapsed time between when flow begins and ends should be between 2 minutes and 30 seconds and 3 minutes and 35 seconds.</i><br><br>"
+            )
 
         self.brewlabel.setTextFormat(Qt.TextFormat.RichText)
         self.brewlabel.setWordWrap(True)
@@ -102,7 +113,10 @@ class BrewTest(QWidget):
                                     """)
         self.brewlabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.brewlabel)
-        layout.addWidget(scroll)
+
+
+        self.brewlabellayout.addWidget(scroll)
+        layout.addLayout(self.brewlabellayout)
         layout.addLayout(self.brewtestbuttonlayout)
         try:
             self.brewbeginbutton = QPushButton("Begin")
@@ -148,12 +162,12 @@ class BrewTest(QWidget):
     def Brew(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_brew_step == 0:
-                msg1.setWindowTitle("Check Brew")
-                msg1.setText("Brew step one.")
+                msg1.setWindowTitle("Elapsed Brew Time")
+                msg1.setText("Elapsed Brew time measures 2:30-3:35")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -163,16 +177,18 @@ class BrewTest(QWidget):
                     self.brew_failed[0] = False
                     self.updateBrewStep()
                     self.current_brew_step += 1
+                    print(self.current_brew_step)
                 elif msg1.clickedButton() == fail_button:
                     self.brew_passed[0] = False
                     self.brew_failed[0] = True
                     self.updateBrewStep()
                     self.current_brew_step += 1
+                    print(self.current_brew_step)
 
             # STEP 2 — 5.12 mΩ
             elif self.current_brew_step == 1:
-                msg1.setWindowTitle("Check Brew")
-                msg1.setText("Brew step two.")
+                msg1.setWindowTitle("Brew Interruption")
+                msg1.setText("Lifting brew handle interrupts current brew cycle.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -190,8 +206,8 @@ class BrewTest(QWidget):
 
             # STEP 3 — 5.7 mΩ
             elif self.current_brew_step == 2:
-                msg1.setWindowTitle("Check Brew")
-                msg1.setText("Brew step three.")
+                msg1.setWindowTitle("Brew Continuation")
+                msg1.setText("Lowering handle continues current brew cycle.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -199,7 +215,6 @@ class BrewTest(QWidget):
                 if msg1.clickedButton() == pass_button:
                     self.brew_passed[2] = True
                     self.brew_failed[2] = False
-                    self.brew_completed = True
                     self.updateBrewStep()
                     self.current_brew_step += 1
                 elif msg1.clickedButton() == fail_button:
@@ -207,6 +222,66 @@ class BrewTest(QWidget):
                     self.brew_failed[2] = True
                     self.updateBrewStep()
                     self.current_brew_step += 1
+
+                    # STEP 3 — 5.7 mΩ
+            elif self.current_brew_step == 3:
+                    msg1.setWindowTitle("Consecutive Brews")
+                    msg1.setText("Pressing brew after completed cycle does not begin new brew cycle.")
+                    pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
+                    fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                    msg1.exec()
+
+                    if msg1.clickedButton() == pass_button:
+                        self.brew_passed[3] = True
+                        self.brew_failed[3] = False
+                        self.updateBrewStep()
+                        self.current_brew_step += 1
+
+                    elif msg1.clickedButton() == fail_button:
+                        self.brew_passed[3] = False
+                        self.brew_failed[3] = True
+                        self.updateBrewStep()
+                        self.current_brew_step += 1
+
+                        # STEP 3 — 5.7 mΩ
+            elif self.current_brew_step == 4:
+                        msg1.setWindowTitle("Brew Temperature")
+                        msg1.setText("Brew temperature measures between 175° F (79° C) and 195° F (91° C).")
+                        pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
+                        fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                        msg1.exec()
+
+                        if msg1.clickedButton() == pass_button:
+                            self.brew_passed[4] = True
+                            self.brew_failed[4] = False
+                            self.brew_completed = True
+                            self.updateBrewStep()
+                            self.current_brew_step += 1
+                        elif msg1.clickedButton() == fail_button:
+                            self.brew_passed[4] = False
+                            self.brew_failed[4] = True
+                            self.updateBrewStep()
+                            self.current_brew_step += 1
+
+                        # STEP 3 — 5.7 mΩ
+            elif self.current_brew_step == 5:
+                        msg1.setWindowTitle("Power Indicator Light")
+                        msg1.setText("Power indicator light turns on briefly and deactivates.")
+                        pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
+                        fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                        msg1.exec()
+
+                        if msg1.clickedButton() == pass_button:
+                            self.brew_passed[5] = True
+                            self.brew_failed[5] = False
+                            self.brew_completed = True
+                            self.updateBrewStep()
+                            self.current_brew_step += 1
+                        elif msg1.clickedButton() == fail_button:
+                            self.brew_passed[5] = False
+                            self.brew_failed[5] = True
+                            self.updateBrewStep()
+                            self.current_brew_step += 1
 
             # Completed
             elif self.brew_completed:
@@ -223,9 +298,11 @@ class BrewTest(QWidget):
     def updateBrewStep(self):
         if self.brew_passed[0] or self.brew_failed[0]:
             self.brewlabel.setText(
-                "<b>Brew step two.</b><br><br>"
-                "<i>Brew condition two.</i><br><br>"
-            )
+                "<b>4. Lift the brew handle, remove, empty, and install server in the Beverage Maker.<br><br>"
+                "5. With the brew button light off, press the brew button to start a second brew.<br><br>"
+                "6. Lift brew handle after the normal 10 second flow interruption.</b><br><br>"
+                "<i>Lifting the brew handle should interrupt the brew cycle, as shown by the flow meter reaching zero.</i><br><br>"
+                )
 
             self.brewbeginbutton.setText("Continue")
             self.brewbeginbutton.clicked.disconnect()
@@ -233,9 +310,9 @@ class BrewTest(QWidget):
 
         if self.brew_passed[1] or self.brew_failed[1]:
             self.brewlabel.setText(
-                "<b>Brew step three.</b><br><br>"
-                "<i>Brew condition three.</i><br><br>"
-            )
+                "<b>7. Lower the brew handle.<br><br>"
+                "<i>This should continue the current brew cycle.</i><br><br>"
+                )
 
             self.brewbeginbutton.setText("Continue")
             self.brewbeginbutton.clicked.disconnect()
@@ -243,9 +320,44 @@ class BrewTest(QWidget):
 
         if self.brew_passed[2] or self.brew_failed[2]:
             self.brewlabel.setText(
-                "<b>Brew Test Completed!</b><br><br>"
-                "<b>Brew completion step.<br><br>"
-            )
+                "8. When the brew indicator light goes off, press the brew button again<br><br>"
+                "<i>Another brew cycle should not begin.</i><br><br>"
+                )
+
+            self.brewbeginbutton.setText("Continue")
+            self.brewbeginbutton.clicked.disconnect()
+            self.brewbeginbutton.clicked.connect(self.Brew)
+
+        if self.brew_passed[3] or self.brew_failed[3]:
+            self.brewlabel.setText(
+                "<b>9. Lift the brew handle and measure the temperature of the liquid in the server by using the provided digital thermometer.<br><br>"
+                "<i>It should measure between 175° F (79° C) and 195° F (91° C).</i><br><br>"
+                )
+
+            self.brewbeginbutton.setText("Continue")
+            self.brewbeginbutton.clicked.disconnect()
+            self.brewbeginbutton.clicked.connect(self.Brew)
+
+        if self.brew_passed[4] or self.brew_failed[4]:
+            self.brewlabel.setText(
+                "<b>The server should be full.<br><br>"
+                "10. Place the full server in the Beverage Maker and lower the brew handle.<br><br>"
+                "11. Press the brew button.<br><br>"
+                "<i>The brew indicator light should come on for a short time and then proceed to turn off.</i><br><br>"
+                "<i>(The full server should be detected by the backup liquid level sensor for the server.)</i><br><br>"
+                )
+
+            self.brewbeginbutton.setText("Continue")
+            self.brewbeginbutton.clicked.disconnect()
+            self.brewbeginbutton.clicked.connect(self.Brew)
+
+        if self.brew_passed[5] or self.brew_failed[5]:
+            self.brewlabel.setText(
+                    "<b>Test Complete.<br><br>"
+                    "The Brew Test has been completed successfully.<br><br>"
+                    "Please lift the brew handle, remove, empty, and install the server back into the Beverage Maker. After the server is inserted, lower the brew handle.<br><br>."
+                    )
+
             self.brewbeginbutton.setText("Results")
             self.brewbeginbutton.clicked.disconnect()
             self.brewbeginbutton.clicked.connect(self.BrewResults)

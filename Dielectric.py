@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt
 
 #-------------------------------------------------------- Dielectric Test
 class DielectricTest(QWidget):
+        dielectric_results = "Some test results!"
+
         def __init__(self):
                 super().__init__()
 
@@ -24,6 +26,12 @@ class DielectricTest(QWidget):
                 layout = QVBoxLayout()
                 spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
                 layout.addSpacerItem(spacer)
+
+                layout.addStretch(1)
+                
+                dielectric_results = "Some test results."
+
+                self.dielectriclabellayout = QHBoxLayout()
 
                 self.dielectrictestbuttonlayout = QHBoxLayout()
 
@@ -89,7 +97,7 @@ class DielectricTest(QWidget):
 
                 self.dielectriclabel = QLabel("""
                 Begin by removing side panel<br><br><br>
-                <b>1. Disconnect the P1 connector from J1 connector on circuit board.</b><br<br>>
+                <b>1. Disconnect the P1 connector from J1 connector on circuit board.</b><br<br>
                 <b>2. Install IAS11003B circular box connector into power input.</b><br><br>
                 <i>Confirm test box leads are connected to hipot tester.</i><br><br>
                 <b>2a. Install red and black test box jumpers from C to H.<br><br>
@@ -112,7 +120,8 @@ class DielectricTest(QWidget):
                 self.scroll.setWidget(self.dielectriclabel)
 
 
-                layout.addWidget(self.scroll)
+                self.dielectriclabellayout.addWidget(self.scroll)
+                layout.addLayout(self.dielectriclabellayout)
                 layout.addLayout(self.dielectrictestbuttonlayout)
 
                 try:
@@ -169,7 +178,7 @@ class DielectricTest(QWidget):
                                 msg1.setWindowTitle("Check Current")
                                 msg1.setText(
                                         "Current flow should not exceed a maximum of 2.0 milliamperes during the test period.")
-                                msg1.setIcon(QMessageBox.Icon.Information)
+                                #msg1.setIcon(QMessageBox.Icon.Information)
 
                                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
@@ -190,7 +199,7 @@ class DielectricTest(QWidget):
                                 msg1 = QMessageBox()
                                 msg1.setWindowTitle("Check Current")
                                 msg1.setText("Does megaohmmeter read greater than 2?")
-                                msg1.setIcon(QMessageBox.Icon.Information)
+                                #msg1.setIcon(QMessageBox.Icon.Information)
 
                                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
@@ -212,7 +221,7 @@ class DielectricTest(QWidget):
                                 msg1 = QMessageBox()
                                 msg1.setWindowTitle("Test Completed!")
                                 msg1.setText("The dielectric test has been completed successfully.")
-                                msg1.setIcon(QMessageBox.Icon.Information)
+                                #msg1.setIcon(QMessageBox.Icon.Information)
 
                                 pass_button = msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
 
@@ -236,7 +245,8 @@ class DielectricTest(QWidget):
 
                 if self.dielectric_passed[1] or self.dielectric_failed[1]:
                         self.dielectriclabel.setText(
-                                "<b>The Dielectric Test is Completed!<br><br>"
+                                "<b>Test Complete.<br><br>"
+                                "The Dielectric Test has been completed successfully!<br><br>"
                                 "Please flip the megohmmeter switch to discharge and then power off.<br><br>"
                                 "Disconnect IAS11003B circular box connector from the coffee maker.<br><br>"
                                 "Reconnect P1 connector to J1 connector on circuit board.</b><br><br>")

@@ -26,6 +26,7 @@ class ServerRetainerTest(QWidget):
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
 
+        self.serverretainerlabellayout = QHBoxLayout()
         self.serverretainertestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
@@ -86,9 +87,11 @@ class ServerRetainerTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.serverretainerlabel = QLabel(
-            "<b> <br><br>"
-            "ServerRetainer step one.</b><br><br> "
-            "<i> ServerRetainer condition one.</i><br><br>"
+            "<b>With a server and the brew cup installed, lower the brew handle.<br><br>"
+            "Pull on the server to make sure the server retainer is working correctly.</b><br><br>"
+            "<i>Server should remain firmly in place</i><br><br>"
+
+
         )
 
         self.serverretainerlabel.setTextFormat(Qt.TextFormat.RichText)
@@ -102,7 +105,10 @@ class ServerRetainerTest(QWidget):
                                     """)
         self.serverretainerlabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.serverretainerlabel)
-        layout.addWidget(scroll)
+
+
+        self.serverretainerlabellayout.addWidget(scroll)
+        layout.addLayout(self.serverretainerlabellayout)
         layout.addLayout(self.serverretainertestbuttonlayout)
         try:
             self.serverretainerbeginbutton = QPushButton("Begin")
@@ -148,12 +154,12 @@ class ServerRetainerTest(QWidget):
     def ServerRetainer(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_serverretainer_step == 0:
-                msg1.setWindowTitle("Check ServerRetainer")
-                msg1.setText("ServerRetainer step one.")
+                msg1.setWindowTitle("Check Server Retainer")
+                msg1.setText("Server remains in place.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -161,6 +167,7 @@ class ServerRetainerTest(QWidget):
                 if msg1.clickedButton() == pass_button:
                     self.serverretainer_passed[0] = True
                     self.serverretainer_failed[0] = False
+                    self.serverretainer_completed = True
                     self.updateServerRetainerStep()
                     self.current_serverretainer_step += 1
                 elif msg1.clickedButton() == fail_button:
@@ -169,44 +176,6 @@ class ServerRetainerTest(QWidget):
                     self.updateServerRetainerStep()
                     self.current_serverretainer_step += 1
 
-            # STEP 2 — 5.12 mΩ
-            elif self.current_serverretainer_step == 1:
-                msg1.setWindowTitle("Check ServerRetainer")
-                msg1.setText("ServerRetainer step two.")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.serverretainer_passed[1] = True
-                    self.serverretainer_failed[1] = False
-                    self.updateServerRetainerStep()
-                    self.current_serverretainer_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.serverretainer_passed[1] = False
-                    self.serverretainer_failed[1] = True
-                    self.updateServerRetainerStep()
-                    self.current_serverretainer_step += 1
-
-            # STEP 3 — 5.7 mΩ
-            elif self.current_serverretainer_step == 2:
-                msg1.setWindowTitle("Check ServerRetainer")
-                msg1.setText("ServerRetainer step three.")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.serverretainer_passed[2] = True
-                    self.serverretainer_failed[2] = False
-                    self.serverretainer_completed = True
-                    self.updateServerRetainerStep()
-                    self.current_serverretainer_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.serverretainer_passed[2] = False
-                    self.serverretainer_failed[2] = True
-                    self.updateServerRetainerStep()
-                    self.current_serverretainer_step += 1
 
             # Completed
             elif self.serverretainer_completed:
@@ -221,30 +190,11 @@ class ServerRetainerTest(QWidget):
             print(f"Error: {e}")
 
     def updateServerRetainerStep(self):
+
         if self.serverretainer_passed[0] or self.serverretainer_failed[0]:
             self.serverretainerlabel.setText(
-                "<b>ServerRetainer step two.</b><br><br>"
-                "<i>ServerRetainer condition two.</i><br><br>"
-            )
-
-            self.serverretainerbeginbutton.setText("Continue")
-            self.serverretainerbeginbutton.clicked.disconnect()
-            self.serverretainerbeginbutton.clicked.connect(self.ServerRetainer)
-
-        if self.serverretainer_passed[1] or self.serverretainer_failed[1]:
-            self.serverretainerlabel.setText(
-                "<b>ServerRetainer step three.</b><br><br>"
-                "<i>ServerRetainer condition three.</i><br><br>"
-            )
-
-            self.serverretainerbeginbutton.setText("Continue")
-            self.serverretainerbeginbutton.clicked.disconnect()
-            self.serverretainerbeginbutton.clicked.connect(self.ServerRetainer)
-
-        if self.serverretainer_passed[2] or self.serverretainer_failed[2]:
-            self.serverretainerlabel.setText(
-                "<b>ServerRetainer Test Completed!</b><br><br>"
-                "<b>ServerRetainer completion step.<br><br>"
+                "<b>Test Completed</b><br><br>"
+                "The Server Retainer test has been completed successfully!</b><br><br>"
             )
             self.serverretainerbeginbutton.setText("Results")
             self.serverretainerbeginbutton.clicked.disconnect()

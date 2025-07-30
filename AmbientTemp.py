@@ -15,6 +15,7 @@ phase3read = 0.39
 class AmbientTemperatureTest(QWidget):
     def __init__(self):
         super().__init__()
+        self.setMinimumSize(1200, 600)
 
 
         self.ambienttemp_passed = [False, False, False]
@@ -25,6 +26,8 @@ class AmbientTemperatureTest(QWidget):
         layout = QVBoxLayout()
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
+
+        self.ambientlabellayout = QHBoxLayout()
 
         ambienttemptestbuttonlayout = QHBoxLayout()
 
@@ -86,9 +89,9 @@ class AmbientTemperatureTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.ambienttemplabel = QLabel(
-            "<b> <br><br>"
-            "</b><br><br> "
-            "<i> AmbientTemperature condition one.</i><br><br>"
+            "<b>1. Using the wall thermometer, measure the temperature in the adjacent"
+            " area of the test environment. </b><br><br>"
+            "<i>The temperature should be between 70° F (21° C) and 85° F (29° C).</i><br><br>"
         )
 
         self.ambienttemplabel.setTextFormat(Qt.TextFormat.RichText)
@@ -102,7 +105,9 @@ class AmbientTemperatureTest(QWidget):
                                     """)
         self.ambienttemplabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.ambienttemplabel)
-        layout.addWidget(scroll)
+
+        self.ambientlabellayout.addWidget(scroll)
+        layout.addLayout(self.ambientlabellayout)
         layout.addLayout(ambienttemptestbuttonlayout)
         try:
             self.ambienttempbeginbutton = QPushButton("Begin")
@@ -148,12 +153,12 @@ class AmbientTemperatureTest(QWidget):
     def AmbientTemperature(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_ambienttemp_step == 0:
-                msg1.setWindowTitle("Check AmbientTemperature")
-                msg1.setText("Ambient Temperature step one.")
+                msg1.setWindowTitle("Ambient Temperature Test")
+                msg1.setText( "<i>The ambient temperature is between 70° F (21° C) and 85° F (29° C).</i><br><br>")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
@@ -169,82 +174,17 @@ class AmbientTemperatureTest(QWidget):
                     self.updateAmbientTemperatureStep()
                     self.current_ambienttemp_step += 1
 
-            # STEP 2 — 5.12 mΩ
-            elif self.current_ambienttemp_step == 1:
-                msg1.setWindowTitle("Check AmbientTemperature")
-                msg1.setText("Ambient Temperature step two.")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.ambienttemp_passed[1] = True
-                    self.ambienttemp_failed[1] = False
-                    self.updateAmbientTemperatureStep()
-                    self.current_ambienttemp_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.ambienttemp_passed[1] = False
-                    self.ambienttemp_failed[1] = True
-                    self.updateAmbientTemperatureStep()
-                    self.current_ambienttemp_step += 1
-
-            # STEP 3 — 5.7 mΩ
-            elif self.current_ambienttemp_step == 2:
-                msg1.setWindowTitle("Check AmbientTemperature")
-                msg1.setText("Ambient Temperature step three.")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.ambienttemp_passed[2] = True
-                    self.ambienttemp_failed[2] = False
-                    self.ambienttemp_completed = True
-                    self.updateAmbientTemperatureStep()
-                    self.current_ambienttemp_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.ambienttemp_passed[2] = False
-                    self.ambienttemp_failed[2] = True
-                    self.updateAmbientTemperatureStep()
-                    self.current_ambienttemp_step += 1
-
-            # Completed
-            elif self.ambienttemp_completed:
-                msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The Ambient Temperature test has been completed successfully.")
-                msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
-                msg1.exec()
-
-                self.updateAmbientTemperatureStep()
 
         except Exception as e:
             print(f"Error: {e}")
 
     def updateAmbientTemperatureStep(self):
+
+
         if self.ambienttemp_passed[0] or self.ambienttemp_failed[0]:
             self.ambienttemplabel.setText(
-                "<b>Ambient Temperature step two.</b><br><br>"
-                "<i>Ambient Temperature condition two.</i><br><br>"
-            )
-
-            self.ambienttempbeginbutton.setText("Continue")
-            self.ambienttempbeginbutton.clicked.disconnect()
-            self.ambienttempbeginbutton.clicked.connect(self.AmbientTemperature)
-
-        if self.ambienttemp_passed[1] or self.ambienttemp_failed[1]:
-            self.ambienttemplabel.setText(
-                "<b>Ambient Temperature step three.</b><br><br>"
-                "<i>Ambient Temperature condition three.</i><br><br>"
-            )
-
-            self.ambienttempbeginbutton.setText("Continue")
-            self.ambienttempbeginbutton.clicked.disconnect()
-            self.ambienttempbeginbutton.clicked.connect(self.AmbientTemperature)
-
-        if self.ambienttemp_passed[2] or self.ambienttemp_failed[2]:
-            self.ambienttemplabel.setText(
-                "<b>Ambient Temperature Test Completed!</b><br><br>"
-                "<b>Ambient Temperature completion step.<br><br>"
+                "<b>Test Complete.</b><br><br>"
+                "<b>The Ambient Temperature Test has been completed successfully!<br><br>"
             )
             self.ambienttempbeginbutton.setText("Results")
             self.ambienttempbeginbutton.clicked.disconnect()

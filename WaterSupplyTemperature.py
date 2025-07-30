@@ -26,6 +26,7 @@ class WaterTempTest(QWidget):
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer)
 
+        self.watersupplylabellayout = QHBoxLayout()
         self.watertemptestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
@@ -105,7 +106,9 @@ class WaterTempTest(QWidget):
                                     """)
         self.watertemplabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         scroll.setWidget(self.watertemplabel)
-        layout.addWidget(scroll)
+
+        self.watersupplylabellayout.addWidget(scroll)
+        layout.addLayout(self.watersupplylabellayout)
         layout.addLayout(self.watertemptestbuttonlayout)
         try:
             self.watertempbeginbutton = QPushButton("Begin")
@@ -151,7 +154,7 @@ class WaterTempTest(QWidget):
     def WaterTemp(self):
         try:
             msg1 = QMessageBox()
-            msg1.setIcon(QMessageBox.Icon.Information)
+            #msg1.setIcon(QMessageBox.Icon.Information)
 
             # STEP 1 — 4.5 mΩ
             if self.current_watertemp_step == 0:
@@ -187,7 +190,8 @@ class WaterTempTest(QWidget):
     def updateWaterTempStep(self):
         if self.watertemp_passed[0] or self.watertemp_failed[0]:
             self.watertemplabel.setText(
-                "<b>Water Supply Temperature Test Completed!</b><br><br>"
+                "<b>Test Complete.</b><br><br>"
+                "<b>The Water Supply Temperature test has been completed successfully.</b><br><br>"
             )
 
             self.watertempbeginbutton.setText("Results")
