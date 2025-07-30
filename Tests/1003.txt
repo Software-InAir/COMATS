@@ -1,6 +1,0 @@
-Workorder Number: 1003
-Unit Serial Number: 3214A45DF
-Part Number: 00255
-Technician Name: Chase
-
-

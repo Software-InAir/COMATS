@@ -295,9 +295,13 @@ class MainWindow(QMainWindow):
         self.runIndividualTests = True
         self.setMinimumSize(1150, 600)
 
+        self.dielectric_test = DielectricTest()
+        self.resistance_test = ResistanceTest()
+
 
         workorder_file = f"{self.workordernumberfield.text()}.txt"
         test_path = os.path.join("Tests/", workorder_file)
+        self.resistance_test.ResistanceTestPath(test_path)
         if not os.path.exists(test_path):
             with open(f"{test_path}", "w") as file:
                 file.write(f"Workorder Number: {self.workordernumberfield.text()}\n"
@@ -306,15 +310,56 @@ class MainWindow(QMainWindow):
                             f"Technician Name: {self.techfield.text()}\n\n\n")
         else:
             try:
-                with open(f"{test_path}", "a+") as file:
+                with open(f"{test_path}", "r") as file:
                     lines = file.readlines()
+                    print(len(lines))
+                with open(f"{test_path}", "a+") as file:
+                    if len(lines) <= 6:
+                        file.write("\n\n"
+                                    "_Functional Tests_"
+                                    "\n\n"
+                                    ">>Dielectric Test<<"
+                                    "\n"
+                                    f"{DielectricTest.dielectric_results}"
+                                    "\n\n"
+                                    ">>Resistance Test<<"
+                                    "\n"
+                                    f"{self.resistance_test.GetResistanceResults()}"
+                                    "\n\n"
+                                    ">>Water Supply Temperature Test<<"
+                                    "\n"
+                                    f"{WaterTempTest.watertemp_results}"
+                                    "\n\n"
+                                    ">>Ambient Temperature Test<<"
+                                    "\n"
+                                    f"{AmbientTemperatureTest.ambienttemp_results}"
+                                    "\n\n"
+                                    ">>Tank Pressure Test<<"
+                                    "\n"
+                                    f"{TankPressureTest.tankpressure_results}"
+                                    "\n\n"
+                                    ">>Power and Low Indicator Light Test<<"
+                                    "\n"
+                                    f"{PowerAndLowLightTest.powerandlowlight_results}"
+                                    "\n\n"
+                                    ">>RTD Test<<"
+                                    "\n"
+                                    f"{RTDCircuitTest.rtdcircuit_results}"
+                                    "\n\n"
+                                    ">>Tank Heater and Preheater Test"
+                                    "\n"
+                                    f"{HeaterAndPreheaterTest.heaterandpreheater_results}"
+                                    "\n\n"
+                                    ">>Brew Test<"
+                                    "\n"
+                                    f"{BrewTest.brew_results}"
+                                    "\n\n"
+                                    ">>Server Retainer Test<"
+                                    "\n"
+                                    f"{ServerRetainerTest.serverretainer_results}"
+                                   )
 
-                    file.write("\n\n"
-                                "_Functional Tests_"
-                                "\n\n"
-                                ">>Dielectric Test<<"
-                                "\n"
-                            f"{DielectricTest.dielectric_results}")
+
 
             except Exception as e:
                 print(f"error opening wo: {e}")
@@ -330,8 +375,9 @@ class MainWindow(QMainWindow):
 
         # Create 10 tabs
         try:
-            self.tabs.addTab(DielectricTest(), f"Dielectric")
-            self.tabs.addTab(ResistanceTest(), f"Resistance")
+
+            self.tabs.addTab(self.dielectric_test, f"Dielectric")
+            self.tabs.addTab(self.resistance_test, f"Resistance")
             self.tabs.addTab(WaterTempTest(), f"Water Supply Temperature")
             self.tabs.addTab(AmbientTemperatureTest(), f"Ambient Temperature")
             self.tabs.addTab(TankPressureTest(), f"Tank Pressure")
@@ -375,7 +421,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    theme = "RetroTerminal"
+    theme = "BrutalistTerminal"
     with open(f"Themes/{theme}.qss", "r") as f:
         app.setStyleSheet(f.read())
 

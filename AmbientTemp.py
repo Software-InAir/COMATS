@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- AmbientTemperature Check
 
 class AmbientTemperatureTest(QWidget):
+    ambienttemp_results = "Some Ambient Temperature Results!"
     def __init__(self):
         super().__init__()
         self.setMinimumSize(1200, 600)

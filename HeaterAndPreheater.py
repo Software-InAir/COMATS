@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- HeaterAndPreheater Check
 
 class HeaterAndPreheaterTest(QWidget):
+    heaterandpreheater_results = "Some Heat and Preheater Results!"
     def __init__(self):
         super().__init__()
 

@@ -7,7 +7,7 @@ from PyQt6.QtCore import Qt
 
 #-------------------------------------------------------- Dielectric Test
 class DielectricTest(QWidget):
-        dielectric_results = "Some test results!"
+        dielectric_results = f""
 
         def __init__(self):
                 super().__init__()

@@ -1,3 +1,39 @@
 Workorder Number: 1001
-Unit Serial Number: A3242D4
-Part Number: 00222
+Unit Serial Number: 2DFA342
+Part Number: 001
+Technician Name: Chase
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+
+>>Resistance Test<<
+<function ResistanceTest.GetResistanceResults at 0x000001D7DF5E8D60>
+
+>>Water Supply Temperature Test<<
+Some Water Supply Temperature Results!
+
+>>Ambient Temperature Test<<
+Some Ambient Temperature Results!
+
+>>Tank Pressure Test<<
+Some Tank Pressure Results!
+
+>>Power and Low Indicator Light Test<<
+Some Power and Low Light Results!
+
+>>RTD Test<<
+Some RTD Circuit Results!
+
+>>Tank Heater and Preheater Test
+Some Heat and Preheater Results!
+
+>>Brew Test<
+Some Brew results!
+
+>>Server Retainer Test<
+Some Server Retainer Results

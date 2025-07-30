@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- Brew Check
 
 class BrewTest(QWidget):
+    brew_results = "Some Brew results!"
     def __init__(self):
         super().__init__()
 

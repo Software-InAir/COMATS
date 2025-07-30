@@ -1,6 +1,0 @@
-Workorder Number: IREP-1003
-Unit Serial Number: 345AA34DD
-Part Number: 003
-Technician Name: C. Stanley
-
-

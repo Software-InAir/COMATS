@@ -1,17 +1,42 @@
 Workorder Number: 1004
-Unit Serial Number: 234A234FF
-Part Number: 002155
+Unit Serial Number: 23AF25
+Part Number: 0234
 Technician Name: Chase
 
 
 
 
-<b><u>_Functional Tests_</u></b>
-
->>Dielectric Test<<
-Some test results!
-
 _Functional Tests_
 
 >>Dielectric Test<<
-Some test results!
+
+
+>>Resistance Test<<
+Resistance Test 3: 3.45 mΩ	PASS
+Resistance Test 2: 7.14 mΩ	FAIL
+Resistance Test 1: 2.34 mΩ	PASS
+
+
+>>Water Supply Temperature Test<<
+Some Water Supply Temperature Results!
+
+>>Ambient Temperature Test<<
+Some Ambient Temperature Results!
+
+>>Tank Pressure Test<<
+Some Tank Pressure Results!
+
+>>Power and Low Indicator Light Test<<
+Some Power and Low Light Results!
+
+>>RTD Test<<
+Some RTD Circuit Results!
+
+>>Tank Heater and Preheater Test
+Some Heat and Preheater Results!
+
+>>Brew Test<
+Some Brew results!
+
+>>Server Retainer Test<
+Some Server Retainer Results

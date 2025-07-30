@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- TankPressure Check
 
 class TankPressureTest(QWidget):
+    tankpressure_results = "Some Tank Pressure Results!"
     def __init__(self):
         super().__init__()
 

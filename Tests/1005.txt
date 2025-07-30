@@ -1,6 +1,44 @@
+Workorder Number: 1005
+Unit Serial Number: 234DF
+Part Number: 234
+Technician Name: Chase
 
 
-<b><u>Functional Tests</u></b>
 
-<b>Dielectric Test</b>
-Some test results!
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+
+>>Resistance Test<<
+Resistance Test 3: 7.34 mΩ
+Resistance Test 2: 2.5 mΩ
+Resistance Test 1: 1.14 mΩ
+Resistance Test 2: 3.48 mΩ
+
+
+>>Water Supply Temperature Test<<
+Some Water Supply Temperature Results!
+
+>>Ambient Temperature Test<<
+Some Ambient Temperature Results!
+
+>>Tank Pressure Test<<
+Some Tank Pressure Results!
+
+>>Power and Low Indicator Light Test<<
+Some Power and Low Light Results!
+
+>>RTD Test<<
+Some RTD Circuit Results!
+
+>>Tank Heater and Preheater Test
+Some Heat and Preheater Results!
+
+>>Brew Test<
+Some Brew results!
+
+>>Server Retainer Test<
+Some Server Retainer ResultsResistance Test 1: 2.35 mΩ
+Resistance Test 3: 4.14 mOhms

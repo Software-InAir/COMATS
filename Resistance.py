@@ -1,9 +1,11 @@
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
-    QPushButton, QLineEdit, QScrollArea, QMessageBox
+    QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
 from PyQt6.QtCore import Qt
+
+
 
 #-------- temp phase
 phase1read = 0.36
@@ -13,8 +15,13 @@ phase3read = 0.39
 #------------------------------------------------------- Resistance Check
 
 class ResistanceTest(QWidget):
+    resistance_results = ""
+
+
     def __init__(self):
         super().__init__()
+
+        self.resistance_results = f""
 
 
         self.resistance_passed = [False, False, False]
@@ -149,79 +156,115 @@ class ResistanceTest(QWidget):
         #tabs.addTab(resistance, f"Resistance")
 
     def Resistance(self):
-        try:
-            msg1 = QMessageBox()
-            #msg1.setIcon(QMessageBox.Icon.Information)
+            try:
+                # STEP 1 — 4.5 mΩ
+                if self.current_resistance_step == 0:
+                    value, ok = QInputDialog.getDouble(
+                        self,
+                        "Resistance Check",
+                        "Please enter the resistance measurement in milliohms:",
+                        decimals=3,
+                        min=0.0,
+                        max=100.0,
+                        step=0.01
+                    )
 
-            # STEP 1 — 4.5 mΩ
-            if self.current_resistance_step == 0:
-                msg1.setWindowTitle("Check Resistance")
-                msg1.setText("Does the milliohm meter read equal to or less than 4.5 milliohms?")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
+                    if ok:
+                        result_line = f"Resistance Test {self.current_resistance_step + 1}: {value} mΩ"
+                        if value <= 4.5:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                        self.insert_resistance_result(result_line)
+                        print(f"User entered: {value} mΩ")
+                        test1_results = value
+                        self.resistance_results += f"Test {self.current_resistance_step + 1} Result: {value} mΩ\n"
+                        if value <= 4.5:
+                            self.resistance_passed[0] = True
+                            self.resistance_failed[0] = False
+                        else:
+                            self.resistance_passed[0] = False
+                            self.resistance_failed[0] = True
 
-                if msg1.clickedButton() == pass_button:
-                    self.resistance_passed[0] = True
-                    self.resistance_failed[0] = False
+                        self.updateResistanceStep()
+                        self.current_resistance_step += 1
+                    return
+
+                # STEP 2 — 5.12 mΩ
+                elif self.current_resistance_step == 1:
+                    value, ok = QInputDialog.getDouble(
+                        self,
+                        "Resistance Check",
+                        "Please enter the resistance measurement in milliohms:",
+                        decimals=3,
+                        min=0.0,
+                        max=100.0,
+                        step=0.01
+                    )
+                    test2_results = value
+                    self.resistance_results += f"Test {self.current_resistance_step + 1} Result: {value} mOhms\n"
+                    if ok:
+                        result_line = f"Resistance Test {self.current_resistance_step + 1}: {value} mΩ"
+                        if test2_results <= 5.12:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                        self.insert_resistance_result(result_line)
+                        if value <= 5.12:
+                            self.resistance_passed[1] = True
+                            self.resistance_failed[1] = False
+                        else:
+                            self.resistance_passed[1] = False
+                            self.resistance_failed[1] = True
+
+                        self.updateResistanceStep()
+                        self.current_resistance_step += 1
+                    return
+
+                # STEP 3 — 5.7 mΩ
+                elif self.current_resistance_step == 2:
+                    value, ok = QInputDialog.getDouble(
+                        self,
+                        "Resistance Check",
+                        "Please enter the resistance measurement in milliohms:",
+                        decimals=3,
+                        min=0.0,
+                        max=100.0,
+                        step=0.01
+                    )
+                    test3_results = value
+                    self.resistance_results += f"Test {self.current_resistance_step + 1} Result: {value} mOhms\n"
+                    print(self.resistance_results)
+                    if ok:
+                        result_line = f"Resistance Test {self.current_resistance_step + 1}: {value} mΩ"
+                        if test3_results <= 5.7:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                        self.insert_resistance_result(result_line)
+                        if value <= 5.7:
+                            self.resistance_passed[2] = True
+                            self.resistance_failed[2] = False
+                            self.resistance_completed = True
+                        else:
+                            self.resistance_passed[2] = False
+                            self.resistance_failed[2] = True
+
+                        self.updateResistanceStep()
+                        self.current_resistance_step += 1
+                    return
+
+                # Completed
+                elif self.resistance_completed:
+                    msg = QMessageBox(self)
+                    msg.setWindowTitle("Test Completed!")
+                    msg.setText("The Resistance test has been completed successfully.")
+                    msg.setIcon(QMessageBox.Icon.Information)
+                    msg.exec()
                     self.updateResistanceStep()
-                    self.current_resistance_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.resistance_passed[0] = False
-                    self.resistance_failed[0] = True
-                    self.updateResistanceStep()
-                    self.current_resistance_step += 1
 
-            # STEP 2 — 5.12 mΩ
-            elif self.current_resistance_step == 1:
-                msg1.setWindowTitle("Check Resistance")
-                msg1.setText("Does the milliohm meter read equal to or less than 5.12 milliohms?")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.resistance_passed[1] = True
-                    self.resistance_failed[1] = False
-                    self.updateResistanceStep()
-                    self.current_resistance_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.resistance_passed[1] = False
-                    self.resistance_failed[1] = True
-                    self.updateResistanceStep()
-                    self.current_resistance_step += 1
-
-            # STEP 3 — 5.7 mΩ
-            elif self.current_resistance_step == 2:
-                msg1.setWindowTitle("Check Resistance")
-                msg1.setText("Does the milliohm meter read equal to or less than 5.7 milliohms?")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
-
-                if msg1.clickedButton() == pass_button:
-                    self.resistance_passed[2] = True
-                    self.resistance_failed[2] = False
-                    self.resistance_completed = True
-                    self.updateResistanceStep()
-                    self.current_resistance_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.resistance_passed[2] = False
-                    self.resistance_failed[2] = True
-                    self.updateResistanceStep()
-                    self.current_resistance_step += 1
-
-            # Completed
-            elif self.resistance_completed:
-                msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The Resistance test has been completed successfully.")
-                msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
-                msg1.exec()
-
-                self.updateResistanceStep()
-
-        except Exception as e:
-            print(f"Error: {e}")
+            except Exception as e:
+                print(f"Error: {e}")
 
     def updateResistanceStep(self):
         if self.resistance_passed[0] or self.resistance_failed[0]:
@@ -258,6 +301,52 @@ class ResistanceTest(QWidget):
             self.resistancerestart.clicked.connect(self.ResistanceRestart)
             self.resistancerestart.setFixedWidth(200)
             self.resistancetestbuttonlayout.addWidget(self.resistancerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetResistanceResults(self):
+        return self.resistance_results
+
+    def ResistanceTestPath(self, path):
+        self.test_path = path
+
+    def insert_resistance_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Resistance Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Resistance section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
 
     def ResistanceRestart(self):
         print("Restarting Resistance Test")

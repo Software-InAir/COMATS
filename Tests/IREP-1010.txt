@@ -1,6 +1,0 @@
-Workorder Number: IREP-1010
-Unit Serial Number: 3455AD3
-Part Number: 0045
-Technician Name: Chase Stanley
-
-

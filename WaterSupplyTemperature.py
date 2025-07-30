@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- WaterTemp Check
 
 class WaterTempTest(QWidget):
+    watertemp_results = "Some Water Supply Temperature Results!"
     def __init__(self):
         super().__init__()
 

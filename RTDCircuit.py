@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- RTDCircuit Check
 
 class RTDCircuitTest(QWidget):
+    rtdcircuit_results = "Some RTD Circuit Results!"
     def __init__(self):
         super().__init__()
 

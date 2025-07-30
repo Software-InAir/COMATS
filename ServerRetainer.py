@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- ServerRetainer Check
 
 class ServerRetainerTest(QWidget):
+    serverretainer_results = "Some Server Retainer Results"
     def __init__(self):
         super().__init__()
 

@@ -13,6 +13,7 @@ phase3read = 0.39
 #------------------------------------------------------- PowerAndLowLight Check
 
 class PowerAndLowLightTest(QWidget):
+    powerandlowlight_results = "Some Power and Low Light Results!"
     def __init__(self):
         super().__init__()
 
