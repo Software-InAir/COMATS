@@ -1,5 +1,5 @@
-Workorder Number: 001
-Unit Serial Number: 125XD
+Workorder Number: 13
+Unit Serial Number: 123DG
 Part Number: 001
 Technician Name: Chase Stanley
 
@@ -10,25 +10,25 @@ _Functional Tests_
 
 >>Dielectric Test<<
 Megaohmmeter Resistance Test 2: 2.4 mΩ	PASS
-Hi Pot Current Test 1: 1.9 mA	PASS
+Hi Pot Current Test 1: 1.6 mA	PASS
 
 
 >>Resistance Test<<
-Resistance Test 3: 5.6 mΩ	PASS
+Resistance Test 3: 5.4 mΩ	PASS
 Resistance Test 2: 5.0 mΩ	PASS
-Resistance Test 1: 4.4 mΩ	PASS
+Resistance Test 1: 4.3 mΩ	PASS
 
 
 >>Water Supply Temperature Test<<
-Water Supply Temperature Test 1: 19.0°C 	PASS
+Water Supply Temperature Test 1: 65.0°F 	PASS
 
 
 >>Ambient Temperature Test<<
-Ambient Temperature Test 1: 25.0°C 	PASS
+Ambient Temperature Test 1: 72.0°F 	PASS
 
 
 >>Tank Pressure Test<<
-Tank Pressure Test 3: 28.0 PSI 	PASS
+Tank Pressure Test 3: 29.0 PSI 	PASS
 Vent Valve Test: 	PASS
 Leak Check Test: 	PASS
 
@@ -45,9 +45,9 @@ Power and Low Indicator Light activated: 	PASS
 
 >>Tank Heater and Preheater Test<<
 Elapsed Time Test: 	PASS
-Phase C current: 7.8 A	PASS
+Phase C current: 7.7 A	PASS
 Phase B current: 0.0 A	FAIL
-Phase A current: 7.5 A	PASS
+Phase A current: 7.4 A	PASS
 
 
 >>Brew Test<<
@@ -60,3 +60,9 @@ Brew Interruption Test: 	PASS
 
 >>Server Retainer Test<<
 Server Retainer Test: 	PASS
+
+
+>>Tea Test<<
+Tea Temperature Test: 90.0°C 	PASS
+Tea Cycle Time Elapsed Test: 3:15 	PASS
+Tea Option: 	INSTALLED

@@ -24,6 +24,7 @@ from Brew import BrewTest
 from HeaterAndPreheater import HeaterAndPreheaterTest
 from RTDCircuit import RTDCircuitTest
 from PowerAndLowLight import PowerAndLowLightTest
+from Tea import TeaTest
 
 
 #import pyvisa
@@ -305,6 +306,7 @@ class MainWindow(QMainWindow):
         self.heaterandpreheater_test = HeaterAndPreheaterTest()
         self.brew_test = BrewTest()
         self.serverretainer_test = ServerRetainerTest()
+        self.tea_test = TeaTest()
 
 
         workorder_file = f"{self.workordernumberfield.text()}.txt"
@@ -320,6 +322,7 @@ class MainWindow(QMainWindow):
             self.heaterandpreheater_test.HeaterAndPreheaterTestPath(test_path)
             self.brew_test.BrewTestPath(test_path)
             self.serverretainer_test.ServerRetainerTestPath(test_path)
+            self.tea_test.TeaTestPath(test_path)
         except Exception as e:
             print(f"Error while setting test_path: {e}")
         if not os.path.exists(test_path):
@@ -377,6 +380,10 @@ class MainWindow(QMainWindow):
                                     ">>Server Retainer Test<<"
                                     "\n"
                                     f"{self.serverretainer_test.GetServerRetainerResults()}"
+                                   "\n\n"
+                                   ">>Tea Test<<"
+                                   "\n"
+                                   f"{self.tea_test.GetTeaResults()}"
                                    )
 
 
@@ -406,6 +413,7 @@ class MainWindow(QMainWindow):
             self.tabs.addTab(self.heaterandpreheater_test, f"Tank Heater and Preheater")
             self.tabs.addTab(self.brew_test, f"Brew")
             self.tabs.addTab(self.serverretainer_test, f"Server Retainer")
+            self.tabs.addTab(self.tea_test, f"Tea")
         except Exception as e:
             print(f"Error while adding tab: {e}")
 

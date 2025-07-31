@@ -268,10 +268,10 @@ class BrewTest(QWidget):
                     self,
                     "Check Temperature",
                     "Please enter the temperature displayed on provided thermometer:",
-                    decimals=1,
+                    value=175.0,
                     min=0.0,
-                    max=100.0,
-                    step=0.01
+                    max=300.0,
+                    decimals=1
                 )
                 if ok:
                     if value <= 150:

@@ -1,9 +1,3 @@
-Workorder Number: 1013
-Unit Serial Number: 234AD234
-Part Number: 245
-Technician Name: Chase
-
-
 
 
 _Functional Tests_
@@ -21,6 +15,9 @@ _Functional Tests_
 
 
 >>Tank Pressure Test<<
+Tank Pressure Test 3: 29.0 PSI 	PASS
+Vent Valve Test: 	PASS
+Leak Check Test: 	PASS
 
 
 >>Power and Low Indicator Light Test<<
@@ -30,16 +27,24 @@ _Functional Tests_
 
 
 >>Tank Heater and Preheater Test<<
+Elapsed Time Test: 	PASS
+Phase C current: 7.7 A	PASS
+Phase B current: 0.0 A	FAIL
+Phase A current: 7.4 A	PASS
 
 
 >>Brew Test<<
 Power Indicator Test: 	PASS
-Brew Temperature Test : 80.0°C 	PASS
+Brew Temperature Test : 180.0°F 	PASS
 Consecutive Brew Test: 	PASS
 Brew Continuation Test: 	PASS
 Brew Interruption Test: 	PASS
 
 
 >>Server Retainer Test<<
-Server Retainer Test: 	PASS
-Some Server Retainer Results
+
+
+>>Tea Test<<
+Tea Temperature Test: 180.0°F 	PASS
+Tea Cycle Time Elapsed Test: 2:30 	PASS
+Tea Option: 	INSTALLED

@@ -161,7 +161,7 @@ class AmbientTemperatureTest(QWidget):
                     "Please enter the temperature displayed on provided thermometer:",
                     decimals=1,
                     min=0.0,
-                    max=100.0,
+                    max=300.0,
                     step=0.01
                 )
 
