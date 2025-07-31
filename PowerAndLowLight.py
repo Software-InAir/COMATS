@@ -13,11 +13,11 @@ phase3read = 0.39
 #------------------------------------------------------- PowerAndLowLight Check
 
 class PowerAndLowLightTest(QWidget):
-    powerandlowlight_results = "Some Power and Low Light Results!"
+
     def __init__(self):
         super().__init__()
 
-
+        self.powerandlowlight_results = ""
         self.powerandlowlight_passed = [False, False, False, False, False]
         self.powerandlowlight_failed = [False, False, False, False, False]
         self.powerandlowlight_completed = False
@@ -161,18 +161,24 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 1 — 4.5 mΩ
             if self.current_powerandlowlight_step == 0:
-                msg1.setWindowTitle("Power and Low Light Indicators")
-                msg1.setText("<i>Power and Low Light Indicators activated.</i><br><br>")
+                msg1.setWindowTitle("Power and Low Indicator Lights")
+                msg1.setText("<i>Power and Low Indicator Lights activated.</i><br><br>")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Power and Low Indicator Light activated: "
+                    result_line += "\tPASS"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[0] = True
                     self.powerandlowlight_failed[0] = False
                     self.updatePowerAndLowLightStep()
                     self.current_powerandlowlight_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Power and Low Indicator Lights activated: "
+                    result_line += "\tFAIL"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[0] = False
                     self.powerandlowlight_failed[0] = True
                     self.updatePowerAndLowLightStep()
@@ -180,18 +186,24 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 2 — 5.12 mΩ
             elif self.current_powerandlowlight_step == 1:
-                msg1.setWindowTitle("Power Indicator Deactivated")
-                msg1.setText("The power indicator light has been deactivated.")
+                msg1.setWindowTitle("Power Indicator Light Deactivated")
+                msg1.setText("The Power Indicator Light has been deactivated.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Power Indicator Light deactivates after being pressed: "
+                    result_line += "\tPASS"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[1] = True
                     self.powerandlowlight_failed[1] = False
                     self.updatePowerAndLowLightStep()
                     self.current_powerandlowlight_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Power Indicator Light deactivates after being pressed: "
+                    result_line += "\tFAIL"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[1] = False
                     self.powerandlowlight_failed[1] = True
                     self.updatePowerAndLowLightStep()
@@ -199,18 +211,24 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 3 — 5.7 mΩ
             elif self.current_powerandlowlight_step == 2:
-                msg1.setWindowTitle("Power Indicator Activated")
-                msg1.setText("The power indicator light has been activated.")
+                msg1.setWindowTitle("Power Indicator Light Activated")
+                msg1.setText("No leaks found and the Power Indicator Light has been activated.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"No tank leaks found and Power Indicator Light activated: "
+                    result_line += "\tPASS"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[2] = True
                     self.powerandlowlight_failed[2] = False
                     self.updatePowerAndLowLightStep()
                     self.current_powerandlowlight_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"No tank leaks found and Power Indicator Light activated: "
+                    result_line += "\tFAIL"
+                    self.insert_powerandlowlight_result(result_line)
                     self.powerandlowlight_passed[2] = False
                     self.powerandlowlight_failed[2] = True
                     self.updatePowerAndLowLightStep()
@@ -218,19 +236,25 @@ class PowerAndLowLightTest(QWidget):
 
             # STEP 3 — 5.7 mΩ
             elif self.current_powerandlowlight_step == 3:
-                    msg1.setWindowTitle("Power Indicator Deactivated")
-                    msg1.setText("The power indicator light has been deactivated.")
+                    msg1.setWindowTitle("Power Indicator Light Deactivated")
+                    msg1.setText("The Power Indicator Light has been deactivated.")
                     pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                     fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                     msg1.exec()
 
                     if msg1.clickedButton() == pass_button:
+                        result_line = f"Power Indicator Light deactivated: "
+                        result_line += "\tPASS"
+                        self.insert_powerandlowlight_result(result_line)
                         self.powerandlowlight_passed[3] = True
                         self.powerandlowlight_failed[3] = False
                         self.powerandlowlight_completed = True
                         self.updatePowerAndLowLightStep()
                         self.current_powerandlowlight_step += 1
                     elif msg1.clickedButton() == fail_button:
+                        result_line = f"Power Indicator Light deactivated: "
+                        result_line += "\tFAIL"
+                        self.insert_powerandlowlight_result(result_line)
                         self.powerandlowlight_passed[3] = False
                         self.powerandlowlight_failed[3] = True
                         self.powerandlowlight_completed = True
@@ -241,7 +265,7 @@ class PowerAndLowLightTest(QWidget):
             # Completed
             elif self.powerandlowlight_completed:
                 msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The Power And Low Light Indicator test has been completed successfully.")
+                msg1.setText("The Power And Low Indicator Light test has been completed successfully.")
                 msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
                 msg1.exec()
 
@@ -298,6 +322,52 @@ class PowerAndLowLightTest(QWidget):
             self.powerandlowlightrestart.clicked.connect(self.PowerAndLowLightRestart)
             self.powerandlowlightrestart.setFixedWidth(200)
             self.powerandlowlighttestbuttonlayout.addWidget(self.powerandlowlightrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetPowerAndLowLightResults(self):
+        return self.powerandlowlight_results
+
+    def PowerAndLowLightTestPath(self, path):
+        self.test_path = path
+
+    def insert_powerandlowlight_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Power and Low Indicator Light Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Power and Low Light Indicator section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
 
     def PowerAndLowLightRestart(self):
         print("Restarting PowerAndLowLight Test")

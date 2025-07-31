@@ -297,11 +297,31 @@ class MainWindow(QMainWindow):
 
         self.dielectric_test = DielectricTest()
         self.resistance_test = ResistanceTest()
+        self.watertemp_test = WaterTempTest()
+        self.ambienttemp_test = AmbientTemperatureTest()
+        self.tankpressure_test = TankPressureTest()
+        self.powerandlowlight_test = PowerAndLowLightTest()
+        self.rtdcircuit_test = RTDCircuitTest()
+        self.heaterandpreheater_test = HeaterAndPreheaterTest()
+        self.brew_test = BrewTest()
+        self.serverretainer_test = ServerRetainerTest()
 
 
         workorder_file = f"{self.workordernumberfield.text()}.txt"
         test_path = os.path.join("Tests/", workorder_file)
-        self.resistance_test.ResistanceTestPath(test_path)
+        try:
+            self.resistance_test.ResistanceTestPath(test_path)
+            self.dielectric_test.DielectricTestPath(test_path)
+            self.watertemp_test.WaterTempTestPath(test_path)
+            self.ambienttemp_test.AmbientTempTestPath(test_path)
+            self.tankpressure_test.TankPressureTestPath(test_path)
+            self.powerandlowlight_test.PowerAndLowLightTestPath(test_path)
+            self.rtdcircuit_test.RTDCircuitTestPath(test_path)
+            self.heaterandpreheater_test.HeaterAndPreheaterTestPath(test_path)
+            self.brew_test.BrewTestPath(test_path)
+            self.serverretainer_test.ServerRetainerTestPath(test_path)
+        except Exception as e:
+            print(f"Error while setting test_path: {e}")
         if not os.path.exists(test_path):
             with open(f"{test_path}", "w") as file:
                 file.write(f"Workorder Number: {self.workordernumberfield.text()}\n"
@@ -320,7 +340,7 @@ class MainWindow(QMainWindow):
                                     "\n\n"
                                     ">>Dielectric Test<<"
                                     "\n"
-                                    f"{DielectricTest.dielectric_results}"
+                                    f"{self.dielectric_test.GetDielectricResults()}"
                                     "\n\n"
                                     ">>Resistance Test<<"
                                     "\n"
@@ -328,35 +348,35 @@ class MainWindow(QMainWindow):
                                     "\n\n"
                                     ">>Water Supply Temperature Test<<"
                                     "\n"
-                                    f"{WaterTempTest.watertemp_results}"
+                                    f"{self.watertemp_test.GetWaterTempResults()}"
                                     "\n\n"
                                     ">>Ambient Temperature Test<<"
                                     "\n"
-                                    f"{AmbientTemperatureTest.ambienttemp_results}"
+                                    f"{self.ambienttemp_test.GetAmbientTempResults()}"
                                     "\n\n"
                                     ">>Tank Pressure Test<<"
                                     "\n"
-                                    f"{TankPressureTest.tankpressure_results}"
+                                    f"{self.tankpressure_test.GetTankPressureResults()}"
                                     "\n\n"
                                     ">>Power and Low Indicator Light Test<<"
                                     "\n"
-                                    f"{PowerAndLowLightTest.powerandlowlight_results}"
+                                    f"{self.powerandlowlight_test.GetPowerAndLowLightResults()}"
                                     "\n\n"
                                     ">>RTD Test<<"
                                     "\n"
-                                    f"{RTDCircuitTest.rtdcircuit_results}"
+                                    f"{self.rtdcircuit_test.GetRTDCircuitTestResults()}"
                                     "\n\n"
-                                    ">>Tank Heater and Preheater Test"
+                                    ">>Tank Heater and Preheater Test<<"
                                     "\n"
-                                    f"{HeaterAndPreheaterTest.heaterandpreheater_results}"
+                                    f"{self.heaterandpreheater_test.GetHeaterAndPreheaterResults()}"
                                     "\n\n"
-                                    ">>Brew Test<"
+                                    ">>Brew Test<<"
                                     "\n"
-                                    f"{BrewTest.brew_results}"
+                                    f"{self.brew_test.GetBrewResults()}"
                                     "\n\n"
-                                    ">>Server Retainer Test<"
+                                    ">>Server Retainer Test<<"
                                     "\n"
-                                    f"{ServerRetainerTest.serverretainer_results}"
+                                    f"{self.serverretainer_test.GetServerRetainerResults()}"
                                    )
 
 
@@ -378,14 +398,14 @@ class MainWindow(QMainWindow):
 
             self.tabs.addTab(self.dielectric_test, f"Dielectric")
             self.tabs.addTab(self.resistance_test, f"Resistance")
-            self.tabs.addTab(WaterTempTest(), f"Water Supply Temperature")
-            self.tabs.addTab(AmbientTemperatureTest(), f"Ambient Temperature")
-            self.tabs.addTab(TankPressureTest(), f"Tank Pressure")
-            self.tabs.addTab(PowerAndLowLightTest(), f"Power and Low Light Indicator")
-            self.tabs.addTab(RTDCircuitTest(), f"RTD Circuit")
-            self.tabs.addTab(HeaterAndPreheaterTest(), f"Tank Heater and Preheater")
-            self.tabs.addTab(BrewTest(), f"Brew")
-            self.tabs.addTab(ServerRetainerTest(), f"Server Retainer")
+            self.tabs.addTab(self.watertemp_test, f"Water Supply Temperature")
+            self.tabs.addTab(self.ambienttemp_test, f"Ambient Temperature")
+            self.tabs.addTab(self.tankpressure_test, f"Tank Pressure")
+            self.tabs.addTab(self.powerandlowlight_test, f"Power and Low Light Indicator")
+            self.tabs.addTab(self.rtdcircuit_test, f"RTD Circuit")
+            self.tabs.addTab(self.heaterandpreheater_test, f"Tank Heater and Preheater")
+            self.tabs.addTab(self.brew_test, f"Brew")
+            self.tabs.addTab(self.serverretainer_test, f"Server Retainer")
         except Exception as e:
             print(f"Error while adding tab: {e}")
 
@@ -421,7 +441,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    theme = "BrutalistTerminal"
+    theme = "RetroTerminal"
     with open(f"Themes/{theme}.qss", "r") as f:
         app.setStyleSheet(f.read())
 

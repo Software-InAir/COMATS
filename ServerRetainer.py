@@ -13,11 +13,11 @@ phase3read = 0.39
 #------------------------------------------------------- ServerRetainer Check
 
 class ServerRetainerTest(QWidget):
-    serverretainer_results = "Some Server Retainer Results"
+
     def __init__(self):
         super().__init__()
 
-
+        self.serverretainer_results = ""
         self.serverretainer_passed = [False, False, False]
         self.serverretainer_failed = [False, False, False]
         self.serverretainer_completed = False
@@ -166,12 +166,18 @@ class ServerRetainerTest(QWidget):
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Server Retainer Test: "
+                    result_line += "\tPASS"
+                    self.insert_serverretainer_result(result_line)
                     self.serverretainer_passed[0] = True
                     self.serverretainer_failed[0] = False
                     self.serverretainer_completed = True
                     self.updateServerRetainerStep()
                     self.current_serverretainer_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Server Retainer Test: "
+                    result_line += "\tPASS"
+                    self.insert_serverretainer_result(result_line)
                     self.serverretainer_passed[0] = False
                     self.serverretainer_failed[0] = True
                     self.updateServerRetainerStep()
@@ -205,6 +211,52 @@ class ServerRetainerTest(QWidget):
             self.serverretainerrestart.clicked.connect(self.ServerRetainerRestart)
             self.serverretainerrestart.setFixedWidth(200)
             self.serverretainertestbuttonlayout.addWidget(self.serverretainerrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetServerRetainerResults(self):
+        return self.serverretainer_results
+
+    def ServerRetainerTestPath(self, path):
+        self.test_path = path
+
+    def insert_serverretainer_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Server Retainer Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Server Retainer section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
 
     def ServerRetainerRestart(self):
         print("Restarting ServerRetainer Test")

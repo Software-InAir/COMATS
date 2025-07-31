@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
-    QPushButton, QLineEdit, QScrollArea, QMessageBox
+    QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
 from PyQt6.QtCore import Qt
@@ -13,11 +13,11 @@ phase3read = 0.39
 #------------------------------------------------------- WaterTemp Check
 
 class WaterTempTest(QWidget):
-    watertemp_results = "Some Water Supply Temperature Results!"
+
     def __init__(self):
         super().__init__()
 
-
+        self.watertemp_results = ""
         self.watertemp_passed = [False, False, False]
         self.watertemp_failed = [False, False, False]
         self.watertemp_completed = False
@@ -154,36 +154,41 @@ class WaterTempTest(QWidget):
 
     def WaterTemp(self):
         try:
-            msg1 = QMessageBox()
-            #msg1.setIcon(QMessageBox.Icon.Information)
-
             # STEP 1 — 4.5 mΩ
             if self.current_watertemp_step == 0:
-                msg1.setWindowTitle("Check WaterTemp")
-                msg1.setText("The water temperature should be at or between 62° F (17° C) to 72° F (22° C). ")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
+                value, ok = QInputDialog.getDouble(
+                    self,
+                    "Check Temperature",
+                    "Please enter the temperature displayed on provided thermometer:",
+                    decimals=1,
+                    min=0.0,
+                    max=100.0,
+                    step=0.01
+                )
 
-                if msg1.clickedButton() == pass_button:
+                if ok:
+                    if value < 60:
+                        tempsystem = "C"
+                    else:
+                        tempsystem = "F"
+                    result_line = f"Water Supply Temperature Test {self.current_watertemp_step + 1}: {value}°{tempsystem} "
+                    if tempsystem == "F":
+                        if value >= 62 and value <=72:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                    elif tempsystem == "C":
+                        if value >= 17 and value <=22:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                    self.insert_watertemp_result(result_line)
+                    print(f"User entered: {value} mA")
+                    self.watertemp_results += f"Test {self.current_watertemp_step + 1} Result: {value} mA\n"
                     self.watertemp_passed[0] = True
                     self.watertemp_failed[0] = False
-                    self.updateWaterTempStep()
                     self.current_watertemp_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.watertemp_passed[0] = False
-                    self.watertemp_failed[0] = True
                     self.updateWaterTempStep()
-                    self.current_watertemp_step += 1
-
-            # Completed
-            elif self.current_watertemp_step == 1:
-                msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The Water Supply Temperature test has been completed successfully.")
-                msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
-                msg1.exec()
-
-                self.updateWaterTempStep()
 
         except Exception as e:
             print(f"Error: {e}")
@@ -203,6 +208,52 @@ class WaterTempTest(QWidget):
             self.watertemprestart.clicked.connect(self.WaterTempRestart)
             self.watertemprestart.setFixedWidth(200)
             self.watertemptestbuttonlayout.addWidget(self.watertemprestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetWaterTempResults(self):
+        return self.watertemp_results
+
+    def WaterTempTestPath(self, path):
+        self.test_path = path
+
+    def insert_watertemp_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Water Supply Temperature Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Water Supply Temperature section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
 
     def WaterTempRestart(self):
         print("Restarting WaterTemp Test")

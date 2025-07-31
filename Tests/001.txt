@@ -1,0 +1,62 @@
+Workorder Number: 001
+Unit Serial Number: 125XD
+Part Number: 001
+Technician Name: Chase Stanley
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+Megaohmmeter Resistance Test 2: 2.4 mΩ	PASS
+Hi Pot Current Test 1: 1.9 mA	PASS
+
+
+>>Resistance Test<<
+Resistance Test 3: 5.6 mΩ	PASS
+Resistance Test 2: 5.0 mΩ	PASS
+Resistance Test 1: 4.4 mΩ	PASS
+
+
+>>Water Supply Temperature Test<<
+Water Supply Temperature Test 1: 19.0°C 	PASS
+
+
+>>Ambient Temperature Test<<
+Ambient Temperature Test 1: 25.0°C 	PASS
+
+
+>>Tank Pressure Test<<
+Tank Pressure Test 3: 28.0 PSI 	PASS
+Vent Valve Test: 	PASS
+Leak Check Test: 	PASS
+
+
+>>Power and Low Indicator Light Test<<
+Power Indicator Light deactivated: 	PASS
+No tank leaks found and Power Indicator Light activated: 	PASS
+Power Indicator Light deactivates after being pressed: 	PASS
+Power and Low Indicator Light activated: 	PASS
+
+
+>>RTD Test<<
+
+
+>>Tank Heater and Preheater Test<<
+Elapsed Time Test: 	PASS
+Phase C current: 7.8 A	PASS
+Phase B current: 0.0 A	FAIL
+Phase A current: 7.5 A	PASS
+
+
+>>Brew Test<<
+Power Indicator Test: 	PASS
+Brew Temperature Test : 85.0°C 	PASS
+Consecutive Brew Test: 	PASS
+Brew Continuation Test: 	PASS
+Brew Interruption Test: 	PASS
+
+
+>>Server Retainer Test<<
+Server Retainer Test: 	PASS

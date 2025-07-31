@@ -1,0 +1,43 @@
+Workorder Number: 1012
+Unit Serial Number: 123AD245
+Part Number: 0234
+Technician Name: Chase
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+
+>>Resistance Test<<
+
+
+>>Water Supply Temperature Test<<
+
+
+>>Ambient Temperature Test<<
+
+
+>>Tank Pressure Test<<
+
+
+>>Power and Low Indicator Light Test<<
+
+
+>>RTD Test<<
+
+
+>>Tank Heater and Preheater Test<<
+Elapsed Time Test: 	PASS
+Phase C current: 7.5 A	PASS
+Phase B current: 7.0 A	FAIL
+Phase A current: 7.4 A	PASS
+
+
+>>Brew Test<
+Some Brew results!
+
+>>Server Retainer Test<
+Some Server Retainer Results

@@ -1,0 +1,45 @@
+Workorder Number: 1013
+Unit Serial Number: 234AD234
+Part Number: 245
+Technician Name: Chase
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+
+>>Resistance Test<<
+
+
+>>Water Supply Temperature Test<<
+
+
+>>Ambient Temperature Test<<
+
+
+>>Tank Pressure Test<<
+
+
+>>Power and Low Indicator Light Test<<
+
+
+>>RTD Test<<
+
+
+>>Tank Heater and Preheater Test<<
+
+
+>>Brew Test<<
+Power Indicator Test: 	PASS
+Brew Temperature Test : 80.0°C 	PASS
+Consecutive Brew Test: 	PASS
+Brew Continuation Test: 	PASS
+Brew Interruption Test: 	PASS
+
+
+>>Server Retainer Test<<
+Server Retainer Test: 	PASS
+Some Server Retainer Results

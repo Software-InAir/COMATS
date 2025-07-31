@@ -1,13 +1,13 @@
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
-    QPushButton, QLineEdit, QScrollArea, QMessageBox
+        QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
+        QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
 from PyQt6.QtCore import Qt
 
 #-------------------------------------------------------- Dielectric Test
 class DielectricTest(QWidget):
-        dielectric_results = f""
+
 
         def __init__(self):
                 super().__init__()
@@ -17,11 +17,12 @@ class DielectricTest(QWidget):
                 phase2read = .39
                 phase3read = .26
 
-
+                self.dielectric_results = ""
 
                 self.dielectric_passed = [False, False]
                 self.dielectric_failed = [False, False]
                 self.dielectric_completed = False
+                self.current_dielectric_step = 0
 
                 layout = QVBoxLayout()
                 spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -171,49 +172,57 @@ class DielectricTest(QWidget):
                 self.setLayout(layout)
 
         def Dielectric(self):
-
                 try:
-                        if not self.dielectric_passed[0] and not self.dielectric_failed[0]:
-                                msg1 = QMessageBox()
-                                msg1.setWindowTitle("Check Current")
-                                msg1.setText(
-                                        "Current flow should not exceed a maximum of 2.0 milliamperes during the test period.")
-                                #msg1.setIcon(QMessageBox.Icon.Information)
+                                        # STEP 1 — 4.5 mΩ
+                        if self.current_dielectric_step == 0:
+                                value, ok = QInputDialog.getDouble(
+                                        self,
+                                        "Check Hi Pot Current",
+                                        "Please enter the maximum current measured in milliamperes during the test period:",
+                                        decimals=3,
+                                        min=0.0,
+                                        max=100.0,
+                                        step=0.01
+                                )
 
-                                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-
-                                msg1.exec()
-
-                                if msg1.clickedButton() == pass_button:
+                                if ok:
+                                        result_line = f"Hi Pot Current Test {self.current_dielectric_step + 1}: {value} mA"
+                                        if value <= 2:
+                                                result_line += "\tPASS"
+                                        else:
+                                                result_line += "\tFAIL"
+                                        self.insert_dielectric_result(result_line)
+                                        print(f"User entered: {value} mA")
+                                        self.dielectric_results += f"Test {self.current_dielectric_step + 1} Result: {value} mA\n"
                                         self.dielectric_passed[0] = True
                                         self.dielectric_failed[0] = False
-                                        self.updateDielectricStep()
-                                elif msg1.clickedButton() == fail_button:
-                                        self.dielectric_passed[0] = False
-                                        self.dielectric_failed[0] = True
+                                        self.current_dielectric_step += 1
                                         self.updateDielectricStep()
 
 
-                        elif self.dielectric_passed[0] or self.dielectric_failed[0]:
-                                msg1 = QMessageBox()
-                                msg1.setWindowTitle("Check Current")
-                                msg1.setText("Does megaohmmeter read greater than 2?")
-                                #msg1.setIcon(QMessageBox.Icon.Information)
 
-                                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                        elif self.current_dielectric_step == 1:
+                                value, ok = QInputDialog.getDouble(
+                                        self,
+                                        "Check Megaohmmeter",
+                                        "Please enter the resistance measured in megaohms:",
+                                        decimals=3,
+                                        min=0.0,
+                                        max=100.0,
+                                        step=0.01
+                                )
 
-                                msg1.exec()
-
-                                if msg1.clickedButton() == pass_button:
+                                if ok:
+                                        result_line = f"Megaohmmeter Resistance Test {self.current_dielectric_step + 1}: {value} mΩ"
+                                        if value >= 2:
+                                                result_line += "\tPASS"
+                                        else:
+                                                result_line += "\tFAIL"
+                                        self.insert_dielectric_result(result_line)
+                                        print(f"User entered: {value} mΩ")
+                                        self.dielectric_results += f"Test {self.current_dielectric_step + 1} Result: {value} mΩ\n"
                                         self.dielectric_passed[1] = True
                                         self.dielectric_failed[1] = False
-                                        self.dielectric_completed = True
-                                        self.updateDielectricStep()
-                                elif msg1.clickedButton() == fail_button:
-                                        self.dielectric_passed[1] = False
-                                        self.dielectric_failed[1] = True
                                         self.updateDielectricStep()
 
 
@@ -228,7 +237,8 @@ class DielectricTest(QWidget):
                                 msg1.exec()
 
                 except Exception as e:
-                        print(f"Error: {e}")
+                        print(f"Error in: {e}")
+
 
         def updateDielectricStep(self):
                 if self.dielectric_passed[0] or self.dielectric_failed[0]:
@@ -260,6 +270,52 @@ class DielectricTest(QWidget):
                         self.dielectricrestart.setFixedWidth(200)
                         self.dielectrictestbuttonlayout.addWidget(self.dielectricrestart,
                                                                   alignment=Qt.AlignmentFlag.AlignCenter)
+
+        def GetDielectricResults(self):
+                return self.dielectric_results
+
+        def DielectricTestPath(self, path):
+                self.test_path = path
+
+        def insert_dielectric_result(self, result_line: str):
+                try:
+                        with open(self.test_path, "r", encoding="utf-8") as file:
+                                lines = file.readlines()
+
+                        header_index = -1
+                        found_line_index = -1
+                        test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+                        # Step 1: Find the Resistance Test section
+                        for i, line in enumerate(lines):
+                                if line.strip() == ">>Dielectric Test<<":
+                                        header_index = i
+                                        break
+
+                        if header_index == -1:
+                                print("Dielectric section not found.")
+                                return
+
+                        # Step 2: Search after the section header for a matching result line
+                        for i in range(header_index + 1, len(lines)):
+                                if lines[i].startswith(">>"):  # Stop at next section
+                                        break
+                                if lines[i].startswith(test_id):
+                                        found_line_index = i
+                                        break
+
+                        if found_line_index != -1:
+                                lines[found_line_index] = result_line + "\n"
+                        else:
+                                lines.insert(header_index + 1, result_line + "\n")
+
+                        with open(self.test_path, "w", encoding="utf-8") as file:
+                                file.writelines(lines)
+
+                        print(f"{test_id} written successfully.")
+
+                except Exception as e:
+                        print(f"Error updating resistance result: {e}")
 
         def DielectricRestart(self):
                 print("Restarting Dielectric Test")

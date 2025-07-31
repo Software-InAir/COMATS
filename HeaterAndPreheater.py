@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
-    QPushButton, QLineEdit, QScrollArea, QMessageBox
+    QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
 from PyQt6.QtCore import Qt
@@ -13,11 +13,11 @@ phase3read = 0.39
 #------------------------------------------------------- HeaterAndPreheater Check
 
 class HeaterAndPreheaterTest(QWidget):
-    heaterandpreheater_results = "Some Heat and Preheater Results!"
+
     def __init__(self):
         super().__init__()
 
-
+        self.heaterandpreheater_results = ""
         self.heaterandpreheater_passed = [False, False, False]
         self.heaterandpreheater_failed = [False, False, False]
         self.heaterandpreheater_completed = False
@@ -156,28 +156,79 @@ class HeaterAndPreheaterTest(QWidget):
     def HeaterAndPreheater(self):
         try:
             msg1 = QMessageBox()
-            #msg1.setIcon(QMessageBox.Icon.Information)
+            # msg1.setIcon(QMessageBox.Icon.Information)
 
-            # STEP 1 — 4.5 mΩ
             if self.current_heaterandpreheater_step == 0:
-                msg1.setWindowTitle("Check Phases")
-                msg1.setText("Phase A reads 8.1 +0.6/-0.9 amperes<br>"
-                             "Phase B reads 7.8 +0.4/-0.7 amperes<br>"
-                             "Phase C reads 7.8 +0.4/-0.7 amperes<br><br>")
-                pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
-                fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
-                msg1.exec()
+                value1, ok = QInputDialog.getDouble(
+                    self,
+                    "Phase A Check",
+                    "Please enter the current measurement for Phase A in amperes:",
+                    decimals=1,
+                    min=0.0,
+                    max=100.0,
+                    step=0.01
+                )
+                self.heaterandpreheater_results += f"Phase A current: {value1} A\n"
+                if ok:
+                    result_line = f"Phase A current: {value1} A"
+                    if value1 >= 7.2 and value1 <= 8.7:
+                        result_line += "\tPASS"
+                    else:
+                        result_line += "\tFAIL"
+                    self.insert_heaterandpreheater_result(result_line)
 
-                if msg1.clickedButton() == pass_button:
-                    self.heaterandpreheater_passed[0] = True
-                    self.heaterandpreheater_failed[0] = False
-                    self.updateHeaterAndPreheaterStep()
-                    self.current_heaterandpreheater_step += 1
-                elif msg1.clickedButton() == fail_button:
-                    self.heaterandpreheater_passed[0] = False
-                    self.heaterandpreheater_failed[0] = True
-                    self.updateHeaterAndPreheaterStep()
-                    self.current_heaterandpreheater_step += 1
+                    value2, ok = QInputDialog.getDouble(
+                        self,
+                        "Phase B Check",
+                        "Please enter the current measurement for Phase B in amperes:",
+                        decimals=1,
+                        min=0.0,
+                        max=100.0,
+                        step=0.01
+                    )
+                    self.heaterandpreheater_results += f"Phase B current: {value2} A\n"
+                    if ok:
+                        result_line = f"Phase B current: {value2} A"
+                        if value2 >= 7.1 and value2 <= 8.2:
+                            result_line += "\tPASS"
+                        else:
+                            result_line += "\tFAIL"
+                        self.insert_heaterandpreheater_result(result_line)
+
+                        value3, ok = QInputDialog.getDouble(
+                            self,
+                            "Phase C Check",
+                            "Please enter the current measurement for Phase C in amperes:",
+                            decimals=1,
+                            min=0.0,
+                            max=100.0,
+                            step=0.01
+                        )
+                        self.heaterandpreheater_results += f"Phase C current: {value3} A\n"
+                        if ok:
+                            self.current_heaterandpreheater_step += 1
+                            print(self.current_heaterandpreheater_step)
+
+                            result_line = f"Phase C current: {value3} A"
+                            if value3 >= 7.1 and value3 <= 8.2:
+                                result_line += "\tPASS"
+                            else:
+                                result_line += "\tFAIL"
+                            self.insert_heaterandpreheater_result(result_line)
+                            if value3 >= 7.1 and value3 <= 8.2 and value2 >= 7.1 and value2 <= 8.2 and value1 >= 7.2 and value1 <= 8.7 :
+                                self.heaterandpreheater_passed[0] = True
+                                self.heaterandpreheater_failed[0] = False
+                                self.heaterandpreheater_completed = True
+                            else:
+                                self.heaterandpreheater_passed[0] = False
+                                self.heaterandpreheater_failed[0] = True
+                            self.updateHeaterAndPreheaterStep()
+
+
+
+                        return
+
+
 
             # STEP 2 — 5.12 mΩ
             elif self.current_heaterandpreheater_step == 1:
@@ -188,12 +239,18 @@ class HeaterAndPreheaterTest(QWidget):
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Elapsed Time Test: "
+                    result_line += "\tPASS"
+                    self.insert_heaterandpreheater_result(result_line)
                     self.heaterandpreheater_passed[1] = True
                     self.heaterandpreheater_failed[1] = False
                     self.heaterandpreheater_completed = True
                     self.updateHeaterAndPreheaterStep()
                     self.current_heaterandpreheater_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Elapsed Time Test: "
+                    result_line += "\tFAIL"
+                    self.insert_heaterandpreheater_result(result_line)
                     self.heaterandpreheater_passed[1] = False
                     self.heaterandpreheater_failed[1] = True
                     self.updateHeaterAndPreheaterStep()
@@ -238,6 +295,52 @@ class HeaterAndPreheaterTest(QWidget):
             self.heaterandpreheaterrestart.clicked.connect(self.HeaterAndPreheaterRestart)
             self.heaterandpreheaterrestart.setFixedWidth(200)
             self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaterrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetHeaterAndPreheaterResults(self):
+        return self.heaterandpreheater_results
+
+    def HeaterAndPreheaterTestPath(self, path):
+        self.test_path = path
+
+    def insert_heaterandpreheater_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Tank Heater and Preheater Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Tank Heater and Preheater Test section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
 
     def HeaterAndPreheaterRestart(self):
         print("Restarting HeaterAndPreheater Test")

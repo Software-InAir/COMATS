@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
-    QPushButton, QLineEdit, QScrollArea, QMessageBox
+    QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
 from PyQt6.QtCore import Qt
@@ -13,11 +13,11 @@ phase3read = 0.39
 #------------------------------------------------------- TankPressure Check
 
 class TankPressureTest(QWidget):
-    tankpressure_results = "Some Tank Pressure Results!"
+
     def __init__(self):
         super().__init__()
 
-
+        self.tankpressure_results = ""
         self.tankpressure_passed = [False, False, False]
         self.tankpressure_failed = [False, False, False]
         self.tankpressure_completed = False
@@ -172,35 +172,74 @@ class TankPressureTest(QWidget):
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Leak Check Test: "
+                    result_line += "\tPASS"
+                    self.insert_tankpressure_result(result_line)
                     self.tankpressure_passed[0] = True
                     self.tankpressure_failed[0] = False
                     self.updateTankPressureStep()
                     self.current_tankpressure_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Leak Check Test: "
+                    result_line += "\tFAIL"
+                    self.insert_tankpressure_result(result_line)
                     self.tankpressure_passed[0] = False
                     self.tankpressure_failed[0] = True
                     self.updateTankPressureStep()
                     self.current_tankpressure_step += 1
 
-            # STEP 2 — 5.12 mΩ
             elif self.current_tankpressure_step == 1:
-                msg1.setWindowTitle("Check Tank Pressure")
-                msg1.setText("<i>Tank pressure is less than 30 PSI as measured by PG2.</i><br><br>")
+                msg1.setWindowTitle("Check Vent Valve")
+                msg1.setText("Vent Valve operates as instructed.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
                 fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
                 msg1.exec()
 
                 if msg1.clickedButton() == pass_button:
+                    result_line = f"Vent Valve Test: "
+                    result_line += "\tPASS"
+                    self.insert_tankpressure_result(result_line)
                     self.tankpressure_passed[1] = True
                     self.tankpressure_failed[1] = False
-                    self.tankpressure_completed = True
                     self.updateTankPressureStep()
                     self.current_tankpressure_step += 1
                 elif msg1.clickedButton() == fail_button:
+                    result_line = f"Vent Valve Test: "
+                    result_line += "\tFAIL"
+                    self.insert_tankpressure_result(result_line)
                     self.tankpressure_passed[1] = False
                     self.tankpressure_failed[1] = True
                     self.updateTankPressureStep()
                     self.current_tankpressure_step += 1
+
+            # STEP 2 — 5.12 mΩ
+            if self.current_tankpressure_step == 2:
+                value, ok = QInputDialog.getDouble(
+                    self,
+                    "Check Pressure",
+                    "Please enter the pressure displayed on PG:",
+                    decimals=2,
+                    min=0.0,
+                    max=100.0,
+                    step=0.01
+                )
+
+                if ok:
+
+                    result_line = f"Tank Pressure Test {self.current_tankpressure_step + 1}: {value} PSI "
+                    if value < 30:
+                        result_line += "\tPASS"
+                    else:
+                        result_line += "\tFAIL"
+
+                    self.insert_tankpressure_result(result_line)
+                    print(f"User entered: {value} PSI")
+                    self.tankpressure_results += f"Test {self.current_tankpressure_step + 1} Result: {value}\n"
+                    self.tankpressure_passed[0] = True
+                    self.tankpressure_failed[0] = False
+                    self.current_tankpressure_step += 1
+                    self.updateTankPressureStep()
+
 
 
             # Completed
@@ -228,15 +267,10 @@ class TankPressureTest(QWidget):
                 "Close V11 and open V10.7.<br><br>"
                 "Gradually increase the water pressure to the tank.<br>"
                 "Slowly rotate V7 clockwise while watching PG2.<br><br>"
-                "The relief valve should remain closed at pressures below 75 psig (5.17 barg).<br><br>"
+                "<i>The relief valve should remain closed at pressures below 75 psig (5.17 barg).</i><br><br>"
                 "Continue to increase pressure ensuring the valve is fully open prior to or at 100 psig (6.89 barg).<br><br>"
                 "8. Disconnect water supply by turning V10 off and drain the Beverage Maker by opening V11.<br><br>"
-                "Make sure vent valve operates correctly.<br><br>"
-                "Turn V7 counterclockwise to return pressure to 50 psi while periodically opening V9 to verify.<br><br>"
-                "Turn V8 horizontal.<br>"
-                "Open V9<br><br>"
-                "<i>Verify pressure is less than 30 on PG2.</i><br><br>"
-
+                "<i>Ensure that vent valve operates correctly as described.</i><br><br>"
             )
 
             self.tankpressurebeginbutton.setText("Continue")
@@ -246,17 +280,76 @@ class TankPressureTest(QWidget):
 
         if self.tankpressure_passed[1] or self.tankpressure_failed[1]:
             self.tankpressurelabel.setText(
-                "<b>Test Complete</b><br><br>"
-                "<b>The Tank Pressure test has been completed successfully!<br><br>"
+                "Turn V7 counterclockwise to return pressure to 50 psi while periodically opening V9 to verify.<br><br>"
+                "Turn V8 horizontal.<br>"
+                "Open V9<br><br>"
+                "<i>Verify pressure is less than 30 on PG2.</i><br><br>"
             )
+            self.tankpressurebeginbutton.setText("Continue")
+            self.tankpressurebeginbutton.clicked.disconnect()
+            self.tankpressurebeginbutton.clicked.connect(self.TankPressure)
+
+        if self.tankpressure_passed[1] or self.tankpressure_failed[1]:
+            self.tankpressurelabel.setText(
+                    "Test Complete.<br><br>"
+                    "Tank Pressure Test has been completed successfully!<br>"
+                )
             self.tankpressurebeginbutton.setText("Results")
             self.tankpressurebeginbutton.clicked.disconnect()
             self.tankpressurebeginbutton.clicked.connect(self.TankPressureResults)
+
+
 
             self.tankpressurerestart = QPushButton("Restart", self)
             self.tankpressurerestart.clicked.connect(self.TankPressureRestart)
             self.tankpressurerestart.setFixedWidth(200)
             self.tankpressuretestbuttonlayout.addWidget(self.tankpressurerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetTankPressureResults(self):
+        return self.tankpressure_results
+
+    def TankPressureTestPath(self, path):
+        self.test_path = path
+
+    def insert_tankpressure_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Tank Pressure Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Tank Pressure section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating tank pressure result: {e}")
 
     def TankPressureRestart(self):
         print("Restarting TankPressure Test")
