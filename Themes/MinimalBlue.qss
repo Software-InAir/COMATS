@@ -27,8 +27,11 @@ QPushButton:pressed {
     background-color: #c0d8f5;
 }
 
+/* === Small button override === */
 QPushButton[class="small"] {
-    min-width: 50px;
+    min-width: 80px;
+    padding: 4px 6px;
+    font-size: 9.5pt;
 }
 
 /* === QLabel === */

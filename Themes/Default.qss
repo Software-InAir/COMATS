@@ -28,6 +28,13 @@ QPushButton:pressed {
     background-color: #bfbfbf;
 }
 
+/* === Small button override === */
+QPushButton[class="small"] {
+    min-width: 80px;
+    padding: 4px 6px;
+    font-size: 9.5pt;
+}
+
 /* === QLabel === */
 QLabel {
     font-weight: normal;
