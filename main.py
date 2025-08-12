@@ -25,6 +25,8 @@ from HeaterAndPreheater import HeaterAndPreheaterTest
 from RTDCircuit import RTDCircuitTest
 from PowerAndLowLight import PowerAndLowLightTest
 from Tea import TeaTest
+from VisualInspection import VisualInspectionTest
+from LowWater import LowWaterTest
 
 """
 import pyvisa
@@ -551,23 +553,26 @@ class MainWindow(QMainWindow):
             print(modelNumber)
 
         if modelNumber == "11225-1":
-            self.runIndividualTests11225 = True
-            self.setMinimumSize(1150, 600)
+            try:
+                self.runIndividualTests11225 = True
+                self.setMinimumSize(1150, 700)
 
-            self.dielectric_test = DielectricTest()
-            self.resistance_test = ResistanceTest()
-            self.watertemp_test = WaterTempTest()
-            self.ambienttemp_test = AmbientTemperatureTest()
-            self.tankpressure_test = TankPressureTest()
-            self.powerandlowlight_test = PowerAndLowLightTest()
-            self.rtdcircuit_test = RTDCircuitTest()
-            self.heaterandpreheater_test = HeaterAndPreheaterTest()
-            self.brew_test = BrewTest()
-            self.serverretainer_test = ServerRetainerTest()
-            self.tea_test = TeaTest()
+                self.visualinspection_test = VisualInspectionTest()
+                self.lowwater_test = LowWaterTest()
+                self.watertemp_test = WaterTempTest()
+                self.ambienttemp_test = AmbientTemperatureTest()
+                self.tankpressure_test = TankPressureTest()
+                self.powerandlowlight_test = PowerAndLowLightTest()
+                self.rtdcircuit_test = RTDCircuitTest()
+                self.heaterandpreheater_test = HeaterAndPreheaterTest()
+                self.brew_test = BrewTest()
+                self.serverretainer_test = ServerRetainerTest()
+                self.tea_test = TeaTest()
+            except Exception as e:
+                print(f"Error while creating V.Inspect: {e}")
         elif modelNumber == "4810-28UG-00":
             self.runIndividualTests4810 = True
-            self.setMinimumSize(1150, 600)
+            self.setMinimumSize(1150, 700)
 
             self.dielectric_test = DielectricTest()
             self.resistance_test = ResistanceTest()
@@ -588,17 +593,12 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"Error while opening workorder file: {e}")
         if modelNumber == "11225-1":
-            self.resistance_test.ResistanceTestPath(test_path)
-            self.dielectric_test.DielectricTestPath(test_path)
-            self.watertemp_test.WaterTempTestPath(test_path)
-            self.ambienttemp_test.AmbientTempTestPath(test_path)
-            self.tankpressure_test.TankPressureTestPath(test_path)
-            self.powerandlowlight_test.PowerAndLowLightTestPath(test_path)
-            self.rtdcircuit_test.RTDCircuitTestPath(test_path)
-            self.heaterandpreheater_test.HeaterAndPreheaterTestPath(test_path)
-            self.brew_test.BrewTestPath(test_path)
-            self.serverretainer_test.ServerRetainerTestPath(test_path)
-            self.tea_test.TeaTestPath(test_path)
+            try:
+                self.visualinspection_test.VisualInspectionTestPath(test_path)
+                self.lowwater_test.LowWaterTestPath(test_path)
+
+            except Exception as e:
+                print(f"Error while setting test path: {e}")
         elif modelNumber == "4810-28UG-00":
             try:
                 self.resistance_test.ResistanceTestPath(test_path)
@@ -624,17 +624,18 @@ class MainWindow(QMainWindow):
                                 f"Technician Name: {self.techfield.currentText()}\n\n\n")
 
                     if modelNumber == "11225-1":
-                        file.write("Creating a 11225-1 Test File"
+                        try:
+                            file.write("Creating a 11225-1 Test File"
                                    "\n\n"
                                    "_Functional Tests_"
                                    "\n\n"
-                                   ">>Dielectric Test<<"
+                                   ">>Visual Inspection Test<<"
                                    "\n"
-                                   f"{self.dielectric_test.GetDielectricResults()}"
+                                   f"{self.visualinspection_test.GetVisualInspectionResults()}"
                                    "\n\n"
-                                   ">>Resistance Test<<"
+                                   ">>Low Water Test<<"
                                    "\n"
-                                   f"{self.resistance_test.GetResistanceResults()}"
+                                   f"{self.lowwater_test.GetLowWaterResults()}"
                                    "\n\n"
                                    ">>Water Supply Temperature Test<<"
                                    "\n"
@@ -672,6 +673,8 @@ class MainWindow(QMainWindow):
                                    "\n"
                                    f"{self.tea_test.GetTeaResults()}"
                                    )
+                        except Exception as e:
+                            print(f"Error while writing V.Inspect File: ")
                     elif modelNumber == "4810-28UG-00":
                         file.write("Creating a 4810-UG-00 Test File"
                                    "\n\n"
@@ -848,8 +851,8 @@ class MainWindow(QMainWindow):
         if modelNumber == "11225-1":
             try:
             #self.tabs.addTab(self, "11225")
-                self.tabs.addTab(QWidget(), "Visual Inspection")
-                self.tabs.addTab(QWidget(), "Low Water")
+                self.tabs.addTab(self.visualinspection_test, "Visual Inspection")
+                self.tabs.addTab(self.lowwater_test, "Low Water")
                 self.tabs.addTab(QWidget(), "Water Leaks")
                 self.tabs.addTab(QWidget(), "Heater Current")
                 self.tabs.addTab(QWidget(), "Hot Water Light")
@@ -923,7 +926,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    theme = "Default"
+    theme = ""
     try:
         with open(f"Themes/{theme}.qss", "r", encoding="utf-8") as f:
             app.setStyleSheet(f.read())

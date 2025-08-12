@@ -196,7 +196,7 @@ class BrewTest(QWidget):
 
                 if msg1.clickedButton() == pass_button:
                     result_line = f"Brew Interruption Test: "
-                    result_line += "\tPASS"
+                    result_line += "\t\t\t\t\t\t\t\t\t\tPASS"
                     self.insert_brew_result(result_line)
                     self.brew_passed[1] = True
                     self.brew_failed[1] = False
@@ -204,7 +204,7 @@ class BrewTest(QWidget):
                     self.current_brew_step += 1
                 elif msg1.clickedButton() == fail_button:
                     result_line = f"Brew Interruption Test: "
-                    result_line += "\tFAIL"
+                    result_line += "\t\t\t\t\t\t\t\t\t\tFAIL"
                     self.insert_brew_result(result_line)
                     self.brew_passed[1] = False
                     self.brew_failed[1] = True
@@ -221,7 +221,7 @@ class BrewTest(QWidget):
 
                 if msg1.clickedButton() == pass_button:
                     result_line = f"Brew Continuation Test: "
-                    result_line += "\tPASS"
+                    result_line += "\t\t\t\t\t\t\t\t\t\tPASS"
                     self.insert_brew_result(result_line)
                     self.brew_passed[2] = True
                     self.brew_failed[2] = False
@@ -229,7 +229,7 @@ class BrewTest(QWidget):
                     self.current_brew_step += 1
                 elif msg1.clickedButton() == fail_button:
                     result_line = f"Brew Continuation Test: "
-                    result_line += "\tFAIL"
+                    result_line += "\t\t\t\t\t\t\t\t\t\tFAIL"
                     self.insert_brew_result(result_line)
                     self.brew_passed[2] = False
                     self.brew_failed[2] = True
@@ -246,7 +246,7 @@ class BrewTest(QWidget):
 
                     if msg1.clickedButton() == pass_button:
                         result_line = f"Consecutive Brew Test: "
-                        result_line += "\tPASS"
+                        result_line += "\t\t\t\t\t\t\t\t\t\t\tPASS"
                         self.insert_brew_result(result_line)
                         self.brew_passed[3] = True
                         self.brew_failed[3] = False
@@ -255,7 +255,7 @@ class BrewTest(QWidget):
 
                     elif msg1.clickedButton() == fail_button:
                         result_line = f"Consecutive Brew Test: "
-                        result_line += "\tFAIL"
+                        result_line += "\t\t\t\t\t\t\t\t\t\t\tFAIL"
                         self.insert_brew_result(result_line)
                         self.brew_passed[3] = False
                         self.brew_failed[3] = True
@@ -278,17 +278,17 @@ class BrewTest(QWidget):
                         tempsystem = "°C"
                     else:
                         tempsystem = "°F"
-                    result_line = f"Brew Temperature Test : {value}{tempsystem} "
+                    result_line = f"Brew Temperature Test: {value}{tempsystem} "
                     if tempsystem == "°F":
                         if value >= 175 and value <= 195:
-                            result_line += "\tPASS"
+                            result_line += "\t\t\t\t\t\t\t\t\tPASS"
                         else:
-                            result_line += "\tFAIL"
+                            result_line += "\t\t\t\t\t\t\t\t\tFAIL"
                     elif tempsystem == "°C":
                         if value >= 79 and value <= 91:
-                            result_line += "\tPASS"
+                            result_line += "\t\t\t\t\t\t\t\t\tPASS"
                         else:
-                            result_line += "\tFAIL"
+                            result_line += "\t\t\t\t\t\t\t\t\tFAIL"
                     self.insert_brew_result(result_line)
                     print(f"User entered: {value} ")
                     self.brew_results += f"Brew Temperature Test Result: {value}\n"
@@ -307,7 +307,7 @@ class BrewTest(QWidget):
 
                         if msg1.clickedButton() == pass_button:
                             result_line = f"Power Indicator Test: "
-                            result_line += "\tPASS"
+                            result_line += "\t\t\t\t\t\t\t\t\t\t\tPASS"
                             self.insert_brew_result(result_line)
                             self.brew_passed[5] = True
                             self.brew_failed[5] = False
@@ -316,7 +316,7 @@ class BrewTest(QWidget):
                             self.current_brew_step += 1
                         elif msg1.clickedButton() == fail_button:
                             result_line = f"Power Indicator Test: "
-                            result_line += "\tPASS"
+                            result_line += "\t\t\t\t\t\t\t\t\t\t\tFAIL"
                             self.insert_brew_result(result_line)
                             self.brew_passed[5] = False
                             self.brew_failed[5] = True

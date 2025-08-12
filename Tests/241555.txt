@@ -1,0 +1,42 @@
+Workorder Number: 241555
+Unit Number: 11225-1
+Unit Serial Number: 32341
+Unit Part Number: 21341
+Technician Name: Carlos
+
+
+Creating a 11225-1 Test File
+
+_Functional Tests_
+
+>>Visual Inspection Test<<
+
+
+>>Resistance Test<<
+
+
+>>Water Supply Temperature Test<<
+
+
+>>Ambient Temperature Test<<
+
+
+>>Tank Pressure Test<<
+
+
+>>Power and Low Indicator Light Test<<
+
+
+>>RTD Test<<
+
+
+>>Tank Heater and Preheater Test<<
+
+
+>>Brew Test<<
+
+
+>>Server Retainer Test<<
+
+
+>>Tea Test<<

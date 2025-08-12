@@ -1,0 +1,349 @@
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QTabWidget,
+    QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog, QCheckBox
+)
+
+from PyQt6.QtCore import Qt
+
+#-------- temp phase
+phase1read = 0.36
+phase2read = 0.42
+phase3read = 0.39
+
+#------------------------------------------------------- VisualInspection Check
+
+class VisualInspectionTest(QWidget):
+
+    def __init__(self):
+        super().__init__()
+
+        self.visualinspection_results = ""
+        self.visualinspection_passed = [False, False, False, False, False, False]
+        self.visualinspection_failed = [False, False, False, False, False, False]
+        self.visualinspection_completed = False
+        self.current_visualinspection_step = 0
+
+        layout = QVBoxLayout()
+        #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        #layout.addSpacerItem(spacer)
+
+        self.visualinspectionlayout = QHBoxLayout()
+        self.visualinspectionlayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.visualinspectionlabellayout = QVBoxLayout()
+        self.visualinspectionlabellayout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.visualinspectionchecklayout = QVBoxLayout()
+        self.visualinspectionchecklayout.setContentsMargins(0, 0, 0, 0)
+        self.visualinspectionchecklayout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.visualinspectiontestbuttonlayout = QHBoxLayout()
+
+
+        self.visualinspectionlabel = QLabel(
+            "<b>1. Inspect Coffee Maker for physical damage and verify all parts are present and secure.<br>"
+            "   2. Inspect power connector P2 for damage, verify pins are straight and not excessively worn.<br>"
+            "   3. Inspect water inlet plug for damage and/or contamination.<br>"
+            "   4. Inspect bottom of Coffee Maker to verify all wires are properly tied, "
+            "   and that the Coffee Maker is free of obstruction to installation.<br>"
+            "   5. Check rail supports for straightness.<br>"
+            "   6. Check brew handle for proper operation.<br>"
+            "   7. Inspect switch lens caps for cracks, marks, or illegible printing.<br><br>"
+            "   Electrical Enclosure:<br>"
+            "   1. Check that all parts are present and undamaged.<br>"
+            "   2. Check terminal block attachments for tightness.<br>"
+            "   3. Check that wires are undamaged, secured and routed out of the way as much as possible.<br>"
+            "   4. Check connector J1 for damaged contacts and good solder joints.<br>"
+            "   5. Inspect relay socket for corrosion or overheated wires.<br>"
+            "   6. Check the circuit breaker CB1 for proper operation.</b><br>"
+            "<i></i><br><br>"
+            )
+
+        self.visualinspectionlabel.setTextFormat(Qt.TextFormat.RichText)
+        self.visualinspectionlabel.setWordWrap(True)
+        self.visualinspectionlabel.setStyleSheet("""
+                                    font-size: 18px;
+                                    padding-top: 45px;
+                                    padding-left: 50px;
+                                    padding-right: 50px;
+                                    padding-bottom: 50px;
+                                    """)
+        self.visualinspectionlabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+
+        self.checkList1 = QCheckBox()
+        self.checkList1.setStyleSheet("""
+                                padding-top: 55px;
+                                margin-bottom: 20px;
+                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList1)
+        self.checkList2 = QCheckBox()
+        self.checkList2.setStyleSheet("""
+                                        margin-bottom: 20px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList2)
+        self.checkList3 = QCheckBox()
+        self.checkList3.setStyleSheet("""
+                                        margin-bottom: 0px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList3)
+        self.checkList4 = QCheckBox()
+        self.checkList4.setStyleSheet("""
+                                        margin-bottom: 40px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList4)
+        self.checkList5 = QCheckBox()
+        self.checkList5.setStyleSheet("""
+                                        margin-bottom: 0px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList5)
+        self.checkList6 = QCheckBox()
+        self.checkList6.setStyleSheet("""
+                                        margin-bottom: 0px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList6)
+        self.checkList7 = QCheckBox()
+        self.checkList7.setStyleSheet("""
+                                        margin-bottom: 50px;
+                                        """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList7)
+        self.checkList8 = QCheckBox()
+        self.checkList8.setStyleSheet("""
+                                                margin-bottom: 0px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList8)
+        self.checkList9 = QCheckBox()
+        self.checkList9.setStyleSheet("""
+                                                margin-bottom: 0px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList9)
+        self.checkList10 = QCheckBox()
+        self.checkList10.setStyleSheet("""
+                                                margin-bottom: 30px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList10)
+        self.checkList11 = QCheckBox()
+        self.checkList11.setStyleSheet("""
+                                                margin-bottom: 0px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList11)
+        self.checkList12 = QCheckBox()
+        self.checkList12.setStyleSheet("""
+                                                margin-bottom: 0px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList12)
+        self.checkList13 = QCheckBox()
+        self.checkList13.setStyleSheet("""
+                                                margin-bottom: 0px;
+                                                """
+                                      )
+        self.visualinspectionchecklayout.addWidget(self.checkList13)
+
+
+        self.visualinspectionlabellayout.addWidget(self.visualinspectionlabel)
+
+        self.visualinspectionlayout.addLayout(self.visualinspectionlabellayout)
+        self.visualinspectionlayout.addLayout(self.visualinspectionchecklayout)
+
+
+        layout.addLayout(self.visualinspectionlayout)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addLayout(self.visualinspectiontestbuttonlayout)
+
+        self.adjustSize()
+
+        try:
+            self.visualinspectionbeginbutton = QPushButton("Submit Inspection")
+            self.visualinspectionbeginbutton.setFixedWidth(200)
+            self.visualinspectionbeginbutton.clicked.connect(self.VisualInspection)
+            self.visualinspectiontestbuttonlayout.addWidget(self.visualinspectionbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        except Exception as e:
+            print(f"Error while opening workorder: {e}")
+
+        # -------------------------------------------------------------------- Phase Readings
+        phaselayout = QHBoxLayout()
+
+        spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        layout.addSpacerItem(spacer1)
+
+        spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        phaselayout.addSpacerItem(spacer2)
+
+        phase1 = QLabel("Phase 1:")
+        phaselayout.addWidget(phase1)
+
+        phase1reading = QLabel(f"{phase1read}")
+        phaselayout.addWidget(phase1reading)
+
+        phase2 = QLabel("Phase 2:")
+        phaselayout.addWidget(phase2)
+
+        phase2reading = QLabel(f"{phase2read}")
+        phaselayout.addWidget(phase2reading)
+
+        phase3 = QLabel("Phase 3")
+        phaselayout.addWidget(phase3)
+
+        phase3reading = QLabel(f"{phase3read}")
+        phaselayout.addWidget(phase3reading)
+
+        layout.addLayout(phaselayout)
+
+        self.setLayout(layout)
+        #tabs.addTab(visualinspection, f"VisualInspection")
+
+    def VisualInspection(self):
+        try:
+            msg1 = QMessageBox()
+            #msg1.setIcon(QMessageBox.Icon.Information)
+
+            # STEP 1 — 4.5 mΩ
+
+
+
+            if self.current_visualinspection_step == 0:
+                if self.checkList1.isChecked() and self.checkList2.isChecked() and self.checkList3.isChecked() and self.checkList4.isChecked() and self.checkList5.isChecked() and self.checkList6.isChecked() \
+                    and self.checkList7.isChecked() and self.checkList8.isChecked() and self.checkList9.isChecked() and self.checkList10.isChecked() and self.checkList11.isChecked() \
+                    and self.checkList12.isChecked() and self.checkList13.isChecked():
+                    result_line = f"Visual Inspection:"
+                    result_line += "\t\t\t\t\t\t\t\t\t\t\t\t\t\tPASS"
+                else:
+                    result_line = f"Visual Inspection:"
+                    result_line += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tFAIL\n"
+
+                if not self.checkList1.isChecked():
+                    result_line += "Physical Damage or Missing Parts\n"
+
+                if not self.checkList3.isChecked():
+                    result_line += "Power Connector P2 Damage\n"
+
+                if not self.checkList3.isChecked():
+                    result_line += "Water Inlet Plug Damage\n"
+
+                if not self.checkList4.isChecked():
+                    result_line += "Improperly Tied Wiring\n"
+
+                if not self.checkList5.isChecked():
+                    result_line += "Bent Rail Supports\n"
+
+                if not self.checkList6.isChecked():
+                    result_line += "Brew Handle Damage\n"
+
+                if not self.checkList7.isChecked():
+                    result_line += "Switch Lens Damage\n"
+
+                if not self.checkList8.isChecked():
+                    result_line += "Electrical Enclosure Damage or Missing Parts\n"
+
+                if not self.checkList9.isChecked():
+                    result_line += "Loose Terminal Blocks\n"
+
+                if not self.checkList10.isChecked():
+                    result_line += "Damaged Electrical Enclosure Wiring\n"
+
+                if not self.checkList11.isChecked():
+                    result_line += "Connector J1 Damage\n"
+
+                if not self.checkList12.isChecked():
+                    result_line += "Relay Socket Damage or Corrosion\n"
+
+                if not self.checkList13.isChecked():
+                    result_line+= "Circuit Breaker CB1 Damage\n"
+
+                self.current_visualinspection_step += 1
+                self.insert_visualinspection_result(result_line)
+                msg1.setWindowTitle("Visual Inspection Results")
+                msg1.setText("Visual Inspection Results have been updated.")
+                msg1.exec()
+                self.updateVisualInspectionStep()
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def updateVisualInspectionStep(self):
+        if self.current_visualinspection_step == 1:
+            self.visualinspectionlabel.setText(
+                "<b>Step Complete.</b><br><br>"
+                "<i>Visual Inspection Step has been Completed Successfully.</i><br><br>"
+                )
+
+
+
+            while self.visualinspectionchecklayout.count():
+                child = self.visualinspectionchecklayout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+
+
+
+            self.visualinspectionbeginbutton.setText("Results")
+            self.visualinspectionbeginbutton.clicked.disconnect()
+            self.visualinspectionbeginbutton.clicked.connect(self.VisualInspectionResults)
+
+            self.visualinspectionrestart = QPushButton("Restart", self)
+            self.visualinspectionrestart.clicked.connect(self.VisualInspectionRestart)
+            self.visualinspectionrestart.setFixedWidth(200)
+            self.visualinspectiontestbuttonlayout.addWidget(self.visualinspectionrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def GetVisualInspectionResults(self):
+        return self.visualinspection_results
+
+    def VisualInspectionTestPath(self, path):
+        self.test_path = path
+
+    def insert_visualinspection_result(self, result_line: str):
+        try:
+            with open(self.test_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            header_index = -1
+            found_line_index = -1
+            test_id = result_line.split(":")[0].strip()  # e.g., "Resistance Test 2"
+
+            # Step 1: Find the Resistance Test section
+            for i, line in enumerate(lines):
+                if line.strip() == ">>Visual Inspection Test<<":
+                    header_index = i
+                    break
+
+            if header_index == -1:
+                print("Visual Inspection section not found.")
+                return
+
+            # Step 2: Search after the section header for a matching result line
+            for i in range(header_index + 1, len(lines)):
+                if lines[i].startswith(">>"):  # Stop at next section
+                    break
+                if lines[i].startswith(test_id):
+                    found_line_index = i
+                    break
+
+            if found_line_index != -1:
+                lines[found_line_index] = result_line + "\n"
+            else:
+                lines.insert(header_index + 1, result_line + "\n")
+
+            with open(self.test_path, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+
+            print(f"{test_id} written successfully.")
+
+        except Exception as e:
+            print(f"Error updating resistance result: {e}")
+
+    def VisualInspectionRestart(self):
+        print("Restarting VisualInspection Test")
+
+    def VisualInspectionResults(self):
+        print("Printing VisualInspection Test Results")

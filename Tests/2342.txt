@@ -1,0 +1,42 @@
+Workorder Number: 2342
+Unit Number: 4810-28UG-00
+Unit Serial Number: 242
+Unit Part Number: 242
+Technician Name: Carlos
+
+
+Creating a 4810-UG-00 Test File
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+
+>>Resistance Test<<
+
+
+>>Water Supply Temperature Test<<
+
+
+>>Ambient Temperature Test<<
+
+
+>>Tank Pressure Test<<
+
+
+>>Power and Low Indicator Light Test<<
+
+
+>>RTD Test<<
+
+
+>>Tank Heater and Preheater Test<<
+
+
+>>Brew Test<<
+
+
+>>Server Retainer Test<<
+
+
+>>Tea Test<<
