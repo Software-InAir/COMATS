@@ -1,21 +1,21 @@
-Workorder Number: 5665
-Unit Number: 4810-28UG-00
-Unit Serial Number: 6546
-Unit Part Number: 65464
-Technician Name: Carlos
+Workorder Number: 15414`
+Unit Number: 11225-1
+Unit Serial Number: 123421
+Unit Part Number: 124124
+Technician Name: Chase
 
 
-Creating a 4810-UG-00 Test File
+Creating a 11225-1 Test File
 
 _Functional Tests_
 
->>Dielectric Test<<
+>>Visual Inspection Test<<
 
 
->>Resistance Test<<
+>>Low Water Test<<
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
 
 
 >>Ambient Temperature Test<<

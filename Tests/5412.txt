@@ -1,8 +1,8 @@
-Workorder Number: 241555
+Workorder Number: 5412
 Unit Number: 11225-1
-Unit Serial Number: 32341
-Unit Part Number: 21341
-Technician Name: Carlos
+Unit Serial Number: 1234141
+Unit Part Number: 1241
+Technician Name: Chase
 
 
 Creating a 11225-1 Test File
@@ -12,10 +12,10 @@ _Functional Tests_
 >>Visual Inspection Test<<
 
 
->>Resistance Test<<
+>>Low Water Test<<
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
 
 
 >>Ambient Temperature Test<<

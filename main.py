@@ -15,8 +15,11 @@ from PyQt6.QtCore import Qt, pyqtSignal, QObject
 #from PyQt6.QtWidgets.QWidget import setWindowFlag
 
 from Dielectric import DielectricTest
+from HeatedWater import HeatedWaterTest
+from PowerInterrupt import PowerInterruptTest
 from Resistance import ResistanceTest
 from AmbientTemp import AmbientTemperatureTest
+from UnheatedWater import UnheatedWaterTest
 from WaterSupplyTemperature import WaterTempTest
 from TankPressure import TankPressureTest
 from ServerRetainer import ServerRetainerTest
@@ -27,6 +30,19 @@ from PowerAndLowLight import PowerAndLowLightTest
 from Tea import TeaTest
 from VisualInspection import VisualInspectionTest
 from LowWater import LowWaterTest
+from WaterLeaks import WaterLeaksTest
+from HeaterCurrent import HeaterCurrentTest
+from HotWaterLight import HotWaterLightTest
+from BrewBE import BrewBETest
+from Temperature import TemperatureTest
+from HeatedWater import HeatedWaterTest
+from UnheatedWater import UnheatedWaterTest
+from Lamp import LampTest
+from HotPlate import HotPlateTest
+from PowerInterrupt import PowerInterruptTest
+from BrewInterrupt import BrewInterruptTest
+from IREDMonitor import IREDMonitorTest
+from PressureReliefValve import PressureReliefValveTest
 
 """
 import pyvisa
@@ -559,17 +575,25 @@ class MainWindow(QMainWindow):
 
                 self.visualinspection_test = VisualInspectionTest()
                 self.lowwater_test = LowWaterTest()
+                self.waterleaks_test = WaterLeaksTest()
+                self.heatercurrent_test = HeaterCurrentTest()
+                self.hotwaterlight_test = HotWaterLightTest()
+                self.brewbe_test = BrewBETest()
                 self.watertemp_test = WaterTempTest()
+                self.temperature_test = TemperatureTest()
                 self.ambienttemp_test = AmbientTemperatureTest()
-                self.tankpressure_test = TankPressureTest()
-                self.powerandlowlight_test = PowerAndLowLightTest()
-                self.rtdcircuit_test = RTDCircuitTest()
-                self.heaterandpreheater_test = HeaterAndPreheaterTest()
-                self.brew_test = BrewTest()
-                self.serverretainer_test = ServerRetainerTest()
-                self.tea_test = TeaTest()
+                self.heatedwater_test = HeatedWaterTest()
+                self.unheatedwater_test = UnheatedWaterTest()
+                self.lamp_test = LampTest()
+                self.hotplate_test = HotPlateTest()
+                self.powerinterrupt_test = PowerInterruptTest()
+                self.brewinterrupt_test = BrewInterruptTest()
+                self.iredmonitor_test = IREDMonitorTest()
+                self.pressurereliefvalve_test = PressureReliefValveTest()
+
             except Exception as e:
                 print(f"Error while creating V.Inspect: {e}")
+
         elif modelNumber == "4810-28UG-00":
             self.runIndividualTests4810 = True
             self.setMinimumSize(1150, 700)
@@ -596,6 +620,17 @@ class MainWindow(QMainWindow):
             try:
                 self.visualinspection_test.VisualInspectionTestPath(test_path)
                 self.lowwater_test.LowWaterTestPath(test_path)
+                self.waterleaks_test.WaterLeaksTestPath(test_path)
+                self.heatercurrent_test.HeaterCurrentTestPath(test_path)
+                self.brewbe_test.BrewBETestPath(test_path)
+                self.temperature_test.TemperatureTestPath(test_path)
+                self.heatedwater_test.HeatedWaterTestPath(test_path)
+                self.unheatedwater_test.UnheatedWaterTestPath(test_path)
+                self.lamp_test.LampTestPath(test_path)
+                self.hotplate_test.HotPlateTestPath(test_path)
+                self.powerinterrupt_test.PowerInterruptTestPath(test_path)
+                self.brewinterrupt_test.BrewInterruptTestPath(test_path)
+                self.iredmonitor_test.IREDMonitorTestPath(test_path)
 
             except Exception as e:
                 print(f"Error while setting test path: {e}")
@@ -637,41 +672,56 @@ class MainWindow(QMainWindow):
                                    "\n"
                                    f"{self.lowwater_test.GetLowWaterResults()}"
                                    "\n\n"
-                                   ">>Water Supply Temperature Test<<"
+                                   ">>Water Leaks Inspection Test<<"
                                    "\n"
-                                   f"{self.watertemp_test.GetWaterTempResults()}"
+                                   f"{self.waterleaks_test.GetWaterLeaksResults()}"
                                    "\n\n"
-                                   ">>Ambient Temperature Test<<"
+                                   ">>Heater Current Test<<"
                                    "\n"
-                                   f"{self.ambienttemp_test.GetAmbientTempResults()}"
+                                   f"{self.heatercurrent_test.GetHeaterCurrentResults()}"
                                    "\n\n"
-                                   ">>Tank Pressure Test<<"
+                                   ">>Hot Water Light Test<<"
                                    "\n"
-                                   f"{self.tankpressure_test.GetTankPressureResults()}"
-                                   "\n\n"
-                                   ">>Power and Low Indicator Light Test<<"
-                                   "\n"
-                                   f"{self.powerandlowlight_test.GetPowerAndLowLightResults()}"
-                                   "\n\n"
-                                   ">>RTD Test<<"
-                                   "\n"
-                                   f"{self.rtdcircuit_test.GetRTDCircuitTestResults()}"
-                                   "\n\n"
-                                   ">>Tank Heater and Preheater Test<<"
-                                   "\n"
-                                   f"{self.heaterandpreheater_test.GetHeaterAndPreheaterResults()}"
+                                   f"{self.hotwaterlight_test.GetHotWaterLightPressureResults()}"
                                    "\n\n"
                                    ">>Brew Test<<"
                                    "\n"
-                                   f"{self.brew_test.GetBrewResults()}"
-                                   "\n\n"
-                                   ">>Server Retainer Test<<"
+                                   f"{self.brewbe_test.GetBrewBEResults()}"
+                                   "\n>>Temperature Test<<"
                                    "\n"
-                                   f"{self.serverretainer_test.GetServerRetainerResults()}"
+                                   f"{self.temperature_test.GetTemperatureTestResults()}"
                                    "\n\n"
-                                   ">>Tea Test<<"
+                                   ">>Heated Water Test<<"
                                    "\n"
-                                   f"{self.tea_test.GetTeaResults()}"
+                                   f"{self.heatedwater_test.GetHeatedWaterResults()}"
+                                   "\n\n"
+                                   ">>Unheated Water Test<<"
+                                   "\n"
+                                   f"{self.unheatedwater_test.GetUnheatedWaterResults()}"
+                                   "\n\n"
+                                   ">>Lamp Test<<"
+                                   "\n"
+                                   f"{self.lamp_test.GetLampResults()}"
+                                   "\n\n"
+                                   ">>Hot Plate Test<<"
+                                   "\n"
+                                   f"{self.hotplate_test.GetHotPlateResults()}"
+                                    "\n\n"
+                                    ">>Power Interrupt Test<<"
+                                    "\n"
+                                    f"{self.powerinterrupt_test.GetPowerInterruptResults()}"
+                                    "\n\n"
+                                    ">>Brew Interrupt Test<<"
+                                    "\n"
+                                    f"{self.brewinterrupt_test.GetBrewInterruptResults()}"
+                                    "\n\n"
+                                    ">>IRED Monitor Test<<"
+                                    "\n"
+                                    f"{self.iredmonitor_test.GetIREDMonitorResults()}"
+                                    "\n\n"
+                                    ">>Pressure Relief Valve Test<<"
+                                    "\n"
+                                    f"{self.pressurereliefvalve_test.GetPressureReliefValveResults()}"
                                    )
                         except Exception as e:
                             print(f"Error while writing V.Inspect File: ")
@@ -853,19 +903,19 @@ class MainWindow(QMainWindow):
             #self.tabs.addTab(self, "11225")
                 self.tabs.addTab(self.visualinspection_test, "Visual Inspection")
                 self.tabs.addTab(self.lowwater_test, "Low Water")
-                self.tabs.addTab(QWidget(), "Water Leaks")
-                self.tabs.addTab(QWidget(), "Heater Current")
-                self.tabs.addTab(QWidget(), "Hot Water Light")
-                self.tabs.addTab(QWidget(), "Brew")
-                self.tabs.addTab(QWidget(), "Temperature Test")
-                self.tabs.addTab(QWidget(), "Heater Water")
-                self.tabs.addTab(QWidget(), "Unheated Water")
-                self.tabs.addTab(QWidget(), "Lamp")
-                self.tabs.addTab(QWidget(), "Hot Plate")
-                self.tabs.addTab(QWidget(), "Power Interrupt")
-                self.tabs.addTab(QWidget(), "Brew Interrupt")
-                self.tabs.addTab(QWidget(), "IRED Monitor")
-                self.tabs.addTab(QWidget(), "Pressure Relief Valve")
+                self.tabs.addTab(self.waterleaks_test, "Water Leaks")
+                self.tabs.addTab(self.heatercurrent_test, "Heater Current")
+                self.tabs.addTab(self.hotwaterlight_test, "Hot Water Light")
+                self.tabs.addTab(self.brewbe_test, "Brew")
+                self.tabs.addTab(self.temperature_test, "Temperature Test")
+                self.tabs.addTab(self.heatedwater_test, "Heated Water")
+                self.tabs.addTab(self.unheatedwater_test, "Unheated Water")
+                self.tabs.addTab(self.lamp_test, "Lamp")
+                self.tabs.addTab(self.hotplate_test, "Hot Plate")
+                self.tabs.addTab(self.powerinterrupt_test, "Power Interrupt")
+                self.tabs.addTab(self.brewinterrupt_test, "Brew Interrupt")
+                self.tabs.addTab(self.iredmonitor_test, "IRED Monitor")
+                self.tabs.addTab(self.pressurereliefvalve_test, "Pressure Relief Valve")
 
                 #self.tabs.addTab(self.dielectric_test, f"Dielectric 11225")
                 #self.tabs.addTab(self.resistance_test, f"Resistance")

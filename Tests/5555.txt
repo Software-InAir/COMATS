@@ -1,8 +1,8 @@
-Workorder Number: 222
+Workorder Number: 5555
 Unit Number: 11225-1
-Unit Serial Number: 23242
-Unit Part Number: 2424
-Technician Name: Carlos
+Unit Serial Number: 5555
+Unit Part Number: 555
+Technician Name: Chase
 
 
 Creating a 11225-1 Test File
@@ -13,11 +13,10 @@ _Functional Tests_
 
 
 >>Low Water Test<<
-Phase A Amperage Test: 1.0										FAIL
-Low Water Indicator Light Test: 										PASS
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
+Water PSIG: 126.0 A	FAIL
 
 
 >>Ambient Temperature Test<<

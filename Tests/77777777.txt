@@ -1,8 +1,8 @@
-Workorder Number: 333
+Workorder Number: 77777777
 Unit Number: 11225-1
-Unit Serial Number: 12123
-Unit Part Number: 1213
-Technician Name: Carlos
+Unit Serial Number: 777
+Unit Part Number: 7777
+Technician Name: Chase
 
 
 Creating a 11225-1 Test File
@@ -13,11 +13,11 @@ _Functional Tests_
 
 
 >>Low Water Test<<
-Phase A Amperage Test: 1.3										FAIL
-Low Water Indicator Light Deactivate Test: 										PASS
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
+Water Leaks Inspection Test: 	PASS
+Water PSIG: 126.0 A	FAIL
 
 
 >>Ambient Temperature Test<<

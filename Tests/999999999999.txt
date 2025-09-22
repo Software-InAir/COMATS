@@ -1,21 +1,22 @@
-Workorder Number: 2344
+Workorder Number: 999999999999
 Unit Number: 11225-1
-Unit Serial Number: 823
-Unit Part Number: 222
-Technician Name: Carlos
+Unit Serial Number: 99999
+Unit Part Number: 9999
+Technician Name: Chase
 
 
 Creating a 11225-1 Test File
 
 _Functional Tests_
 
->>Dielectric Test<<
+>>Visual Inspection Test<<
 
 
->>Resistance Test<<
+>>Low Water Test<<
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
+Water PSIG: 126.0 A	FAIL
 
 
 >>Ambient Temperature Test<<

@@ -1,8 +1,8 @@
-Workorder Number: 001
+Workorder Number: 1
 Unit Number: 11225-1
-Unit Serial Number: 001
-Unit Part Number: 1111
-Technician Name: Chase
+Unit Serial Number: 1
+Unit Part Number: 1
+Technician Name: Carlos
 
 
 Creating a 11225-1 Test File
@@ -16,11 +16,14 @@ _Functional Tests_
 
 
 >>Water Leaks Inspection Test<<
-Water Leaks Inspection Test: 	PASS
-Water PSIG: 126.0 A	FAIL
 
 
->>Ambient Temperature Test<<
+>>Heater Current Test<<
+Phase C: 0.0 A	FAIL
+Phase B: 0.0 A	FAIL
+Phase A: 0.0 A	FAIL
+LOW Indicator Light Test: 	PASS
+Flow Meter Test: 	PASS
 
 
 >>Tank Pressure Test<<
@@ -36,6 +39,15 @@ Water PSIG: 126.0 A	FAIL
 
 
 >>Brew Test<<
+Water Level: 4.1 inches
+	FAIL
+	FAIL
+	FAIL
+Brew Cycle Duration: 240.0 seconds
+	FAIL
+	FAIL
+	FAIL
+	FAIL
 
 
 >>Server Retainer Test<<

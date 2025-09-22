@@ -181,8 +181,9 @@ class LowWaterTest(QWidget):
                     self.lowwater_failed[0] = True
                     result_line = f"ON/OFF and Low Water Indicator Light Test: "
                     result_line += "\t\t\t\t\t\t\t\t\t\tFAIL"
-                    self.updateLowWaterStep()
                     self.current_lowwater_step += 1
+                    self.updateLowWaterStep()
+
                     print(self.current_lowwater_step)
 
             # STEP 2 — 5.12 mΩ
@@ -199,16 +200,18 @@ class LowWaterTest(QWidget):
                     self.insert_lowwater_result(result_line)
                     self.lowwater_passed[1] = True
                     self.lowwater_failed[1] = False
-                    self.updateLowWaterStep()
                     self.current_lowwater_step += 1
+                    self.updateLowWaterStep()
+
                 elif msg1.clickedButton() == fail_button:
                     result_line = f"Low Water Indicator Test: "
                     result_line += "\t\t\t\t\t\t\t\t\t\tFAIL"
                     self.insert_lowwater_result(result_line)
                     self.lowwater_passed[1] = False
                     self.lowwater_failed[1] = True
-                    self.updateLowWaterStep()
                     self.current_lowwater_step += 1
+                    self.updateLowWaterStep()
+
 
             # STEP 3 — 5.7 mΩ
             elif self.current_lowwater_step == 2:
@@ -237,9 +240,41 @@ class LowWaterTest(QWidget):
                     self.insert_lowwater_result(result_line)
                     print(f"User entered: {value}")
                     self.lowwater_results += f"Phase A: {value} A\n"
-                    self.updateLowWaterStep()
                     self.current_lowwater_step += 1
+                    self.updateLowWaterStep()
                     self.lowwater_completed = True
+
+            elif self.current_lowwater_step == 3:
+                value, ok = QInputDialog.getDouble(
+                    self,
+                    "Check Phase B",
+                    "Please enter the amperage displayed on phase readings:",
+                    value=0.0,
+                    min=0.0,
+                    max=300.0,
+                    decimals=1
+                )
+
+                result_line = f"Phase A Amperage Test: {value}"
+
+                if ok:
+                    if value <= 0.1:
+                        result_line += "\t\t\t\t\t\t\t\t\t\t\t\tPASS"
+                        self.lowwater_passed[2] = True
+                        self.lowwater_failed[2] = False
+                    else:
+                        result_line += "\t\t\t\t\t\t\t\t\t\tFAIL"
+                        self.lowwater_passed[2] = False
+                        self.lowwater_failed[2] = True
+
+                    self.insert_lowwater_result(result_line)
+                    print(f"User entered: {value}")
+                    self.lowwater_results += f"Phase A: {value} A\n"
+                    self.current_lowwater_step += 1
+                    self.updateLowWaterStep()
+                    self.lowwater_completed = True
+
+
 
             # Completed
                 elif self.lowwater_completed:

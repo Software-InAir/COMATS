@@ -1,8 +1,8 @@
-Workorder Number: 111
+Workorder Number: 11
 Unit Number: 11225-1
-Unit Serial Number: 24242
-Unit Part Number: 
-Technician Name: Carlos
+Unit Serial Number: 111
+Unit Part Number: 111
+Technician Name: Chase
 
 
 Creating a 11225-1 Test File
@@ -12,10 +12,11 @@ _Functional Tests_
 >>Visual Inspection Test<<
 
 
->>Low Water<<
+>>Low Water Test<<
 
 
->>Water Supply Temperature Test<<
+>>Water Leaks Inspection Test<<
+Water PSIG: 126.0 A	FAIL
 
 
 >>Ambient Temperature Test<<
@@ -34,6 +35,9 @@ _Functional Tests_
 
 
 >>Brew Test<<
+Brew Cycle Duration: 240.0 seconds
+	FAIL
+	FAIL
 
 
 >>Server Retainer Test<<
