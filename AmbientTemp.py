@@ -24,9 +24,10 @@ class Worker(QObject):
 
 class AmbientTemperatureTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
         self.setMinimumSize(1200, 600)
+        self.instrument = instrument_worker
 
         self.ambienttemp_results = ""
         self.ambienttemp_passed = [False, False, False]

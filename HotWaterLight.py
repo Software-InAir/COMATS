@@ -24,8 +24,10 @@ class Worker(QObject):
 
 class HotWaterLightTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
+
+        self.instrument = instrument_worker
 
         self.hotwaterlight_results = ""
         self.hotwaterlight_passed = [False, False, False, False]

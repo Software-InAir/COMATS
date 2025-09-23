@@ -24,8 +24,10 @@ class Worker(QObject):
 
 class HeaterAndPreheaterTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
+
+        self.instrument = instrument_worker
 
         self.heaterandpreheater_results = ""
         self.heaterandpreheater_passed = [False, False, False]

@@ -23,8 +23,10 @@ class Worker(QObject):
 class DielectricTest(QWidget):
 
 
-        def __init__(self):
+        def __init__(self, instrument_worker: InstrumentWorker, parent=None):
                 super().__init__()
+
+                self.instrument = instrument_worker
 
                 #temp self.phase
                 self.phase1read = 0

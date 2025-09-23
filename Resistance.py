@@ -26,11 +26,12 @@ class ResistanceTest(QWidget):
     resistance_results = ""
 
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
 
         self.resistance_results = f""
 
+        self.instrument = instrument_worker
 
         self.resistance_passed = [False, False, False]
         self.resistance_failed = [False, False, False]

@@ -24,8 +24,10 @@ class Worker(QObject):
 
 class PowerAndLowLightTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
+
+        self.instrument = instrument_worker
 
         self.powerandlowlight_results = ""
         self.powerandlowlight_passed = [False, False, False, False, False]

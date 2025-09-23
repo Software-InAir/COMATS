@@ -23,8 +23,10 @@ class Worker(QObject):
 
 class BrewTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
+
+        self.instrument = instrument_worker
 
         self.brew_results = ""
         self.brew_passed = [False, False, False, False, False, False]
