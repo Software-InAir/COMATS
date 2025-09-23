@@ -3,19 +3,37 @@ from PyQt6.QtWidgets import (
     QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog, QCheckBox
 )
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QObject, pyqtSignal, QThread, pyqtSlot
 
-#-------- temp phase
-phase1read = 0.36
-phase2read = 0.42
-phase3read = 0.39
+from InstrumentWorker import InstrumentWorker
+
+
+
+
+
+class Worker(QObject):
+    finished = pyqtSignal()
+    ch1 = pyqtSignal(float)
+    ch2 = pyqtSignal(float)
+    ch3 = pyqtSignal(float)
+    status = pyqtSignal(str)
+
+
+
 
 #------------------------------------------------------- VisualInspection Check
 
 class VisualInspectionTest(QWidget):
 
-    def __init__(self):
+    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
         super().__init__()
+        self.instrument = instrument_worker
+
+
+        # -------- temp phase
+        self.phase1read = 0
+        self.phase2read = 0
+        self.phase3read = 0
 
         self.visualinspection_results = ""
         self.visualinspection_passed = [False, False, False, False, False, False]
@@ -172,36 +190,56 @@ class VisualInspectionTest(QWidget):
             print(f"Error while opening workorder: {e}")
 
         # -------------------------------------------------------------------- Phase Readings
-        phaselayout = QHBoxLayout()
+
+
+        self.phaselayout = QHBoxLayout()
 
         spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer1)
 
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        phaselayout.addSpacerItem(spacer2)
+        self.phaselayout.addSpacerItem(spacer2)
 
-        phase1 = QLabel("Phase 1:")
-        phaselayout.addWidget(phase1)
+        self.phase1 = QLabel("Phase 1:")
+        self.phaselayout.addWidget(self.phase1)
 
-        phase1reading = QLabel(f"{phase1read}")
-        phaselayout.addWidget(phase1reading)
+        self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phaselayout.addWidget(self.phase1reading)
 
-        phase2 = QLabel("Phase 2:")
-        phaselayout.addWidget(phase2)
+        self.phase2 = QLabel("Phase 2:")
+        self.phaselayout.addWidget(self.phase2)
 
-        phase2reading = QLabel(f"{phase2read}")
-        phaselayout.addWidget(phase2reading)
+        self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phaselayout.addWidget(self.phase2reading)
 
-        phase3 = QLabel("Phase 3")
-        phaselayout.addWidget(phase3)
+        self.phase3 = QLabel("Phase 3")
+        self.phaselayout.addWidget(self.phase3)
 
-        phase3reading = QLabel(f"{phase3read}")
-        phaselayout.addWidget(phase3reading)
+        self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phaselayout.addWidget(self.phase3reading)
 
-        layout.addLayout(phaselayout)
+        layout.addLayout(self.phaselayout)
+
 
         self.setLayout(layout)
+
+        self.instrument.ch1.connect(self.show_current1)
+        self.instrument.ch2.connect(self.show_current2)
+        self.instrument.ch3.connect(self.show_current3)
+
         #tabs.addTab(visualinspection, f"VisualInspection")
+
+    @pyqtSlot(float)
+    def show_current1(self, amps):
+        self.phase1.setText(f"Phase 1: {amps:.3f} A")
+
+    @pyqtSlot(float)
+    def show_current2(self, amps):
+        self.phase2.setText(f"Phase 2: {amps:.3f} A")
+
+    @pyqtSlot(float)
+    def show_current3(self, amps):
+        self.phase3.setText(f"Phase 3: {amps:.3f} A")
 
     def VisualInspection(self):
         try:

@@ -8,11 +8,12 @@ from PyQt6.QtWidgets import (
 )
 
 from PyQt6.QtWidgets import QTabBar
-from PyQt6.QtCore import QSize
-
+from PyQt6.QtCore import QSize, QThread, QTimer
 
 from PyQt6.QtCore import Qt, pyqtSignal, QObject
 #from PyQt6.QtWidgets.QWidget import setWindowFlag
+
+from InstrumentWorker import InstrumentWorker
 
 from Dielectric import DielectricTest
 from HeatedWater import HeatedWaterTest
@@ -44,24 +45,26 @@ from BrewInterrupt import BrewInterruptTest
 from IREDMonitor import IREDMonitorTest
 from PressureReliefValve import PressureReliefValveTest
 
-"""
+
 import pyvisa
 
+'''
 rm = pyvisa.ResourceManager()
 print(rm.list_resources())
-my_instrument = rm.open_resource('GPIB0::1::INSTR')
-print(my_instrument.write('inst:coup all'))
-print(my_instrument.write('curr 9.0'))
-print(my_instrument.write('curr:prot:stat 1'))
+my_instrument = rm.open_resource('GPIB0::3::INSTR')
+print(my_instrument.write('COUP DIRECT'))
+print(my_instrument.write('CURR:LIM 9.0'))
+print(my_instrument.write('PROT:STAT 1'))
+print(my_instrument.write('CURR:PROT:LEV 9.1'))
 
 
 
-print(my_instrument.write('outp 1'))
-print(my_instrument.write('volt 115'))
-print(my_instrument.write('freq 400'))
-print(my_instrument.query('outp?'))
+print(my_instrument.write('OUTP 1'))
+print(my_instrument.write('VOLT 115'))
+print(my_instrument.write('FREQ 400'))
+print(my_instrument.query('OUTP?'))
+'''
 """
-
 # === Worker class in a thread ===
 class Worker(QObject):
     finished = pyqtSignal()
@@ -73,7 +76,7 @@ class Worker(QObject):
             self.progress.emit(f"Working... {i + 1}/5")
             time.sleep(1)
         self.finished.emit()
-
+"""
 
 # === Main application window ===
 class MainWindow(QMainWindow):
@@ -122,12 +125,29 @@ class MainWindow(QMainWindow):
         self.welcome.setLayout(self.welcomeLayout)
 
 
-
         # Temporary Globals:
 
         global phase1read
         global phase2read
         global phase3read
+
+        self.inst_thread = QThread(self)
+        self.inst_worker = InstrumentWorker("GPIB0::3::INSTR", poll_ms=200)
+        self.inst_worker.moveToThread(self.inst_thread)
+
+        # lifecycle
+        self.inst_thread.started.connect(self.inst_worker.start)
+        self.inst_worker.finished.connect(self.inst_thread.quit)
+        self.inst_worker.finished.connect(self.inst_worker.deleteLater)
+        self.inst_thread.finished.connect(self.inst_thread.deleteLater)
+        self.inst_thread.start()
+
+
+        # when app quits, close instrument
+        QApplication.instance().aboutToQuit.connect(self.inst_worker.shutdown)
+
+        # --- Build tabs, pass the worker reference ---
+
 
         self.createNewWorkorder = False
         self.editExistingWorkorder = False
@@ -573,7 +593,7 @@ class MainWindow(QMainWindow):
                 self.runIndividualTests11225 = True
                 self.setMinimumSize(1150, 700)
 
-                self.visualinspection_test = VisualInspectionTest()
+                self.visualinspection_test = VisualInspectionTest(self.inst_worker)
                 self.lowwater_test = LowWaterTest()
                 self.waterleaks_test = WaterLeaksTest()
                 self.heatercurrent_test = HeaterCurrentTest()
@@ -614,6 +634,7 @@ class MainWindow(QMainWindow):
         try:
             workorder_file = f"{self.workordernumberfield.text()}.txt"
             test_path = os.path.join("Tests/", workorder_file)
+            print(test_path)
         except Exception as e:
             print(f"Error while opening workorder file: {e}")
         if modelNumber == "11225-1":
@@ -653,7 +674,7 @@ class MainWindow(QMainWindow):
             if not os.path.exists(test_path):
                 with open(f"{test_path}", "w") as file:
                     file.write(f"Workorder Number: {self.workordernumberfield.text()}\n"
-                            f"Unit Number: {self.workordermodelfield.currentText()}\n"
+                                f"Unit Number: {self.workordermodelfield.currentText()}\n"
                                 f"Unit Serial Number: {self.serialnumberfield.text()}\n"
                                 f"Unit Part Number: {self.unitpartnumberfield.text()}\n"
                                 f"Technician Name: {self.techfield.currentText()}\n\n\n")
