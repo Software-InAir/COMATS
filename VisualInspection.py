@@ -18,9 +18,6 @@ class Worker(QObject):
     ch3 = pyqtSignal(float)
     status = pyqtSignal(str)
 
-
-
-
 #------------------------------------------------------- VisualInspection Check
 
 class VisualInspectionTest(QWidget):

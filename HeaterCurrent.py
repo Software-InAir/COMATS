@@ -3,12 +3,22 @@ from PyQt6.QtWidgets import (
     QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
 
-#-------- temp phase
-phase1read = 0.36
-phase2read = 0.42
-phase3read = 0.39
+from InstrumentWorker import InstrumentWorker
+
+
+
+
+
+class Worker(QObject):
+    finished = pyqtSignal()
+    ch1 = pyqtSignal(float)
+    ch2 = pyqtSignal(float)
+    ch3 = pyqtSignal(float)
+    status = pyqtSignal(str)
+
+
 
 #------------------------------------------------------- HeaterCurrent Check
 
@@ -22,6 +32,11 @@ class HeaterCurrentTest(QWidget):
         self.heatercurrent_failed = [False, False, False, False]
         self.heatercurrent_completed = False
         self.current_heatercurrent_step = 0
+
+        # -------- temp self.phase
+        self.phase1read = 0
+        self.phase2read = 0
+        self.phase3read = 0
 
         layout = QVBoxLayout()
         spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -118,36 +133,48 @@ class HeaterCurrentTest(QWidget):
             print(f"Error while opening workorder: {e}")
 
         # -------------------------------------------------------------------- Phase Readings
-        phaselayout = QHBoxLayout()
+        self.phaselayout = QHBoxLayout()
 
         spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer1)
 
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        phaselayout.addSpacerItem(spacer2)
+        self.phaselayout.addSpacerItem(spacer2)
 
-        phase1 = QLabel("Phase 1:")
-        phaselayout.addWidget(phase1)
+        self.phase1 = QLabel("Phase 1:")
+        self.phaselayout.addWidget(self.phase1)
 
-        phase1reading = QLabel(f"{phase1read}")
-        phaselayout.addWidget(phase1reading)
+        self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phaselayout.addWidget(self.phase1reading)
 
-        phase2 = QLabel("Phase 2:")
-        phaselayout.addWidget(phase2)
+        self.phase2 = QLabel("Phase 2:")
+        self.phaselayout.addWidget(self.phase2)
 
-        phase2reading = QLabel(f"{phase2read}")
-        phaselayout.addWidget(phase2reading)
+        self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phaselayout.addWidget(self.phase2reading)
 
-        phase3 = QLabel("Phase 3")
-        phaselayout.addWidget(phase3)
+        self.phase3 = QLabel("Phase 3")
+        self.phaselayout.addWidget(self.phase3)
 
-        phase3reading = QLabel(f"{phase3read}")
-        phaselayout.addWidget(phase3reading)
+        self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phaselayout.addWidget(self.phase3reading)
 
-        layout.addLayout(phaselayout)
+        layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
         #tabs.addTab(heatercurrent, f"HeaterCurrent")
+
+    @pyqtSlot(float)
+    def show_current1(self, amps):
+        self.phase1.setText(f"Phase 1: {amps:.3f} A")
+
+    @pyqtSlot(float)
+    def show_current2(self, amps):
+        self.phase2.setText(f"Phase 2: {amps:.3f} A")
+
+    @pyqtSlot(float)
+    def show_current3(self, amps):
+        self.phase3.setText(f"Phase 3: {amps:.3f} A")
 
     def HeaterCurrent(self):
         try:
@@ -211,7 +238,7 @@ class HeaterCurrentTest(QWidget):
                     value1, ok = QInputDialog.getDouble(
                         self,
                         "Phase A",
-                        "Please enter the current of Phase A as displayed by the phase readings window.",
+                        "Please enter the current of Phase A as displayed by the self.phase readings window.",
                         decimals=2,
                         min=0.0,
                         max=50.0,
@@ -235,7 +262,7 @@ class HeaterCurrentTest(QWidget):
                             value1, ok = QInputDialog.getDouble(
                                 self,
                                 "Phase B",
-                                "Please enter the current of Phase B as displayed by the phase readings window.",
+                                "Please enter the current of Phase B as displayed by the self.phase readings window.",
                                 decimals=2,
                                 min=0.0,
                                 max=50.0,
@@ -261,7 +288,7 @@ class HeaterCurrentTest(QWidget):
                                     value1, ok = QInputDialog.getDouble(
                                         self,
                                         "Phase C",
-                                        "Please enter the current of Phase C as displayed by the phase readings window.",
+                                        "Please enter the current of Phase C as displayed by the self.phase readings window.",
                                         decimals=2,
                                         min=0.0,
                                         max=50.0,
@@ -312,7 +339,7 @@ class HeaterCurrentTest(QWidget):
             print("Update Heater Current Step")
             self.heatercurrentlabel.setText(
                 " <b>  Each heater should draw approximately 8±1 amps</b> <br><br>"
-                " <i>  Please enter the amperage of Phase A as displayed by the phase readings window </i><br><br>"
+                " <i>  Please enter the amperage of Phase A as displayed by the self.phase readings window </i><br><br>"
             )
             self.heatercurrentbeginbutton.setText("Continue")
             self.heatercurrentbeginbutton.clicked.disconnect()

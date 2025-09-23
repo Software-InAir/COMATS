@@ -3,7 +3,21 @@ from PyQt6.QtWidgets import (
         QPushButton, QLineEdit, QScrollArea, QMessageBox, QInputDialog
 )
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
+
+from InstrumentWorker import InstrumentWorker
+
+
+
+
+
+class Worker(QObject):
+    finished = pyqtSignal()
+    ch1 = pyqtSignal(float)
+    ch2 = pyqtSignal(float)
+    ch3 = pyqtSignal(float)
+    status = pyqtSignal(str)
+
 
 #-------------------------------------------------------- Dielectric Test
 class DielectricTest(QWidget):
@@ -12,10 +26,10 @@ class DielectricTest(QWidget):
         def __init__(self):
                 super().__init__()
 
-                #temp phase
-                phase1read = .47
-                phase2read = .39
-                phase3read = .26
+                #temp self.phase
+                self.phase1read = 0
+                self.phase2read = 0
+                self.phase3read = 0
 
                 self.dielectric_results = ""
 
@@ -137,39 +151,48 @@ class DielectricTest(QWidget):
                 #-------------------------------------------------------------------- Phase Readings
 
 
-                phaselayout = QHBoxLayout()
-                #phaselayout.setContentsMargins(0, 100, 0, 0)
+                self.phaselayout = QHBoxLayout()
+                #self.phaselayout.setContentsMargins(0, 100, 0, 0)
 
                 spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
                 layout.addSpacerItem(spacer1)
 
                 spacer2 = QSpacerItem(720, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-                phaselayout.addSpacerItem(spacer2)
+                self.phaselayout.addSpacerItem(spacer2)
 
 
 
-                phase1 = QLabel("Phase 1:")
-                phaselayout.addWidget(phase1)
+                self.phase1 = QLabel("Phase 1:")
+                self.phaselayout.addWidget(self.phase1)
 
-                phase1reading = QLabel(f"{phase1read}")
-                phaselayout.addWidget(phase1reading)
+                self.phase1reading = QLabel(f"{self.phase1read}")
+                self.phaselayout.addWidget(self.phase1reading)
 
-                phase2 = QLabel("Phase 2:")
-                phaselayout.addWidget(phase2)
+                self.phase2 = QLabel("Phase 2:")
+                self.phaselayout.addWidget(self.phase2)
 
-                phase2reading = QLabel(f"{phase2read}")
-                phaselayout.addWidget(phase2reading)
+                self.phase2reading = QLabel(f"{self.phase2read}")
+                self.phaselayout.addWidget(self.phase2reading)
 
-                phase3 = QLabel("Phase 3")
-                phaselayout.addWidget(phase3)
+                self.phase3 = QLabel("Phase 3")
+                self.phaselayout.addWidget(self.phase3)
 
-                phase3reading = QLabel(f"{phase3read}")
-                phaselayout.addWidget(phase3reading)
-
-
-
+                self.phase3reading = QLabel(f"{self.phase3read}")
+                self.phaselayout.addWidget(self.phase3reading)
 
                 self.setLayout(layout)
+
+        @pyqtSlot(float)
+        def show_current1(self, amps):
+                self.phase1.setText(f"Phase 1: {amps:.3f} A")
+
+        @pyqtSlot(float)
+        def show_current2(self, amps):
+                self.phase2.setText(f"Phase 2: {amps:.3f} A")
+
+        @pyqtSlot(float)
+        def show_current3(self, amps):
+                self.phase3.setText(f"Phase 3: {amps:.3f} A")
 
         def Dielectric(self):
                 try:
