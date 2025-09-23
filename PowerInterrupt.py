@@ -41,8 +41,8 @@ class PowerInterruptTest(QWidget):
         self.phase3read = 0.
 
         layout = QVBoxLayout()
-        spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        layout.addSpacerItem(spacer)
+        #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        #layout.addSpacerItem(spacer)
 
         self.powerinterruptlabellayout = QHBoxLayout()
         self.powerinterrupttestbuttonlayout = QHBoxLayout()
@@ -166,6 +166,10 @@ class PowerInterruptTest(QWidget):
 
         self.setLayout(layout)
         #tabs.addTab(powerinterrupt, f"PowerInterrupt")
+
+        self.instrument.ch1.connect(self.show_current1)
+        self.instrument.ch2.connect(self.show_current2)
+        self.instrument.ch3.connect(self.show_current3)
 
     @pyqtSlot(float)
     def show_current1(self, amps):

@@ -41,8 +41,8 @@ class HotPlateTest(QWidget):
         self.phase3read = 0
 
         layout = QVBoxLayout()
-        spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        layout.addSpacerItem(spacer)
+        #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        #layout.addSpacerItem(spacer)
 
         self.hotplatelabellayout = QHBoxLayout()
         self.hotplatetestbuttonlayout = QHBoxLayout()
@@ -165,6 +165,10 @@ class HotPlateTest(QWidget):
 
         self.setLayout(layout)
         #tabs.addTab(hotplate, f"HotPlate")
+
+        self.instrument.ch1.connect(self.show_current1)
+        self.instrument.ch2.connect(self.show_current2)
+        self.instrument.ch3.connect(self.show_current3)
 
     @pyqtSlot(float)
     def show_current1(self, amps):

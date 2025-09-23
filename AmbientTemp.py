@@ -41,12 +41,12 @@ class AmbientTemperatureTest(QWidget):
         self.phase3read = 0
 
         layout = QVBoxLayout()
-        spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        layout.addSpacerItem(spacer)
+        #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        #layout.addSpacerItem(spacer)
 
         self.ambientlabellayout = QHBoxLayout()
 
-        ambienttemptestbuttonlayout = QHBoxLayout()
+        self.ambienttemptestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -125,12 +125,12 @@ class AmbientTemperatureTest(QWidget):
 
         self.ambientlabellayout.addWidget(scroll)
         layout.addLayout(self.ambientlabellayout)
-        layout.addLayout(ambienttemptestbuttonlayout)
+        layout.addLayout(self.ambienttemptestbuttonlayout)
         try:
             self.ambienttempbeginbutton = QPushButton("Begin")
             self.ambienttempbeginbutton.setFixedWidth(200)
             self.ambienttempbeginbutton.clicked.connect(self.AmbientTemperature)
-            ambienttemptestbuttonlayout.addWidget(self.ambienttempbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.ambienttemptestbuttonlayout.addWidget(self.ambienttempbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
         except Exception as e:
             print(f"Error while opening workorder: {e}")
@@ -168,6 +168,10 @@ class AmbientTemperatureTest(QWidget):
 
         self.setLayout(layout)
         #tabs.addTab(ambienttemp, f"AmbientTemperature")
+
+        self.instrument.ch1.connect(self.show_current1)
+        self.instrument.ch2.connect(self.show_current2)
+        self.instrument.ch3.connect(self.show_current3)
 
     @pyqtSlot(float)
     def show_current1(self, amps):

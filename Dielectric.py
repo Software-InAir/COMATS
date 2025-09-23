@@ -41,10 +41,10 @@ class DielectricTest(QWidget):
                 self.current_dielectric_step = 0
 
                 layout = QVBoxLayout()
-                spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-                layout.addSpacerItem(spacer)
+                #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+                #layout.addSpacerItem(spacer)
 
-                layout.addStretch(1)
+                ##layout.addStretch(1)
                 
                 dielectric_results = "Some test results."
 
@@ -183,6 +183,10 @@ class DielectricTest(QWidget):
                 self.phaselayout.addWidget(self.phase3reading)
 
                 self.setLayout(layout)
+
+                self.instrument.ch1.connect(self.show_current1)
+                self.instrument.ch2.connect(self.show_current2)
+                self.instrument.ch3.connect(self.show_current3)
 
         @pyqtSlot(float)
         def show_current1(self, amps):

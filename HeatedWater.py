@@ -168,6 +168,10 @@ class HeatedWaterTest(QWidget):
         self.setLayout(layout)
         #tabs.addTab(heatedwater, f"HeatedWater")
 
+        self.instrument.ch1.connect(self.show_current1)
+        self.instrument.ch2.connect(self.show_current2)
+        self.instrument.ch3.connect(self.show_current3)
+
     @pyqtSlot(float)
     def show_current1(self, amps):
         self.phase1.setText(f"Phase 1: {amps:.3f} A")
