@@ -87,6 +87,8 @@ class MainWindow(QMainWindow):
         #self.setFixedSize(800, 600)
         #self.theme = "Themes/MinimalBlue.qss"
 
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
+
         self.welcome = QWidget()
         self.setCentralWidget(self.welcome)
         #self.showFullScreen()
@@ -174,10 +176,18 @@ class MainWindow(QMainWindow):
 
         self.settings = QPushButton("Settings")
         self.settings.setProperty("class", "small")
-        self.settings.setFixedWidth(10)
+        #self.settings.setFixedWidth(10)
         self.settings.setFixedHeight(30)
         self.settings.clicked.connect(self.Settings)
         self.footerLayout.addWidget(self.settings, alignment=Qt.AlignmentFlag.AlignLeft)
+
+
+
+        self.close = QPushButton("Exit")
+        self.close.setProperty("class", "small")
+        self.close.setFixedHeight(30)
+        self.close.clicked.connect(self.CloseWindow)
+        self.footerLayout.addWidget(self.close, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.version = QLabel("V. 2.0.1")
         self.version.setStyleSheet("""
@@ -494,6 +504,11 @@ class MainWindow(QMainWindow):
         self.settingsLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.settingsLayout.addLayout(self.optionsLayout)
         self.settingsLayout.addLayout(self.buttonLayout)
+
+    def CloseWindow(self):
+        print(my_instrument.write('OUTP 0'))
+        print(my_instrument.write('VOLT 0'))
+
 
 
     def ReturnToMain(self):
