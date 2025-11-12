@@ -48,7 +48,7 @@ from PressureReliefValve import PressureReliefValveTest
 
 import pyvisa
 
-'''
+
 rm = pyvisa.ResourceManager()
 print(rm.list_resources())
 my_instrument = rm.open_resource('GPIB0::3::INSTR')
@@ -63,7 +63,7 @@ print(my_instrument.write('OUTP 1'))
 print(my_instrument.write('VOLT 115'))
 print(my_instrument.write('FREQ 400'))
 print(my_instrument.query('OUTP?'))
-'''
+
 """
 # === Worker class in a thread ===
 class Worker(QObject):
@@ -181,14 +181,6 @@ class MainWindow(QMainWindow):
         self.settings.clicked.connect(self.Settings)
         self.footerLayout.addWidget(self.settings, alignment=Qt.AlignmentFlag.AlignLeft)
 
-
-
-        self.closebutton = QPushButton("Exit")
-        self.closebutton.setProperty("class", "small")
-        self.closebutton.setFixedHeight(30)
-        self.closebutton.clicked.connect(self.CloseWindow)
-        self.footerLayout.addWidget(self.closebutton, alignment=Qt.AlignmentFlag.AlignCenter)
-
         self.version = QLabel("V. 2.0.1")
         self.version.setStyleSheet("""
                             font-size:12px;
@@ -216,6 +208,11 @@ class MainWindow(QMainWindow):
         self.all = QPushButton("Run All Tests")
         self.all.clicked.connect(self.allClicked)
         self.welcomeLayout.addWidget(self.all) """
+
+    def closeEvent(self, event):
+        print(my_instrument.write('VOLT 0'))
+        print(my_instrument.query('OUTP 0'))
+
 
     def CreateNewWorkorder(self):
         try:
@@ -504,11 +501,6 @@ class MainWindow(QMainWindow):
         self.settingsLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.settingsLayout.addLayout(self.optionsLayout)
         self.settingsLayout.addLayout(self.buttonLayout)
-
-    def CloseWindow(self):
-        print(my_instrument.write('OUTP 0'))
-        print(my_instrument.write('VOLT 0'))
-        self.close()
 
 
 
