@@ -7,8 +7,12 @@ from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
 
+import pyvisa
 
 
+rm = pyvisa.ResourceManager()
+print(rm.list_resources())
+my_instrument = rm.open_resource('GPIB0::3::INSTR')
 
 
 class Worker(QObject):
@@ -140,6 +144,12 @@ class AmbientTemperatureTest(QWidget):
         # -------------------------------------------------------------------- Phase Readings
         self.phaselayout = QHBoxLayout()
 
+        self.closebutton = QPushButton("Exit")
+        self.closebutton.setProperty("class", "small")
+        self.closebutton.setFixedHeight(30)
+        self.closebutton.clicked.connect(self.CloseWindow)
+        self.phaseLayout.addWidget(self.closebutton, alignment=Qt.AlignmentFlag.AlignCenter)
+
         spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         layout.addSpacerItem(spacer1)
 
@@ -225,6 +235,11 @@ class AmbientTemperatureTest(QWidget):
 
         except Exception as e:
             print(f"Error: {e}")
+
+    def CloseWindow(self):
+        print(my_instrument.write('OUTP 0'))
+        print(my_instrument.write('VOLT 0'))
+        self.close()
 
     def updateAmbientTempStep(self):
 

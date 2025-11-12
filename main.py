@@ -183,11 +183,11 @@ class MainWindow(QMainWindow):
 
 
 
-        self.close = QPushButton("Exit")
-        self.close.setProperty("class", "small")
-        self.close.setFixedHeight(30)
-        self.close.clicked.connect(self.CloseWindow)
-        self.footerLayout.addWidget(self.close, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.closebutton = QPushButton("Exit")
+        self.closebutton.setProperty("class", "small")
+        self.closebutton.setFixedHeight(30)
+        self.closebutton.clicked.connect(self.CloseWindow)
+        self.footerLayout.addWidget(self.closebutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.version = QLabel("V. 2.0.1")
         self.version.setStyleSheet("""
@@ -508,6 +508,7 @@ class MainWindow(QMainWindow):
     def CloseWindow(self):
         print(my_instrument.write('OUTP 0'))
         print(my_instrument.write('VOLT 0'))
+        self.close()
 
 
 
