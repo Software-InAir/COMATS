@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
+
 import requests
 
 
@@ -110,8 +112,7 @@ class HotPlateTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.hotplatelabel = QLabel(
-            "<b>Press the HOT PLATE button and verify that the hot plate gets hot by touching temperature probe to hot plate. </b><br><br>"
-            "<i> The temperature should reach 130°F at minimum. </i><br><br>"
+            "<b>Press the HOT PLATE button and verify that the HOT PLATE indicator turns on.</b><br><br>"
         )
 
         self.hotplatelabel.setTextFormat(Qt.TextFormat.RichText)
@@ -148,28 +149,45 @@ class HotPlateTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(hotplate, f"HotPlate")
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -195,39 +213,39 @@ class HotPlateTest(QWidget):
                 # msg1.setIcon(QMessageBox.Icon.Information)
 
                 if self.current_hotplate_step == 1:
-                    value1, ok = QInputDialog.getDouble(
-                        self,
-                        "Hot Plate Temperature",
-                        "Please enter the temperature of the hot plate as displayed by the provided thermometer.",
-                        decimals=2,
-                        min=0.0,
-                        max=300.0,
-                        step=.01
-                    )
-                    self.hotplate_results += f""
-                    if ok:
-                        result_line = f"Hot Plate Temperature: {value1}°F \n"
-                        if value1 >= 130:
-                            result_line += "\tPASS"
-                            self.step_status["step1_hotplate_temp"] = {
-                                "status": "PASS",
-                                "value": value1
-                            }
-                            self.post_hotplate_snapshot()
-                            self.hotplate_passed[1] = True
-                            self.hotplate_failed[1] = False
-                        else:
-                            result_line += "\tFAIL"
-                            self.step_status["step1_hotplate_temp"] = {
-                                "status": "FAIL",
-                                "value": value1
-                            }
-                            self.post_hotplate_snapshot()
-                            self.hotplate_passed[1] = False
-                            self.hotplate_failed[1] = True
+                    msg1.setWindowTitle("Hot Plate Temperature")
+                    msg1.setText("Hot Plate Temperature reaches and/or exceeds 130 degrees.")
+                    pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
+                    fail_button = msg1.addButton("Fail", QMessageBox.ButtonRole.RejectRole)
+                    msg1.exec()
+
+                    if msg1.clickedButton() == pass_button:
+                        result_line = f"Hot Plate Temperature: "
+                        result_line += "\tPASS"
                         self.insert_hotplate_result(result_line)
-                        self.current_hotplate_step += 1
+                        self.step_status["step2_hotplate_temp"] = {
+                            "status": "PASS",
+                        }
+                        self.post_hotplate_snapshot()
+                        self.hotplate_passed[1] = True
+                        self.hotplate_failed[1] = False
+                        self.hotplate_completed = True
                         self.updateHotPlateStep()
+                        self.current_hotplate_step += 1
+                        self.hotplate_completed = True
+                    elif msg1.clickedButton() == fail_button:
+                        result_line = f"Hot Plate Temperature: "
+                        result_line += "\tFAIL"
+                        self.insert_hotplate_result(result_line)
+                        self.step_status["step1_hotplate_temp"] = {
+                            "status": "FAIL",
+                        }
+                        self.post_hotplate_snapshot()
+                        self.hotplate_passed[1] = False
+                        self.hotplate_failed[1] = True
+                        self.updateHotPlateStep()
+                        self.current_hotplate_step += 1
+                        self.hotplate_completed = True
 
 
                 elif self.current_hotplate_step == 0:
@@ -247,10 +265,9 @@ class HotPlateTest(QWidget):
                         self.post_hotplate_snapshot()
                         self.hotplate_passed[0] = True
                         self.hotplate_failed[0] = False
-                        self.hotplate_completed = True
                         self.updateHotPlateStep()
                         self.current_hotplate_step += 1
-                        self.hotplate_completed = True
+
                     elif msg1.clickedButton() == fail_button:
                         result_line = f"Hot Plate Indicator Light: "
                         result_line += "\tFAIL"
@@ -263,7 +280,7 @@ class HotPlateTest(QWidget):
                         self.hotplate_failed[0] = True
                         self.updateHotPlateStep()
                         self.current_hotplate_step += 1
-                        self.hotplate_completed = True
+
 
 
 
@@ -284,7 +301,8 @@ class HotPlateTest(QWidget):
         if self.hotplate_passed[0] or self.hotplate_failed[0]:
             print("Update Hot Plate Step")
             self.hotplatelabel.setText(
-                "<i>Verify that the HOT PLATE light comes on.</i> <br><br>"
+                "<b>Verify that the hot plate gets hot by touching temperature probe to hot plate. </b><br><br>"
+                "<i> The temperature should reach 130°F at minimum. </i><br><br>"
             )
             self.hotplatebeginbutton.setText("Continue")
             self.hotplatebeginbutton.clicked.disconnect()

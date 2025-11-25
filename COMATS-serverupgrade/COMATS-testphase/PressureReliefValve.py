@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
+
 import requests
 
 
@@ -155,28 +157,45 @@ class PressureReliefValveTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(pressurereliefvalve, f"PressureReliefValve")
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -201,14 +220,13 @@ class PressureReliefValveTest(QWidget):
             msg1 = QMessageBox()
 
             if self.current_pressurereliefvalve_step == 0:
-                value1, ok = QInputDialog.getDouble(
+                value1, ok = NumericKeypadDialog.getValue(
                     self,
                     "Pressure Relief Valve",
                     "Please enter the pressure with which the Pressure Relief Valve opens",
                     decimals=2,
-                    min=0.0,
-                    max=200.0,
-                    step=.01
+                    min_value=0.0,
+                    max_value=200.0,
                 )
                 self.pressurereliefvalve_results += f""
                 if ok:
@@ -271,14 +289,13 @@ class PressureReliefValveTest(QWidget):
 
 
             elif self.current_pressurereliefvalve_step == 2:
-                value1, ok = QInputDialog.getDouble(
+                value1, ok = NumericKeypadDialog.getValue(
                     self,
                     "Vented Relief Pressure",
                     "Please enter the pressure observed on PG2 after venting",
                     decimals=2,
-                    min=0.0,
-                    max=100.0,
-                    step=.01
+                    min_value=0.0,
+                    max_value=100.0,
                 )
                 self.pressurereliefvalve_results += f""
                 if ok:

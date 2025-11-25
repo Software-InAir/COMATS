@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
+
 import requests
 
 
@@ -152,28 +154,45 @@ class ResistanceTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(resistance, f"Resistance")
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -196,14 +215,13 @@ class ResistanceTest(QWidget):
             try:
                 # STEP 1 — 4.5 mΩ
                 if self.current_resistance_step == 0:
-                    value, ok = QInputDialog.getDouble(
+                    value, ok = NumericKeypadDialog.getValue(
                         self,
                         "Resistance Check",
                         "Please enter the resistance measurement in milliohms:",
                         decimals=3,
-                        min=0.0,
-                        max=100.0,
-                        step=0.01
+                        min_value=0.0,
+                        max_value=100.0,
                     )
 
                     if ok:
@@ -239,14 +257,13 @@ class ResistanceTest(QWidget):
 
                 # STEP 2 — 5.12 mΩ
                 elif self.current_resistance_step == 1:
-                    value, ok = QInputDialog.getDouble(
+                    value, ok = NumericKeypadDialog.getValue(
                         self,
                         "Resistance Check",
                         "Please enter the resistance measurement in milliohms:",
                         decimals=3,
-                        min=0.0,
-                        max=100.0,
-                        step=0.01
+                        min_value=0.0,
+                        max_value=100.0,
                     )
                     test2_results = value
                     self.resistance_results += f"Test {self.current_resistance_step + 1} Result: {value} mOhms\n"
@@ -280,14 +297,13 @@ class ResistanceTest(QWidget):
 
                 # STEP 3 — 5.7 mΩ
                 elif self.current_resistance_step == 2:
-                    value, ok = QInputDialog.getDouble(
+                    value, ok = NumericKeypadDialog.getValue(
                         self,
                         "Resistance Check",
                         "Please enter the resistance measurement in milliohms:",
                         decimals=3,
-                        min=0.0,
-                        max=100.0,
-                        step=0.01
+                        min_value=0.0,
+                        max_value=100.0,
                     )
                     test3_results = value
                     self.resistance_results += f"Test {self.current_resistance_step + 1} Result: {value} mOhms\n"

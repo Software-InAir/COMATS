@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
+
 import requests
 
 
@@ -153,28 +155,45 @@ class HeaterAndPreheaterTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(heaterandpreheater, f"HeaterAndPreheater")
 
 
         if self.instrument is not None:
@@ -200,14 +219,14 @@ class HeaterAndPreheaterTest(QWidget):
             # msg1.setIcon(QMessageBox.Icon.Information)
 
             if self.current_heaterandpreheater_step == 0:
-                value1, ok = QInputDialog.getDouble(
+                value1, ok = NumericKeypadDialog.getValue(
                     self,
                     "Phase A Check",
                     "Please enter the current measurement for Phase A in amperes:",
                     decimals=1,
-                    min=0.0,
-                    max=100.0,
-                    step=0.01
+                    min_value=0.0,
+                    max_value=100.0,
+
                 )
                 self.heaterandpreheater_results += f"Phase A current: {value1} A\n"
                 if ok:
@@ -228,14 +247,13 @@ class HeaterAndPreheaterTest(QWidget):
                         self.post_heaterandpreheater_snapshot()
                     self.insert_heaterandpreheater_result(result_line)
 
-                    value2, ok = QInputDialog.getDouble(
+                    value2, ok = NumericKeypadDialog.getValue(
                         self,
                         "Phase B Check",
                         "Please enter the current measurement for Phase B in amperes:",
                         decimals=1,
-                        min=0.0,
-                        max=100.0,
-                        step=0.01
+                        min_value=0.0,
+                        max_value=100.0,
                     )
                     self.heaterandpreheater_results += f"Phase B current: {value2} A\n"
                     if ok:
@@ -256,14 +274,13 @@ class HeaterAndPreheaterTest(QWidget):
                             self.post_heaterandpreheater_snapshot()
                         self.insert_heaterandpreheater_result(result_line)
 
-                        value3, ok = QInputDialog.getDouble(
+                        value3, ok = NumericKeypadDialog.getValue(
                             self,
                             "Phase C Check",
                             "Please enter the current measurement for Phase C in amperes:",
                             decimals=1,
-                            min=0.0,
-                            max=100.0,
-                            step=0.01
+                            min_value=0.0,
+                            max_value=100.0,
                         )
                         self.heaterandpreheater_results += f"Phase C current: {value3} A\n"
                         if ok:

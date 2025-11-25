@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
 
 import requests
 
@@ -150,28 +151,45 @@ class BrewInterruptTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(brewinterrupt, f"BrewInterrupt")
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -228,14 +246,13 @@ class BrewInterruptTest(QWidget):
 
 
             elif self.current_brewinterrupt_step == 1:
-                value1, ok = QInputDialog.getDouble(
+                value1, ok = NumericKeypadDialog.getValue(
                     self,
                     "Brew Flow",
                     "Please enter the flow rate indicated on FM",
                     decimals=2,
-                    min=0.0,
-                    max=200.0,
-                    step=.01
+                    min_value=0.0,
+                    max_value=200.0,
                 )
                 self.brewinterrupt_results += f""
                 if ok:

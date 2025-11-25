@@ -7,6 +7,8 @@ from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
+
 import requests
 
 
@@ -159,28 +161,45 @@ class BrewTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(brew, f"Brew")
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -335,13 +354,13 @@ class BrewTest(QWidget):
 
                         # STEP 3 — 5.7 mΩ
             elif self.current_brew_step == 4:
-                value, ok = QInputDialog.getDouble(
+                value, ok = NumericKeypadDialog.getValue(
                     self,
                     "Check Temperature",
                     "Please enter the temperature displayed on provided thermometer:",
-                    value=175.0,
-                    min=0.0,
-                    max=300.0,
+                    initial=0,
+                    min_value=0.0,
+                    max_value=300.0,
                     decimals=1
                 )
                 if ok:

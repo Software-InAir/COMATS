@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt, pyqtSlot, QObject, pyqtSignal
 
 from InstrumentWorker import InstrumentWorker
 
+from NumPad import NumericKeypadDialog
 import requests
 
 
@@ -71,7 +72,7 @@ class HeaterCurrentTest(QWidget):
                     QScrollBar::handle:vertical {
                         background: #999;
                         border-radius: 6px;
-                        min-height: 20px;
+                        min_value-height: 20px;
                     }
 
                     QScrollBar::add-line:vertical,
@@ -93,7 +94,7 @@ class HeaterCurrentTest(QWidget):
                     QScrollBar::handle:horizontal {
                         background: #999;
                         border-radius: 6px;
-                        min-width: 20px;
+                        min_value-width: 20px;
                     }
 
                     QScrollBar::add-line:horizontal,
@@ -149,28 +150,46 @@ class HeaterCurrentTest(QWidget):
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.phaselayout.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase 1:")
+        self.phase1 = QLabel("Phase A:")
+        self.phase1.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase1)
 
         self.phase1reading = QLabel(f"{self.phase1read}")
+        self.phase1reading.setStyleSheet("""
+                                        font: 24px;
+                                        """)
         self.phaselayout.addWidget(self.phase1reading)
 
-        self.phase2 = QLabel("Phase 2:")
+        self.phase2 = QLabel("  Phase B:")
+        self.phase2.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase2)
 
         self.phase2reading = QLabel(f"{self.phase2read}")
+        self.phase2reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase2reading)
 
-        self.phase3 = QLabel("Phase 3")
+        self.phase3 = QLabel("  Phase C:")
+        self.phase3.setStyleSheet("""
+                                                        font: 24px;
+                                                        """)
         self.phaselayout.addWidget(self.phase3)
 
         self.phase3reading = QLabel(f"{self.phase3read}")
+        self.phase3reading.setStyleSheet("""
+                                                font: 24px;
+                                                """)
         self.phaselayout.addWidget(self.phase3reading)
 
         layout.addLayout(self.phaselayout)
 
         self.setLayout(layout)
-        #tabs.addTab(heatercurrent, f"HeaterCurrent")
+
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
             self.instrument.ch2.connect(self.show_current2)
@@ -263,14 +282,13 @@ class HeaterCurrentTest(QWidget):
                 # msg1.setIcon(QMessageBox.Icon.Information)
 
                 if self.current_heatercurrent_step == 2:
-                    value1, ok = QInputDialog.getDouble(
+                    value1, ok = NumericKeypadDialog.getValue(
                         self,
                         "Phase A",
                         "Please enter the current of Phase A as displayed by the self.phase readings window.",
                         decimals=2,
-                        min=0.0,
-                        max=50.0,
-                        step=.01
+                        min_value=0.0,
+                       max_value=50.0,
                     )
                     self.heatercurrent_results += f"Phase A: {value1} A\n"
                     if ok:
@@ -298,14 +316,13 @@ class HeaterCurrentTest(QWidget):
                         self.current_heatercurrent_step += 1
 
                         if self.current_heatercurrent_step == 3:
-                            value1, ok = QInputDialog.getDouble(
+                            value1, ok = NumericKeypadDialog.getValue(
                                 self,
                                 "Phase B",
                                 "Please enter the current of Phase B as displayed by the self.phase readings window.",
                                 decimals=2,
-                                min=0.0,
-                                max=50.0,
-                                step=.01
+                                min_value=0.0,
+                               max_value=50.0,
                             )
                             self.heatercurrent_results += f"Phase B: {value1} A\n"
                             if ok:
@@ -334,14 +351,14 @@ class HeaterCurrentTest(QWidget):
 
 
                                 if self.current_heatercurrent_step == 4:
-                                    value1, ok = QInputDialog.getDouble(
+                                    value1, ok = NumericKeypadDialog.getValue(
                                         self,
                                         "Phase C",
                                         "Please enter the current of Phase C as displayed by the self.phase readings window.",
                                         decimals=2,
-                                        min=0.0,
-                                        max=50.0,
-                                        step=.01
+                                        min_value=0.0,
+                                        max_value=50.0,
+
                                     )
                                     self.heatercurrent_results += f"Phase C: {value1} A\n"
                                     if ok:
