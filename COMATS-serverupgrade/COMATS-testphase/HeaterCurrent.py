@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class HeaterCurrentTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -417,6 +418,16 @@ class HeaterCurrentTest(QWidget):
             self.heatercurrentrestart.clicked.connect(self.HeaterCurrentRestart)
             self.heatercurrentrestart.setFixedWidth(200)
             self.heatercurrenttestbuttonlayout.addWidget(self.heatercurrentrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.heatercurrentnext = QPushButton("Next", self)
+            self.heatercurrentnext.clicked.connect(self.HeaterCurrentNext)
+            self.heatercurrentnext.setFixedWidth(200)
+            self.heatercurrenttestbuttonlayout.addWidget(self.heatercurrentnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def HeaterCurrentNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetHeaterCurrentResults(self):
         return self.heatercurrent_results

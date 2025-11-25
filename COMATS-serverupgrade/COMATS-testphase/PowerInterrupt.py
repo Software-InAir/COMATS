@@ -23,10 +23,11 @@ class Worker(QObject):
 
 class PowerInterruptTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -276,6 +277,16 @@ class PowerInterruptTest(QWidget):
             self.powerinterruptrestart.clicked.connect(self.PowerInterruptRestart)
             self.powerinterruptrestart.setFixedWidth(200)
             self.powerinterrupttestbuttonlayout.addWidget(self.powerinterruptrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.powerinterruptnext = QPushButton("Next", self)
+            self.powerinterruptnext.clicked.connect(self.PowerInterruptNext)
+            self.powerinterruptnext.setFixedWidth(200)
+            self.powerinterrupttestbuttonlayout.addWidget(self.powerinterruptnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def PowerInterruptNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetPowerInterruptResults(self):
         return self.powerinterrupt_results

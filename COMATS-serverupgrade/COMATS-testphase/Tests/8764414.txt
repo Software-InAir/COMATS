@@ -1,0 +1,73 @@
+Workorder Number: 8764414
+Unit Number: 11225-1
+Unit Serial Number: 2625
+Unit Part Number: 2452
+Technician Name: Carlos
+
+
+Creating a 11225-1 Test File
+
+_Functional Tests_
+
+>>Visual Inspection Test<<
+
+>>Low Water Test<<
+
+>>Water Leaks Inspection Test<<
+
+>>Heater Current Test<<
+Phase C: 0.0 A	FAIL
+Phase B: 0.0 A	FAIL
+Phase A: 0.0 A	FAIL
+LOW Indicator Light Test: 	PASS
+Flow Meter Test: 	PASS
+
+>>Hot Water Light Test<<
+Hot Water Light Test: 	PASS
+
+>>Brew Test<<
+Water Level: 0.0 inches
+	FAIL
+Brew Cycle Duration: 0.0 seconds
+	FAIL
+
+>>Temperature Test<<
+Server Temperature: 0.0°F
+	FAIL
+Brew Cup Temperature: 0.0°F 
+	FAIL
+
+>>Heated Water Test<<
+Heated Water Flow Rate: 0.0GPM 
+	FAIL
+
+>>Unheated Water Test<<
+Unheated Water Flow Rate: 0.0GPM 
+	FAIL
+
+>>Lamp Test<<
+Lamp Test: 	PASS
+
+>>Hot Plate Test<<
+Hot Plate Indicator Light: 	PASS
+Hot Plate Temperature: 0.0°F 
+	FAIL
+
+>>Power Interrupt Test<<
+Power Interrupt Test: 	PASS
+
+>>Brew Interrupt Test<<
+Brew Flow: 0.0GPM 
+	PASS
+Brew Interrupt Test: 	PASS
+
+>>IRED Monitor Test<<
+IRED Monitor Test: 	PASS
+
+>>Pressure Relief Valve Test<<
+Vented Pressure: 0.0 PSIG 
+	PASS
+Pressure Relief Valve Leak Check: 	PASS
+Pressure Relief Valve Operational Pressure: 0.0 PSIG 
+	FAIL
+

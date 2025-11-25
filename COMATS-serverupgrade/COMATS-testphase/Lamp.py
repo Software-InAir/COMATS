@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class LampTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -256,6 +257,16 @@ class LampTest(QWidget):
             self.lamprestart.clicked.connect(self.LampRestart)
             self.lamprestart.setFixedWidth(200)
             self.lamptestbuttonlayout.addWidget(self.lamprestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.lampnext = QPushButton("Next", self)
+            self.lampnext.clicked.connect(self.LampNext)
+            self.lampnext.setFixedWidth(200)
+            self.lamptestbuttonlayout.addWidget(self.lampnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def LampNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetLampResults(self):
         return self.lamp_results

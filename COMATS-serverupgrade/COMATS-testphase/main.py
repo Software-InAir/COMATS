@@ -232,7 +232,7 @@ class MainWindow(QMainWindow):
                             }
                         """)
             self.workordermodelfield.addItem("11225-1")
-            self.workordermodelfield.addItem("4810-28UG-00")
+            self.workordermodelfield.addItem("4510-28UG-00")
             wofieldlayout.addWidget(self.workordermodelfield)
 
             self.serialnumber = QLabel("Unit Serial Number:  ")
@@ -513,7 +513,7 @@ class MainWindow(QMainWindow):
                           )
             if modelNumber == "11225-1":
                 model_code = "MODEL_A"
-            elif modelNumber == "4810-28UG-00":
+            elif modelNumber == "4510-28UG-00":
                 model_code = "MODEL_B"
 
             payload = {
@@ -535,123 +535,125 @@ class MainWindow(QMainWindow):
             print(f"Error creating test with API: {e}")
             self.current_test_id = None
 
+            # Create QTabWidget
+
+        try:
+            self.tabs = QTabWidget()
+            self.setCentralWidget(self.tabs)
+        except Exception as e:
+            print(f"error opening wo: {e}")
+
         if modelNumber == "11225-1":
             try:
                 self.setMinimumSize(1150, 700)
 
-                self.visualinspection_test = VisualInspectionTest(self.inst_worker)
+                self.visualinspection_test = VisualInspectionTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.visualinspection_test, "set_test_context"
                 ):
                     self.visualinspection_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.lowwater_test = LowWaterTest(self.inst_worker)
+                self.lowwater_test = LowWaterTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.lowwater_test, "set_test_context"
                 ):
                     self.lowwater_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.waterleaks_test = WaterLeaksTest(self.inst_worker)
+                self.waterleaks_test = WaterLeaksTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.waterleaks_test, "set_test_context"
                 ):
                     self.waterleaks_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.heatercurrent_test = HeaterCurrentTest(self.inst_worker)
+                self.heatercurrent_test = HeaterCurrentTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.heatercurrent_test, "set_test_context"
                 ):
                     self.heatercurrent_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.hotwaterlight_test = HotWaterLightTest(self.inst_worker)
+                self.hotwaterlight_test = HotWaterLightTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.hotwaterlight_test, "set_test_context"
                 ):
                     self.hotwaterlight_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.brewbe_test = BrewBETest(self.inst_worker)
+                self.brewbe_test = BrewBETest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.brewbe_test, "set_test_context"
                 ):
                     self.brewbe_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.watertemp_test = WaterTempTest(self.inst_worker)
+                self.watertemp_test = WaterTempTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.watertemp_test, "set_test_context"
                 ):
                     self.watertemp_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.temperature_test = TemperatureTest(self.inst_worker)
+                self.temperature_test = TemperatureTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.temperature_test, "set_test_context"
                 ):
                     self.temperature_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.ambienttemp_test = AmbientTemperatureTest(self.inst_worker)
+                self.ambienttemp_test = AmbientTemperatureTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.ambienttemp_test, "set_test_context"
                 ):
                     self.ambienttemp_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.heatedwater_test = HeatedWaterTest(self.inst_worker)
+                self.heatedwater_test = HeatedWaterTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.heatedwater_test, "set_test_context"
                 ):
                     self.heatedwater_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.unheatedwater_test = UnheatedWaterTest(self.inst_worker)
-                if self.current_test_id is not None and hasattr(
-                    self.unheatedwater_test, "set_test_context"
-                ):
-                    self.unheatedwater_test.set_test_context(
-                        self.current_test_id, self.api_base_url
-                )
-                self.lamp_test = LampTest(self.inst_worker)
+
+                self.lamp_test = LampTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.lamp_test, "set_test_context"
                 ):
                     self.lamp_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.hotplate_test = HotPlateTest(self.inst_worker)
+                self.hotplate_test = HotPlateTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.hotplate_test, "set_test_context"
                 ):
                     self.hotplate_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.powerinterrupt_test = PowerInterruptTest(self.inst_worker)
+                self.powerinterrupt_test = PowerInterruptTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.powerinterrupt_test, "set_test_context"
                 ):
                     self.powerinterrupt_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.brewinterrupt_test = BrewInterruptTest(self.inst_worker)
+                self.brewinterrupt_test = BrewInterruptTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                     self.brewinterrupt_test, "set_test_context"
                 ):
                     self.brewinterrupt_test.set_test_context(
                         self.current_test_id, self.api_base_url
                 )
-                self.iredmonitor_test = IREDMonitorTest(self.inst_worker)
+                self.iredmonitor_test = IREDMonitorTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.iredmonitor_test, "set_test_context"
                 ):
                     self.iredmonitor_test.set_test_context(
                         self.current_test_id, self.api_base_url
                     )
-                self.pressurereliefvalve_test = PressureReliefValveTest(self.inst_worker)
+                self.pressurereliefvalve_test = PressureReliefValveTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.pressurereliefvalve_test, "set_test_context"
                 ):
@@ -662,11 +664,11 @@ class MainWindow(QMainWindow):
                 print(f"Error while creating V.Inspect: {e}")
                 traceback.print_exc()
 
-        elif modelNumber == "4810-28UG-00":
+        elif modelNumber == "4510-28UG-00":
             try:
                 self.setMinimumSize(1150, 700)
 
-                self.dielectric_test = DielectricTest(self.inst_worker)
+                self.dielectric_test = DielectricTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.dielectric_test, "set_test_context"
                 ):
@@ -675,7 +677,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Dielectric")
 
-                self.resistance_test = ResistanceTest(self.inst_worker)
+                self.resistance_test = ResistanceTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.resistance_test, "set_test_context"
                 ):
@@ -684,7 +686,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Resistance")
 
-                self.watertemp_test = WaterTempTest(self.inst_worker)
+                self.watertemp_test = WaterTempTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.watertemp_test, "set_test_context"
                 ):
@@ -693,7 +695,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Water Temp")
 
-                self.ambienttemp_test = AmbientTemperatureTest(self.inst_worker)
+                self.ambienttemp_test = AmbientTemperatureTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.ambienttemp_test, "set_test_context"
                 ):
@@ -702,7 +704,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Resistance")
 
-                self.tankpressure_test = TankPressureTest(self.inst_worker)
+                self.tankpressure_test = TankPressureTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.tankpressure_test, "set_test_context"
                 ):
@@ -711,7 +713,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Tank Pressure")
 
-                self.powerandlowlight_test = PowerAndLowLightTest(self.inst_worker)
+                self.powerandlowlight_test = PowerAndLowLightTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.powerandlowlight_test, "set_test_context"
                 ):
@@ -720,7 +722,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Power and Low Light")
 
-                self.rtdcircuit_test = RTDCircuitTest(self.inst_worker)
+                self.rtdcircuit_test = RTDCircuitTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.rtdcircuit_test, "set_test_context"
                 ):
@@ -729,7 +731,23 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to RTD Circuit")
 
-                self.heaterandpreheater_test = HeaterAndPreheaterTest(self.inst_worker)
+                self.heatedwater_test = HeatedWaterTest(self.inst_worker, tabs=self.tabs)
+                if self.current_test_id is not None and hasattr(
+                        self.heatedwater_test, "set_test_context"
+                ):
+                    self.heatedwater_test.set_test_context(
+                        self.current_test_id, self.api_base_url
+                    )
+
+                self.hotplate_test = HotPlateTest(self.inst_worker, tabs=self.tabs)
+                if self.current_test_id is not None and hasattr(
+                        self.hotplate_test, "set_test_context"
+                ):
+                    self.hotplate_test.set_test_context(
+                        self.current_test_id, self.api_base_url
+                    )
+
+                self.heaterandpreheater_test = HeaterAndPreheaterTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.heaterandpreheater_test, "set_test_context"
                 ):
@@ -738,7 +756,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Heater and Preheater")
 
-                self.brew_test = BrewTest(self.inst_worker)
+                self.brew_test = BrewTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.brew_test, "set_test_context"
                 ):
@@ -747,7 +765,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Brew")
 
-                self.serverretainer_test = ServerRetainerTest(self.inst_worker)
+                self.serverretainer_test = ServerRetainerTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.serverretainer_test, "set_test_context"
                 ):
@@ -756,7 +774,7 @@ class MainWindow(QMainWindow):
                     )
                 print("[MainWindow] Passed context to Server Retainer")
 
-                self.tea_test = TeaTest(self.inst_worker)
+                self.tea_test = TeaTest(self.inst_worker, tabs=self.tabs)
                 if self.current_test_id is not None and hasattr(
                         self.tea_test, "set_test_context"
                 ):
@@ -766,7 +784,7 @@ class MainWindow(QMainWindow):
                 print("[MainWindow] Passed context to Tea")
 
             except Exception as e:
-                print(f"Error while creating 4810: {e}")
+                print(f"Error while creating 4510: {e}")
 
 
         try:
@@ -784,7 +802,6 @@ class MainWindow(QMainWindow):
                 self.brewbe_test.BrewBETestPath(test_path)
                 self.temperature_test.TemperatureTestPath(test_path)
                 self.heatedwater_test.HeatedWaterTestPath(test_path)
-                self.unheatedwater_test.UnheatedWaterTestPath(test_path)
                 self.lamp_test.LampTestPath(test_path)
                 self.hotplate_test.HotPlateTestPath(test_path)
                 self.powerinterrupt_test.PowerInterruptTestPath(test_path)
@@ -795,7 +812,7 @@ class MainWindow(QMainWindow):
 
             except Exception as e:
                 print(f"Error while setting test path: {e}")
-        elif modelNumber == "4810-28UG-00":
+        elif modelNumber == "4510-28UG-00":
             try:
                 self.resistance_test.ResistanceTestPath(test_path)
                 self.dielectric_test.DielectricTestPath(test_path)
@@ -804,6 +821,8 @@ class MainWindow(QMainWindow):
                 self.tankpressure_test.TankPressureTestPath(test_path)
                 self.powerandlowlight_test.PowerAndLowLightTestPath(test_path)
                 self.rtdcircuit_test.RTDCircuitTestPath(test_path)
+                self.heatedwater_test.HeatedWaterTestPath(test_path)
+                self.hotplate_test.HotPlateTestPath(test_path)
                 self.heaterandpreheater_test.HeaterAndPreheaterTestPath(test_path)
                 self.brew_test.BrewTestPath(test_path)
                 self.serverretainer_test.ServerRetainerTestPath(test_path)
@@ -832,7 +851,6 @@ class MainWindow(QMainWindow):
                                 ">>Brew Test<<\n\n"
                                 ">>Temperature Test<<\n\n"
                                 ">>Heated Water Test<<\n\n"
-                                ">>Unheated Water Test<<\n\n"
                                 ">>Lamp Test<<\n\n"
                                 ">>Hot Plate Test<<\n\n"
                                 ">>Power Interrupt Test<<\n\n"
@@ -842,8 +860,8 @@ class MainWindow(QMainWindow):
                             )
                         except Exception as e:
                             print(f"Error while writing V.Inspect File: ")
-                    elif modelNumber == "4810-28UG-00":
-                        file.write("Creating a 4810-UG-00 Test File"
+                    elif modelNumber == "4510-28UG-00":
+                        file.write(
                                    "\n\n"
                                    "_Functional Tests_"
                                    "\n\n"
@@ -861,6 +879,10 @@ class MainWindow(QMainWindow):
                                    "\n\n"
                                    ">>RTD Test<<"
                                    "\n\n"
+                                   ">>Heated Water Test<<"
+                                   "\n\n"
+                                   ">>Hot Plate Test<<"
+                                   "\n\n"
                                    ">>Tank Heater and Preheater Test<<"
                                    "\n\n"
                                    ">>Brew Test<<"
@@ -874,12 +896,7 @@ class MainWindow(QMainWindow):
             print(f"error opening wo: {e}")
 
 
-        # Create QTabWidget
-        try:
-            self.tabs = QTabWidget()
-            self.setCentralWidget(self.tabs)
-        except Exception as e:
-            print(f"error opening wo: {e}")
+
 
 
         # Create 10 tabs
@@ -890,10 +907,9 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(self.waterleaks_test, "Water Leaks")
                 self.tabs.addTab(self.heatercurrent_test, "Heater Current")
                 self.tabs.addTab(self.hotwaterlight_test, "Hot Water Light")
-                self.tabs.addTab(self.brewbe_test, "Brew")
                 self.tabs.addTab(self.temperature_test, "Temperature Test")
+                self.tabs.addTab(self.brewbe_test, "Brew")
                 self.tabs.addTab(self.heatedwater_test, "Heated Water")
-                self.tabs.addTab(self.unheatedwater_test, "Unheated Water")
                 self.tabs.addTab(self.lamp_test, "Lamp")
                 self.tabs.addTab(self.hotplate_test, "Hot Plate")
                 self.tabs.addTab(self.powerinterrupt_test, "Power Interrupt")
@@ -904,15 +920,17 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Error while adding tab: {e}")
 
-        if modelNumber == "4810-28UG-00":
+        if modelNumber == "4510-28UG-00":
             try:
-                self.tabs.addTab(self.dielectric_test, f"Dielectric 4810-UG-00")
+                self.tabs.addTab(self.dielectric_test, f"Dielectric")
                 self.tabs.addTab(self.resistance_test, f"Resistance")
                 self.tabs.addTab(self.watertemp_test, f"Water Supply Temperature")
                 self.tabs.addTab(self.ambienttemp_test, f"Ambient Temperature")
                 self.tabs.addTab(self.tankpressure_test, f"Tank Pressure")
                 self.tabs.addTab(self.powerandlowlight_test, f"Power and Low Light Indicator")
                 self.tabs.addTab(self.rtdcircuit_test, f"RTD Circuit")
+                self.tabs.addTab(self.heatedwater_test, "Heated Water")
+                self.tabs.addTab(self.hotplate_test, "Hot Plate")
                 self.tabs.addTab(self.heaterandpreheater_test, f"Tank Heater and Preheater")
                 self.tabs.addTab(self.brew_test, f"Brew")
                 self.tabs.addTab(self.serverretainer_test, f"Server Retainer")

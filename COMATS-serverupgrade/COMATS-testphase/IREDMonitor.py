@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class IREDMonitorTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -312,6 +313,16 @@ class IREDMonitorTest(QWidget):
             self.iredmonitorrestart.clicked.connect(self.IREDMonitorRestart)
             self.iredmonitorrestart.setFixedWidth(200)
             self.iredmonitortestbuttonlayout.addWidget(self.iredmonitorrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.iredmonitornext = QPushButton("Next", self)
+            self.iredmonitornext.clicked.connect(self.IREDMonitorNext)
+            self.iredmonitornext.setFixedWidth(200)
+            self.iredmonitortestbuttonlayout.addWidget(self.iredmonitornext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def IREDMonitorNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetIREDMonitorResults(self):
         return self.iredmonitor_results

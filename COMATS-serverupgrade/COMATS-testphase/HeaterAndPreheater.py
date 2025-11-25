@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class HeaterAndPreheaterTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None,  parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -373,6 +374,16 @@ class HeaterAndPreheaterTest(QWidget):
             self.heaterandpreheaterrestart.clicked.connect(self.HeaterAndPreheaterRestart)
             self.heaterandpreheaterrestart.setFixedWidth(200)
             self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaterrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.heaterandpreheaternext = QPushButton("Next", self)
+            self.heaterandpreheaternext.clicked.connect(self.HeaterAndPreheaterNext)
+            self.heaterandpreheaternext.setFixedWidth(200)
+            self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaternext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def HeaterAndPreheaterNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetHeaterAndPreheaterResults(self):
         return self.heaterandpreheater_results

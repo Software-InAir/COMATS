@@ -23,10 +23,11 @@ class Worker(QObject):
 
 class BrewTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None,  parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -504,6 +505,16 @@ class BrewTest(QWidget):
             self.brewrestart.clicked.connect(self.BrewRestart)
             self.brewrestart.setFixedWidth(200)
             self.brewtestbuttonlayout.addWidget(self.brewrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.brewnext = QPushButton("Next", self)
+            self.brewnext.clicked.connect(self.BrewNext)
+            self.brewnext.setFixedWidth(200)
+            self.brewtestbuttonlayout.addWidget(self.brewnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def BrewNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetBrewResults(self):
         return self.brew_results

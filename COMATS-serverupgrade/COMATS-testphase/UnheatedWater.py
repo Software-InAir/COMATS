@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class UnheatedWaterTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -262,6 +263,16 @@ class UnheatedWaterTest(QWidget):
             self.unheatedwaterrestart.clicked.connect(self.UnheatedWaterRestart)
             self.unheatedwaterrestart.setFixedWidth(200)
             self.unheatedwatertestbuttonlayout.addWidget(self.unheatedwaterrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.unheatedwaternext = QPushButton("Next", self)
+            self.unheatedwaternext.clicked.connect(self.UnheatedWaterNext)
+            self.unheatedwaternext.setFixedWidth(200)
+            self.unheatedwatertestbuttonlayout.addWidget(self.unheatedwaternext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def UnheatedWaterNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetUnheatedWaterResults(self):
         return self.unheatedwater_results

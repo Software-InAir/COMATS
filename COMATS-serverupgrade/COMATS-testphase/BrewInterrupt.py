@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class BrewInterruptTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None,  parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -315,6 +316,16 @@ class BrewInterruptTest(QWidget):
             self.brewinterruptrestart.clicked.connect(self.BrewInterruptRestart)
             self.brewinterruptrestart.setFixedWidth(200)
             self.brewinterrupttestbuttonlayout.addWidget(self.brewinterruptrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.brewinterruptnext = QPushButton("Next", self)
+            self.brewinterruptnext.clicked.connect(self.BrewInterruptNext)
+            self.brewinterruptnext.setFixedWidth(200)
+            self.brewinterrupttestbuttonlayout.addWidget(self.brewinterruptnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def BrewInterruptNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetBrewInterruptResults(self):
         return self.brewinterrupt_results

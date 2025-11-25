@@ -23,10 +23,11 @@ class Worker(QObject):
 
 class HotPlateTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -193,7 +194,7 @@ class HotPlateTest(QWidget):
                 msg1 = QMessageBox()
                 # msg1.setIcon(QMessageBox.Icon.Information)
 
-                if self.current_hotplate_step == 0:
+                if self.current_hotplate_step == 1:
                     value1, ok = QInputDialog.getDouble(
                         self,
                         "Hot Plate Temperature",
@@ -213,8 +214,8 @@ class HotPlateTest(QWidget):
                                 "value": value1
                             }
                             self.post_hotplate_snapshot()
-                            self.hotplate_passed[0] = True
-                            self.hotplate_failed[0] = False
+                            self.hotplate_passed[1] = True
+                            self.hotplate_failed[1] = False
                         else:
                             result_line += "\tFAIL"
                             self.step_status["step1_hotplate_temp"] = {
@@ -222,14 +223,14 @@ class HotPlateTest(QWidget):
                                 "value": value1
                             }
                             self.post_hotplate_snapshot()
-                            self.hotplate_passed[0] = False
-                            self.hotplate_failed[0] = True
+                            self.hotplate_passed[1] = False
+                            self.hotplate_failed[1] = True
                         self.insert_hotplate_result(result_line)
                         self.current_hotplate_step += 1
                         self.updateHotPlateStep()
 
 
-                elif self.current_hotplate_step == 1:
+                elif self.current_hotplate_step == 0:
                     msg1.setWindowTitle("Hot Plate Indicator Light")
                     msg1.setText("Hot Plate Indicator Light illuminated.")
                     pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
@@ -244,8 +245,8 @@ class HotPlateTest(QWidget):
                             "status": "PASS",
                         }
                         self.post_hotplate_snapshot()
-                        self.hotplate_passed[1] = True
-                        self.hotplate_failed[1] = False
+                        self.hotplate_passed[0] = True
+                        self.hotplate_failed[0] = False
                         self.hotplate_completed = True
                         self.updateHotPlateStep()
                         self.current_hotplate_step += 1
@@ -258,8 +259,8 @@ class HotPlateTest(QWidget):
                             "status": "PASS",
                         }
                         self.post_hotplate_snapshot()
-                        self.hotplate_passed[1] = False
-                        self.hotplate_failed[1] = True
+                        self.hotplate_passed[0] = False
+                        self.hotplate_failed[0] = True
                         self.updateHotPlateStep()
                         self.current_hotplate_step += 1
                         self.hotplate_completed = True
@@ -303,6 +304,16 @@ class HotPlateTest(QWidget):
             self.hotplaterestart.clicked.connect(self.HotPlateRestart)
             self.hotplaterestart.setFixedWidth(200)
             self.hotplatetestbuttonlayout.addWidget(self.hotplaterestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.hotplatenext = QPushButton("Next", self)
+            self.hotplatenext.clicked.connect(self.HotPlateNext)
+            self.hotplatenext.setFixedWidth(200)
+            self.hotplatetestbuttonlayout.addWidget(self.hotplatenext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def HotPlateNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetHotPlateResults(self):
         return self.hotplate_results
@@ -363,7 +374,7 @@ class HotPlateTest(QWidget):
 
     def PostHotPlateResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
-            print("Heater Current: Test Context not set; skipping Post")
+            print("Hot Platet: Test Context not set; skipping Post")
             return
 
         payload = {
@@ -375,8 +386,8 @@ class HotPlateTest(QWidget):
         try:
             url = f"{self.api_base_url}/tests/{self.test_id}/subtests/hotplate"
             r = requests.post(url, json=payload, timeout=5)
-            print("Heater Current POST status:", r.status_code)
-            print("Heater Current POST body:", repr(r.text))
+            print("Hot Plat POST status:", r.status_code)
+            print("Hot Plate Current POST body:", repr(r.text))
             r.raise_for_status()
         except Exception as e:
             print(f"Error posting Heater Current result: {e}")

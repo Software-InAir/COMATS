@@ -26,12 +26,13 @@ class ResistanceTest(QWidget):
     resistance_results = ""
 
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.resistance_results = f""
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -367,6 +368,16 @@ class ResistanceTest(QWidget):
             self.resistancerestart.clicked.connect(self.ResistanceRestart)
             self.resistancerestart.setFixedWidth(200)
             self.resistancetestbuttonlayout.addWidget(self.resistancerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.resistancenext = QPushButton("Next", self)
+            self.resistancenext.clicked.connect(self.ResistanceNext)
+            self.resistancenext.setFixedWidth(200)
+            self.resistancetestbuttonlayout.addWidget(self.resistancenext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def ResistanceNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetResistanceResults(self):
         return self.resistance_results

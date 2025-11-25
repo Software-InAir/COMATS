@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy,
-    QPushButton, QMessageBox, QCheckBox)
+                             QPushButton, QMessageBox, QCheckBox, QTabWidget)
 from PyQt6.QtCore import Qt, QObject, pyqtSignal, QThread, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
@@ -11,9 +11,10 @@ import requests
 
 class VisualInspectionTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -368,6 +369,15 @@ class VisualInspectionTest(QWidget):
             self.visualinspectionrestart.clicked.connect(self.VisualInspectionRestart)
             self.visualinspectionrestart.setFixedWidth(200)
             self.visualinspectiontestbuttonlayout.addWidget(self.visualinspectionrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.visualinspectionnext = QPushButton("Next", self)
+            self.visualinspectionnext.clicked.connect(self.VisualInspectionNext)
+            self.visualinspectionnext.setFixedWidth(200)
+            self.visualinspectiontestbuttonlayout.addWidget(self.visualinspectionnext, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def VisualInspectionNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
 
     def VisualInspectionTestPath(self, path):

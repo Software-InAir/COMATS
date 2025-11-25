@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class HotWaterLightTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -276,6 +277,16 @@ class HotWaterLightTest(QWidget):
             self.hotwaterlightrestart.clicked.connect(self.HotWaterLightRestart)
             self.hotwaterlightrestart.setFixedWidth(200)
             self.hotwaterlighttestbuttonlayout.addWidget(self.hotwaterlightrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.hotwaterlightnext = QPushButton("Next", self)
+            self.hotwaterlightnext.clicked.connect(self.HotWaterLightNext)
+            self.hotwaterlightnext.setFixedWidth(200)
+            self.hotwaterlighttestbuttonlayout.addWidget(self.hotwaterlightnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def HotWaterLightNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetHotWaterLightResults(self):
         return self.hotwaterlight_results

@@ -23,10 +23,11 @@ class Worker(QObject):
 
 class WaterLeaksTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -310,6 +311,16 @@ class WaterLeaksTest(QWidget):
             self.waterleaksrestart.clicked.connect(self.WaterLeaksRestart)
             self.waterleaksrestart.setFixedWidth(200)
             self.waterleakstestbuttonlayout.addWidget(self.waterleaksrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.waterleaksnext = QPushButton("Next", self)
+            self.waterleaksnext.clicked.connect(self.WaterLeaksNext)
+            self.waterleaksnext.setFixedWidth(200)
+            self.waterleakstestbuttonlayout.addWidget(self.waterleaksnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def WaterLeaksNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetWaterLeaksResults(self):
         return self.waterleaks_results

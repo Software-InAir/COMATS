@@ -23,10 +23,11 @@ class Worker(QObject):
 
 class AmbientTemperatureTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None,  parent=None):
         super().__init__()
         self.setMinimumSize(1200, 600)
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -270,6 +271,16 @@ class AmbientTemperatureTest(QWidget):
             self.ambienttemprestart.clicked.connect(self.AmbientTemperatureRestart)
             self.ambienttemprestart.setFixedWidth(200)
             self.ambienttemptestbuttonlayout.addWidget(self.ambienttemprestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.ambienttempnext = QPushButton("Next", self)
+            self.ambienttempnext.clicked.connect(self.AmbientTempNext)
+            self.ambienttempnext.setFixedWidth(200)
+            self.ambienttemptestbuttonlayout.addWidget(self.ambienttempnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def AmbientTempNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetAmbientTempResults(self):
         return self.ambienttemp_results

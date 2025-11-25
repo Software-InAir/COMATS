@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class TemperatureTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -311,6 +312,16 @@ class TemperatureTest(QWidget):
             self.temperaturerestart.clicked.connect(self.TemperatureRestart)
             self.temperaturerestart.setFixedWidth(200)
             self.temperaturetestbuttonlayout.addWidget(self.temperaturerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.temperaturenext = QPushButton("Next", self)
+            self.temperaturenext.clicked.connect(self.TemperatureNext)
+            self.temperaturenext.setFixedWidth(200)
+            self.temperaturetestbuttonlayout.addWidget(self.temperaturenext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def TemperatureNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetTemperatureResults(self):
         return self.temperature_results

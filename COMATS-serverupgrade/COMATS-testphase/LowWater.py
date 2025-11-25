@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy,
-                             QPushButton, QScrollArea, QMessageBox, QInputDialog)
+                             QPushButton, QScrollArea, QMessageBox, QInputDialog, QTabWidget)
 from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 from InstrumentWorker import InstrumentWorker
@@ -11,10 +11,11 @@ import requests
 
 class LowWaterTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -374,6 +375,16 @@ class LowWaterTest(QWidget):
             self.lowwaterrestart.clicked.connect(self.LowWaterRestart)
             self.lowwaterrestart.setFixedWidth(200)
             self.lowwatertestbuttonlayout.addWidget(self.lowwaterrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.lowwaternext = QPushButton("Next", self)
+            self.lowwaternext.clicked.connect(self.LowWaterNext)
+            self.lowwaternext.setFixedWidth(200)
+            self.lowwatertestbuttonlayout.addWidget(self.lowwaternext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def LowWaterNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetLowWaterResults(self):
         return self.lowwater_results

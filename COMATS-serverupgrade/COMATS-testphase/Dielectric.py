@@ -23,10 +23,11 @@ class Worker(QObject):
 class DielectricTest(QWidget):
 
 
-        def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+        def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None,  parent=None):
                 super().__init__()
 
                 self.instrument = instrument_worker
+                self.tabs = tabs
 
                 self.test_id: int | None = None
                 self.api_base_url: str | None = None
@@ -325,6 +326,16 @@ class DielectricTest(QWidget):
                         self.dielectricrestart.setFixedWidth(200)
                         self.dielectrictestbuttonlayout.addWidget(self.dielectricrestart,
                                                                   alignment=Qt.AlignmentFlag.AlignCenter)
+
+                        self.dielectricnext = QPushButton("Next", self)
+                        self.dielectricnext.clicked.connect(self.DielectricNext)
+                        self.dielectricnext.setFixedWidth(200)
+                        self.dielectrictestbuttonlayout.addWidget(self.dielectricnext,
+                                                                        alignment=Qt.AlignmentFlag.AlignCenter)
+
+        def DielectricNext(self):
+                current = self.tabs.currentIndex()
+                self.tabs.setCurrentIndex(current + 1)
 
         def GetDielectricResults(self):
                 return self.dielectric_results

@@ -24,11 +24,12 @@ class Worker(QObject):
 
 class TeaTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
         self.setMinimumSize(1200, 600)
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -381,6 +382,16 @@ class TeaTest(QWidget):
             self.tearestart.clicked.connect(self.TeaRestart)
             self.tearestart.setFixedWidth(200)
             self.teatestbuttonlayout.addWidget(self.tearestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.teanext = QPushButton("Next", self)
+            self.teanext.clicked.connect(self.TeaNext)
+            self.teanext.setFixedWidth(200)
+            self.teatestbuttonlayout.addWidget(self.teanext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def TeaNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetTeaResults(self):
         return self.tea_results

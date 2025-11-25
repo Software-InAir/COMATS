@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class ServerRetainerTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -258,6 +259,16 @@ class ServerRetainerTest(QWidget):
             self.serverretainerrestart.clicked.connect(self.ServerRetainerRestart)
             self.serverretainerrestart.setFixedWidth(200)
             self.serverretainertestbuttonlayout.addWidget(self.serverretainerrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.severretainernext = QPushButton("Next", self)
+            self.severretainernext.clicked.connect(self.ServerRetainerNext)
+            self.severretainernext.setFixedWidth(200)
+            self.severretainertestbuttonlayout.addWidget(self.severretainernext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def ServerRetainerNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetServerRetainerResults(self):
         return self.serverretainer_results

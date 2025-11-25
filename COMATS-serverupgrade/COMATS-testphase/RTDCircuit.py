@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class RTDCircuitTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -414,6 +415,16 @@ class RTDCircuitTest(QWidget):
             self.rtdcircuitrestart.clicked.connect(self.RTDCircuitRestart)
             self.rtdcircuitrestart.setFixedWidth(200)
             self.rtdcircuittestbuttonlayout.addWidget(self.rtdcircuitrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.rtdcircuitnext = QPushButton("Next", self)
+            self.rtdcircuitnext.clicked.connect(self.RTDCircuitNext)
+            self.rtdcircuitnext.setFixedWidth(200)
+            self.rtdcircuittestbuttonlayout.addWidget(self.rtdcircuitnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def RTDCircuitNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetRTDCircuitTestResults(self):
         return self.rtdcircuit_results

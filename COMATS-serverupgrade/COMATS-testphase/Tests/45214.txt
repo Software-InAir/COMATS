@@ -1,0 +1,41 @@
+Workorder Number: 45214
+Unit Number: 11225-1
+Unit Serial Number: 23452
+Unit Part Number: 2452
+Technician Name: Carlos
+
+
+Creating a 11225-1 Test File
+
+_Functional Tests_
+
+>>Visual Inspection Test<<
+
+>>Low Water Test<<
+
+>>Water Leaks Inspection Test<<
+
+>>Heater Current Test<<
+
+>>Hot Water Light Test<<
+
+>>Brew Test<<
+
+>>Temperature Test<<
+
+>>Heated Water Test<<
+
+>>Unheated Water Test<<
+
+>>Lamp Test<<
+
+>>Hot Plate Test<<
+
+>>Power Interrupt Test<<
+
+>>Brew Interrupt Test<<
+
+>>IRED Monitor Test<<
+
+>>Pressure Relief Valve Test<<
+

@@ -25,10 +25,11 @@ class Worker(QObject):
 
 class WaterTempTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -270,6 +271,16 @@ class WaterTempTest(QWidget):
             self.watertemprestart.clicked.connect(self.WaterTempRestart)
             self.watertemprestart.setFixedWidth(200)
             self.watertemptestbuttonlayout.addWidget(self.watertemprestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.watertempnext = QPushButton("Next", self)
+            self.watertempnext.clicked.connect(self.WaterTempNext)
+            self.watertempnext.setFixedWidth(200)
+            self.watertemptestbuttonlayout.addWidget(self.watertempnext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def WaterTempNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetWaterTempResults(self):
         return self.watertemp_results

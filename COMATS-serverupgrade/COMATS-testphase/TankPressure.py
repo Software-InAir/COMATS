@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class TankPressureTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -369,6 +370,16 @@ class TankPressureTest(QWidget):
             self.tankpressurerestart.clicked.connect(self.TankPressureRestart)
             self.tankpressurerestart.setFixedWidth(200)
             self.tankpressuretestbuttonlayout.addWidget(self.tankpressurerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.tankpressurenext = QPushButton("Next", self)
+            self.tankpressurenext.clicked.connect(self.TankPressureNext)
+            self.tankpressurenext.setFixedWidth(200)
+            self.tankpressuretestbuttonlayout.addWidget(self.tankpressurenext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def TankPressureNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetTankPressureResults(self):
         return self.tankpressure_results

@@ -24,10 +24,11 @@ class Worker(QObject):
 
 class PressureReliefValveTest(QWidget):
 
-    def __init__(self, instrument_worker: InstrumentWorker | None = None, parent=None):
+    def __init__(self, instrument_worker: InstrumentWorker | None = None, tabs: QTabWidget | None = None, parent=None):
         super().__init__()
 
         self.instrument = instrument_worker
+        self.tabs = tabs
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
@@ -357,6 +358,16 @@ class PressureReliefValveTest(QWidget):
             self.pressurereliefvalverestart.clicked.connect(self.PressureReliefValveRestart)
             self.pressurereliefvalverestart.setFixedWidth(200)
             self.pressurereliefvalvetestbuttonlayout.addWidget(self.pressurereliefvalverestart, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            self.pressurereliefvalvenext = QPushButton("Next", self)
+            self.pressurereliefvalvenext.clicked.connect(self.PressureReliefValveNext)
+            self.pressurereliefvalvenext.setFixedWidth(200)
+            self.pressurereliefvalvetestbuttonlayout.addWidget(self.pressurereliefvalvenext,
+                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def PressureReliefValveNext(self):
+        current =self.tabs.currentIndex()
+        self.tabs.setCurrentIndex(current+1)
 
     def GetPressureReliefValveResults(self):
         return self.pressurereliefvalve_results
