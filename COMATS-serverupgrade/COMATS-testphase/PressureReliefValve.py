@@ -113,13 +113,13 @@ class PressureReliefValveTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.pressurereliefvalvelabel = QLabel(
-            "<b>Remove brew cup assembly and dry off before starting. <br><br>"
+            "<b>Remove brew cup assembly. <br><br>"
             "Close V10 then turn V8 vertical. <br><br>"
             "Connect the Coffee Maker to water supply and then open V10. <br><br>"
             "Let tank fill with water, FM will go to zero when full. <br><br>"
-            "With water tank full, increase source water pressure by rotating V7 clockwise until PG2 reads between 90 psig and 100 psig, venting V9 periodically. <br><br>"
-            "Verify the pressure relief valve opens indicated by water dripping in brew cup assembly housing. </b><br><br>"
-            "<i>Make sure that the pressure relief valve opens at 95±10 PSIG, if not replace the pressure relief valve.</i> <br><br>"
+            "With water tank full, increase source water pressure by rotating V7 clockwise while venting V9 periodically until pressure relief valve opens.<br><br>"
+            "Verify the pressure relief valve opens as indicated by water dripping in brew cup assembly housing. </b><br><br>"
+            "<i>Make sure that the pressure relief valve opens at 95±10 PSIG.</i> <br><br>"
 
         )
 

@@ -112,7 +112,7 @@ class HotWaterLightTest(QWidget):
 
         self.hotwaterlightlabel = QLabel(
             "<i> Once water is hot (approximately two minutes) the HOT WATER light should <br><br>"
-            "   come on while heaters should turn off (indicated by current drop) as shown by the self.phase readings window.</i>"
+            "   come on while heaters should turn off (indicated by current drop) as shown by the phase readings.</i>"
         )
 
         self.hotwaterlightlabel.setTextFormat(Qt.TextFormat.RichText)
@@ -249,7 +249,7 @@ class HotWaterLightTest(QWidget):
             # Completed
             elif self.hotwaterlight_completed:
                 msg1.setWindowTitle("Test Completed!")
-                msg1.setText("The HotWaterLight test has been completed successfully.")
+                msg1.setText("The Hot Water Light test has been completed successfully.")
                 msg1.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
                 msg1.exec()
 

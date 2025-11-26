@@ -112,8 +112,8 @@ class IREDMonitorTest(QWidget):
         scroll.setWidgetResizable(True)
 
         self.iredmonitorlabel = QLabel(
-            "<b>With the brew handle raised, insert a piece of 0.125 inch black heat shrink tubing in the left optical sensor cavity, blocking the infra-red beam.</b> <br><br>"
-            "<i>The circuit breaker should open as indicated by hearing an audible clicking noise and the circuit breaker being pushed out on back of unit, revealing a white inner core.</i> <br><br>"
+            "<b>With the brew handle raised, insert a piece of 0.125 inch black heat shrink tubing into the left optical sensor cavity to block the infra-red beam.</b> <br><br>"
+            "<i>The circuit breaker should open as indicated by hearing an audible clicking noise as the circuit breaker is pushed out on the back of unit. This will reveal a white inner core.</i> <br><br>"
 
 
 
