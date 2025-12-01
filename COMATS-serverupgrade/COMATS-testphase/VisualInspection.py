@@ -1,10 +1,18 @@
+from PyQt6 import *
+from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy,
-                             QPushButton, QMessageBox, QCheckBox, QTabWidget)
-from PyQt6.QtCore import Qt, QObject, pyqtSignal, QThread, pyqtSlot
+                             QPushButton, QMessageBox, QCheckBox, QTabWidget, QMainWindow, QComboBox)
+from PyQt6.QtCore import Qt, QObject, pyqtSignal, QThread, pyqtSlot, QUrl
 
 from InstrumentWorker import InstrumentWorker
 
 import requests
+import subprocess
+import platform
+import os
+import sys
+
+from pathlib import Path
 
 
 #------------------------------------------------------- VisualInspection Check
@@ -18,6 +26,7 @@ class VisualInspectionTest(QWidget):
 
         self.test_id: int | None = None
         self.api_base_url: str | None = None
+        self.web = None
 
         # -------- temp phase
         self.phase1read = 0
@@ -176,6 +185,11 @@ class VisualInspectionTest(QWidget):
 
         self.phaselayout = QHBoxLayout()
 
+        self.resources = QPushButton("Resources")
+        self.resources.setFixedWidth(200)
+        self.resources.clicked.connect(self.OnResources)
+        self.phaselayout.addWidget(self.resources)
+
 
 
         spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -229,7 +243,6 @@ class VisualInspectionTest(QWidget):
             self.instrument.ch1.connect(self.show_current1)
             self.instrument.ch2.connect(self.show_current2)
             self.instrument.ch3.connect(self.show_current3)
-
 
 
     @pyqtSlot(float)
@@ -471,3 +484,120 @@ class VisualInspectionTest(QWidget):
             r.raise_for_status()
         except Exception as e:
             print(f"Error posting Visual Inspection result: {e}")
+
+    def OnResources(self):
+        print("Resources button clicked.")
+        try:
+            # 1) Make the new window
+            self.new_window = QMainWindow()
+            self.new_window.setWindowTitle("Resources")
+            self.new_window.resize(400, 300)
+
+            # 2) Build the layout and widgets
+            layout = QVBoxLayout()
+
+            welcomeLabel = QLabel("COMATS Resources")
+            welcomeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            welcomeLabel.setStyleSheet("""
+                padding-top: 50px;
+                padding-bottom: 50px;
+                padding-left: 100px;
+                padding-right: 100px;
+            """)
+            layout.addWidget(welcomeLabel)
+
+            buttonLayout = QVBoxLayout()
+
+            CMMLoader = QComboBox()
+            CMMLoader.addItems(["25-33-20"])
+            CMMLoader.setFixedWidth(200)
+            buttonLayout.addWidget(CMMLoader, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            CMMLoaderButton = QPushButton("Load CMM")  # no parent here
+            CMMLoaderButton.clicked.connect(lambda: self.LoadCMM(CMMLoader))
+            buttonLayout.addWidget(CMMLoaderButton, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            PartLocator = QComboBox()
+            PartLocator.addItem("UA48-22929209")
+            PartLocator.setFixedWidth(200)
+            buttonLayout.addWidget(PartLocator, alignment=Qt.AlignmentFlag.AlignCenter)
+
+
+            PartLocatorButton = QPushButton("Part Locator")  # no parent here
+            PartLocatorButton.setFixedWidth(200)
+            PartLocatorButton.clicked.connect(self.LoadModel)
+            buttonLayout.addWidget(PartLocatorButton, alignment=Qt.AlignmentFlag.AlignCenter)
+            buttonLayout.addSpacing(100)
+
+            layout.addLayout(buttonLayout)
+
+            footerLayout = QHBoxLayout()
+            back = QPushButton("Settings")
+            back.setProperty("class", "small")
+            back.setFixedWidth(100)  # 10 was tiny; adjust as needed
+            back.setFixedHeight(30)
+            # back.clicked.connect(self.ReturnToTest)
+            footerLayout.addWidget(back, alignment=Qt.AlignmentFlag.AlignLeft)
+
+            version = QLabel("V. 2.0.1")
+            version.setStyleSheet("font-size:12px;")
+            version.setAlignment(Qt.AlignmentFlag.AlignRight)
+            footerLayout.addWidget(version)
+
+            layout.addLayout(footerLayout)
+
+            # 3) Attach layout to a container and set it as central widget
+            container = QWidget()
+            container.setLayout(layout)
+            self.new_window.setCentralWidget(container)
+
+            # 4) Finally show the window
+            self.new_window.show()
+
+        except Exception as e:
+            print(f"Error while opening Resources: {e}")
+
+    def res_path(*parts) -> Path:
+        base = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
+        return base.joinpath(*parts)
+
+    def start_webgl(self):
+        self.locator_window = QMainWindow()
+        self.locator_window.setWindowTitle("Parts Locator")
+        self.locator_window.resize(1200, 800)
+
+        self.appcontainer = QWidget()
+        self.locatorlayout = QVBoxLayout(self.appcontainer)
+        html = "C:\\Users\\c.stanley\\Downloads\\COMATS-serverupgrade\\COMATS-serverupgrade\\COMATS-testphase\\Unity\\WebGL\\index.html"
+
+        if self.web is None:
+            self.web = QWebEngineView(self)
+            self.locatorlayout.addWidget(self.web)
+
+        # QUrl.fromLocalFile expects a STRING path (absolute). Use str(html).
+        self.web.load(QUrl.fromLocalFile(str(html)))
+        self.locator_window.setCentralWidget(self.appcontainer)
+        self.locator_window.show()
+
+
+    def LoadCMM(self, cmmLoader):
+        try:
+            cmm = cmmLoader.currentText()
+            if platform.system() == "Darwin":  # macOS
+                subprocess.run(["open", f"Resources\\{cmm}.pdf"])
+            elif platform.system() == "Windows":
+                os.startfile(f"Resources\\{cmm}.pdf")  # Windows only
+            else:  # Linux and others
+                subprocess.run(["xdg-open", f"Resources\\{cmm}.pdf"])
+
+
+
+        except Exception as e:
+            print(f"Error returnign to main: {e}")
+
+    def LoadModel(self):
+        try:
+            self.start_webgl()
+        except Exception as e:
+            print(f"Error loading 3D Model: {e}")
+
