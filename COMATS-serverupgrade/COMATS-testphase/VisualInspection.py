@@ -509,7 +509,7 @@ class VisualInspectionTest(QWidget):
             buttonLayout = QVBoxLayout()
 
             CMMLoader = QComboBox()
-            CMMLoader.addItems(["25-33-20"])
+            CMMLoader.addItems(["25-30-02", "25-30-03", "25-30-50", "25-33-20", "25-33-21", "25-33-32"])
             CMMLoader.setFixedWidth(200)
             buttonLayout.addWidget(CMMLoader, alignment=Qt.AlignmentFlag.AlignCenter)
 

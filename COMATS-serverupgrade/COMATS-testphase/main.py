@@ -47,7 +47,7 @@ from BrewInterrupt import BrewInterruptTest
 from IREDMonitor import IREDMonitorTest
 from PressureReliefValve import PressureReliefValveTest
 
-USE_INSTRUMENT = False
+USE_INSTRUMENT = True
 
 if USE_INSTRUMENT:
     rm = pyvisa.ResourceManager()
@@ -78,7 +78,6 @@ class MainWindow(QMainWindow):
         self.api_base_url = "http://comats:8000"
         self.current_test_id = None
 
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
 
         self.welcome = QWidget()
         self.setCentralWidget(self.welcome)
