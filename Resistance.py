@@ -382,7 +382,7 @@ class ResistanceTest(QWidget):
             self.resistancebeginbutton.clicked.disconnect()
             self.resistancebeginbutton.clicked.connect(self.Resistance)
 
-        if self.resistance_passed[2] or self.resistance_failed[2]:
+        if self.resistance_passed[2] or self.resistance_failed[2] or self.current_resistance_step > 2:
             self.resistancelabel.setText(
                 "<b>Resistance Test Completed!</b><br><br>"
                 "<b>The Resistance Test has been completed successfully!</b><br><br>"
@@ -463,6 +463,8 @@ class ResistanceTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[Resistance] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostResistanceResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -626,3 +628,40 @@ class ResistanceTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/resistance"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_resistance_step = 2
+                print(f"Current step: {self.current_resistance_step}")
+                self.updateResistanceStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_resistance_step = len(steps)
+                print(f"Current step: {self.current_resistance_step}")
+                self.updateResistanceStep()
+                return
+
+            self.updateResistanceStep()
+
+        except Exception as e:
+            print(f"[Resistance] sync_completed_from_db failed: {e}")

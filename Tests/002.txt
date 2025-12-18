@@ -1,79 +1,64 @@
 Workorder Number: 002
-Unit Number: 11225-1
-Unit Serial Number: 4124
-Unit Part Number: 12414
-Technician Name: Chase
+Unit Number: 4510-28UG-00
+Unit Serial Number: 23424
+Unit Part Number: 2424
+Technician Name: Carlos
 
 
-Creating a 11225-1 Test File
+
 
 _Functional Tests_
 
->>Visual Inspection Test<<
-Visual Inspection:														PASS
+>>Dielectric Test<<
+Megaohmmeter Resistance Test 2: 0.0 mΩ	FAIL
+Hi Pot Current Test 1: 0.0 mA	PASS
 
->>Low Water Test<<
-Phase B Amperage Test: 0.0												PASS
-Phase A Amperage Test: 0.0												PASS
-Low Water Indicator Light Deactivate Test: 										PASS
+>>Resistance Test<<
+Resistance Test 3: 0.0 mΩ	PASS
+Resistance Test 2: 0.0 mΩ	PASS
+Resistance Test 1: 0.0 mΩ	PASS
 
->>Water Leaks Inspection Test<<
-Water Leaks Inspection Test: 	PASS
-Water PSIG: 0.0	FAIL
+>>Water Supply Temperature Test<<
+Water Supply Temperature Test 1: 0.0°C 	FAIL
 
->>Heater Current Test<<
-Phase C: 0.0 A	FAIL
-Phase B: 0.0 A	FAIL
-Phase A: 0.0 A	FAIL
-LOW Indicator Light Test: 	PASS
-Flow Meter Test: 	PASS
+>>Ambient Temperature Test<<
+Ambient Temperature Test 1: 0.0°C 	FAIL
 
->>Hot Water Light Test<<
-Hot Water Light Test: 	PASS
+>>Tank Pressure Test<<
+Tank Pressure Test 3: 0.0 PSI 	PASS
+Vent Valve Test: 	PASS
+Leak Check Test: 	FAIL
 
->>Brew Test<<
-Water Level: 0.0 inches
-	FAIL
-Brew Cycle Duration: 0.0 seconds
-	FAIL
+>>Power and Low Indicator Light Test<<
+Power Indicator Light deactivated: 	PASS
+No tank leaks found and Power Indicator Light activated: 	PASS
+Power Indicator Light deactivates after being pressed: 	PASS
+Power and Low Indicator Lights activated: 	FAIL
 
->>Temperature Test<<
-Server Temperature: 0.0°F
-	FAIL
-Brew Cup Temperature: 0.0°F 
-	FAIL
+>>RTD Test<<
 
 >>Heated Water Test<<
 Heated Water Flow Rate: 0.0GPM 
 	FAIL
 
->>Unheated Water Test<<
-Unheated Water Flow Rate: 0.0GPM 
-	FAIL
-
->>Lamp Test<<
-Lamp Test: 	PASS
-
 >>Hot Plate Test<<
+Hot Plate Temperature: 	PASS
 Hot Plate Indicator Light: 	PASS
-Hot Plate Temperature: 0.0°F 
-	FAIL
 
->>Power Interrupt Test<<
-Power Interrupt Test: 	PASS
+>>Tank Heater and Preheater Test<<
+Elapsed Time Test: 	PASS
+Phase C current: 0.0 A	FAIL
+Phase B current: 0.0 A	FAIL
+Phase A current: 0.0 A	FAIL
 
->>Brew Interrupt Test<<
-Brew Flow: 0.0GPM 
-	PASS
-Brew Interrupt Test: 	PASS
+>>Brew Test<<
+Power Indicator Test: 											PASS
+Brew Temperature Test: 0.0°C 									FAIL
+Consecutive Brew Test: 											PASS
+Brew Continuation Test: 										PASS
+Brew Interruption Test: 										PASS
 
->>IRED Monitor Test<<
-IRED Monitor Test: 	PASS
+>>Server Retainer Test<<
+Server Retainer Test: 	PASS
 
->>Pressure Relief Valve Test<<
-Vented Pressure: 0.0 PSIG 
-	PASS
-Pressure Relief Valve Leak Check: 	PASS
-Pressure Relief Valve Operational Pressure: 0.0 PSIG 
-	FAIL
-
+>>Tea Test<<Tea Option: 	INSTALLED

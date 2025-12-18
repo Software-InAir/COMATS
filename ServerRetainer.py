@@ -275,7 +275,7 @@ class ServerRetainerTest(QWidget):
 
     def updateServerRetainerStep(self):
 
-        if self.serverretainer_passed[0] or self.serverretainer_failed[0]:
+        if self.serverretainer_passed[0] or self.serverretainer_failed[0] or self.current_serverretainer_step > 0:
             self.serverretainerlabel.setText(
                 "<b>Test Completed</b><br><br>"
                 "The Server Retainer test has been completed successfully!</b><br><br>"
@@ -355,6 +355,8 @@ class ServerRetainerTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[ServerRetainer] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostServerRetainerResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -514,3 +516,40 @@ class ServerRetainerTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/serverretainer"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_serverretainer_step = 2
+                print(f"Current step: {self.current_serverretainer_step}")
+                self.updateServerRetainerStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_serverretainer_step = len(steps)
+                print(f"Current step: {self.current_serverretainer_step}")
+                self.updateServerRetainerStep()
+                return
+
+            self.updateServerRetainerStep()
+
+        except Exception as e:
+            print(f"[ServerRetainer] sync_completed_from_db failed: {e}")

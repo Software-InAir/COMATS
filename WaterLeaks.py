@@ -328,7 +328,7 @@ class WaterLeaksTest(QWidget):
             self.waterleaksbeginbutton.clicked.connect(self.WaterLeaks)
 
 
-        if self.waterleaks_passed[1] or self.waterleaks_failed[1]:
+        if self.waterleaks_passed[1] or self.waterleaks_failed[1] or self.current_waterleaks_step > 1:
             self.waterleakslabel.setText(
                 "<b>Test Completed</b><br><br>"
                 "The Water Leaks test has been completed successfully!</b><br><br>"
@@ -408,6 +408,8 @@ class WaterLeaksTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[WaterLeaks] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostWaterLeaksResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -567,3 +569,40 @@ class WaterLeaksTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/waterleaks"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_waterleaks_step = 2
+                print(f"Current step: {self.current_waterleaks_step}")
+                self.updateWaterLeaksStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_waterleaks_step = len(steps)
+                print(f"Current step: {self.current_waterleaks_step}")
+                self.updateWaterLeaksStep()
+                return
+
+            self.updateWaterLeaksStep()
+
+        except Exception as e:
+            print(f"[WaterLeaks] sync_completed_from_db failed: {e}")

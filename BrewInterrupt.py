@@ -333,7 +333,7 @@ class BrewInterruptTest(QWidget):
             self.brewinterruptbeginbutton.clicked.connect(self.BrewInterrupt)
 
 
-        if self.brewinterrupt_completed == True:
+        if self.brewinterrupt_completed == True or self.current_brewinterrupt_step > 1:
             self.brewinterruptlabel.setText(
                 "<b>Test Completed</b><br><br>"
                 "The Brew Interrupt test has been completed successfully!</b><br><br>"
@@ -413,6 +413,8 @@ class BrewInterruptTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[BrewInterrupt] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostBrewInterruptResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -575,3 +577,40 @@ class BrewInterruptTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/brewinterrupt"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_brewinterrupt_step = 2
+                print(f"Current step: {self.current_brewinterrupt_step}")
+                self.updateBrewInterruptStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_brewinterrupt_step = len(steps)
+                print(f"Current step: {self.current_brewinterrupt_step}")
+                self.updateBrewInterruptStep()
+                return
+
+            self.updateBrewInterruptStep()
+
+        except Exception as e:
+            print(f"[BrewInterrupt] sync_completed_from_db failed: {e}")

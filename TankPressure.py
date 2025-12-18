@@ -384,7 +384,7 @@ class TankPressureTest(QWidget):
             self.tankpressurebeginbutton.clicked.disconnect()
             self.tankpressurebeginbutton.clicked.connect(self.TankPressure)
 
-        if self.tankpressure_passed[1] or self.tankpressure_failed[1]:
+        if self.tankpressure_passed[1] or self.tankpressure_failed[1] or self.current_tankpressure_step > 2:
             self.tankpressurelabel.setText(
                     "Test Complete.<br><br>"
                     "Tank Pressure Test has been completed successfully!<br>"
@@ -466,6 +466,8 @@ class TankPressureTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[TankPressure] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostTankPressureResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -628,3 +630,40 @@ class TankPressureTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/tankpressure"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_tankpressure_step = 2
+                print(f"Current step: {self.current_tankpressure_step}")
+                self.updateTankPressureStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_tankpressure_step = len(steps)
+                print(f"Current step: {self.current_tankpressure_step}")
+                self.updateTankPressureStep()
+                return
+
+            self.updateTankPressureStep()
+
+        except Exception as e:
+            print(f"[TankPressure] sync_completed_from_db failed: {e}")

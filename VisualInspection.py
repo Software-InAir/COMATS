@@ -465,6 +465,8 @@ class VisualInspectionTest(QWidget):
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[VisualInspection] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
 
+        self.SubtestsCompleted()
+
     def PostVisualInspectionResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
             print("Visual Inspection: Test Context not set; skipping Post")
@@ -606,6 +608,27 @@ class VisualInspectionTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/visualinspection"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                return  # not run yet
+
+            r.raise_for_status()
+
+            # If a row exists, treat as completed (status may be wrong for now)
+            self.current_visualinspection_step = 1
+            self.updateVisualInspectionStep()
+
+        except Exception as e:
+            print(f"[VisualInspection] sync_completed_from_db failed: {e}")
+
 
 
 

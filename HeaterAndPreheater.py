@@ -391,7 +391,7 @@ class HeaterAndPreheaterTest(QWidget):
             self.heaterandpreheaterbeginbutton.clicked.connect(self.HeaterAndPreheater)
 
 
-        if self.heaterandpreheater_passed[1] or self.heaterandpreheater_failed[1]:
+        if self.heaterandpreheater_passed[1] or self.heaterandpreheater_failed[1] or self.current_heaterandpreheater_step > 1:
             self.heaterandpreheaterlabel.setText(
                 "<b>Test Completed.<br><br>"
                 "<bThe >Heater And Preheater Test has been completed successfully!</b><br><br>"
@@ -471,6 +471,8 @@ class HeaterAndPreheaterTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[HeaterAndPreheater] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostHeaterAndPreheaterResults(self, status: str, data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -634,3 +636,40 @@ class HeaterAndPreheaterTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/heaterandpreheater"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_heaterandpreheater_step = 2
+                print(f"Current step: {self.current_heaterandpreheater_step}")
+                self.updateHeaterAndPreheaterStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_heaterandpreheater_step = len(steps)
+                print(f"Current step: {self.current_heaterandpreheater_step}")
+                self.updateHeaterAndPreheaterStep()
+                return
+
+            self.updateHeaterAndPreheaterStep()
+
+        except Exception as e:
+            print(f"[HeaterAndPreheater] sync_completed_from_db failed: {e}")
