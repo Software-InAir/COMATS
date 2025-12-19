@@ -11,6 +11,18 @@ _Functional Tests_
 
 >>Visual Inspection Test<<
 Visual Inspection:																FAIL
+Physical Damage or Missing Parts
+Water Inlet Plug Damage
+Improperly Tied Wiring
+Bent Rail Supports
+Brew Handle Damage
+Switch Lens Damage
+Loose Terminal Blocks
+Damaged Electrical Enclosure Wiring
+Connector J1 Damage
+Relay Socket Damage or Corrosion
+Circuit Breaker CB1 Damage
+
 Power Connector P2 Damage
 Water Inlet Plug Damage
 Improperly Tied Wiring

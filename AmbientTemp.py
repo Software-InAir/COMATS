@@ -403,7 +403,83 @@ class AmbientTemperatureTest(QWidget):
             print(f"Error restarting AmbientTemperature Test: {e}")
 
     def AmbientTemperatureResults(self):
-        print("Printing AmbientTemperature Test Results")
+        print("Printing AmbientTemp Test Results")
+
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/ambienttemp"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", "AmbientTemp has not been run yet.")
+                return
+
+            r.raise_for_status()
+            result = r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return
+
+        # ---------- Build display ----------
+        status = result.get("status", "UNKNOWN")
+        notes = result.get("notes", "")
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+
+        text = "<h2>AmbientTemp Results</h2>"
+        text += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            text += "<b>Failures:</b><ul>"
+            for f in failures:
+                text += f"<li>{f}</li>"
+            text += "</ul><br>"
+        else:
+            text += "<b>Failures:</b> None<br><br>"
+
+        if notes:
+            text += f"<b>Notes:</b><br>{notes}<br>"
+
+        # Optional: dump remaining data keys (helps during early bring-up)
+        extra_keys = [k for k in data.keys() if k != "failures"]
+        if extra_keys:
+            text += "<br><b>Data:</b><ul>"
+            for k in extra_keys:
+                text += f"<li><b>{k}</b>: {data.get(k)!r}</li>"
+            text += "</ul>"
+
+        # ---------- Show window ----------
+        win = QMainWindow(self)
+        win.setWindowTitle("AmbientTemp Results")
+        win.resize(700, 500)
+
+        label = QLabel(text)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        # keep reference so GC doesn't nuke it
+        self._ambienttemp_results_window = win
 
     def set_test_context(self, test_id: int, api_base_url: str):
         self.test_id = test_id

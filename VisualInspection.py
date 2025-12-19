@@ -562,7 +562,72 @@ class VisualInspectionTest(QWidget):
             print(f"Error restarting: {e}")
 
     def VisualInspectionResults(self):
-        print("Printing VisualInspection Test Results")
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/visualinspection"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(
+                    self,
+                    "No Results",
+                    "Visual Inspection has not been run yet."
+                )
+                return
+
+            r.raise_for_status()
+            result = r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return
+
+        # ---------- Build display ----------
+        status = result.get("status", "UNKNOWN")
+        notes = result.get("notes", "")
+        data = result.get("data", {})
+
+        failures = data.get("failures", [])
+
+        text = f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            text += "<b>Failures:</b><ul>"
+            for f in failures:
+                text += f"<li>{f}</li>"
+            text += "</ul><br>"
+        else:
+            text += "<b>Failures:</b> None<br><br>"
+
+        if notes:
+            text += f"<b>Notes:</b><br>{notes}<br>"
+
+        # ---------- Show window ----------
+        win = QMainWindow(self)
+        win.setWindowTitle("Visual Inspection Results")
+        win.resize(600, 400)
+
+        label = QLabel(text)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignRight)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        # keep reference so GC doesn't nuke it
+        self._vi_results_window = win
 
     def set_test_context(self, test_id: int, api_base_url: str):
         self.test_id = test_id
