@@ -462,7 +462,49 @@ class LowWaterTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def LowWaterRestart(self):
-        print("Restarting LowWater Test")
+        try:
+            print("Restarting LowWater Test")
+
+            # ---------- State reset ----------
+            self.lowwater_results = ""
+            self.lowwater_passed = [False] * len(self.lowwater_passed)
+            self.lowwater_failed = [False] * len(self.lowwater_failed)
+            self.lowwater_completed = False
+            self.current_lowwater_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.lowwaterlabel.setText(
+                "<b>    Make sure that the Coffee Maker water tank is empty.<br><br>"
+            "       Verify V10 is closed, open V11 to ensure water lines are drained.<br><br>"
+            "       Ensure EDB is in the OFF position.<br><br>"
+            "       Connect unit to power and water supplies.<br><br>"
+            "       Set EDB to the on position.<br><br>"
+            "       Press ON/OFF switch.</b><br><br>"
+            "       <i>ON/OFF and LOW WATER lamps should come on.</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "lowwaterrestart") and self.lowwaterrestart:
+                self.lowwatertestbuttonlayout.removeWidget(self.lowwaterrestart)
+                self.lowwaterrestart.deleteLater()
+                self.lowwaterrestart = None
+
+            if hasattr(self, "lowwaternext") and self.lowwaternext:
+                self.lowwatertestbuttonlayout.removeWidget(self.lowwaternext)
+                self.lowwaternext.deleteLater()
+                self.lowwaternext = None
+
+            # ---------- Restore Begin button ----------
+            self.lowwaterbeginbutton.setText("Begin")
+            try:
+                self.lowwaterbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.lowwaterbeginbutton.clicked.connect(self.LowWater)
+
+        except Exception as e:
+            print(f"Error restarting LowWater Test: {e}")
 
     def LowWaterResults(self):
         print("Printing LowWater Test Results")

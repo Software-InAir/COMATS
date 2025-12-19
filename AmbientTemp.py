@@ -361,7 +361,46 @@ class AmbientTemperatureTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def AmbientTemperatureRestart(self):
-        print("Restarting AmbientTemperature Test")
+        try:
+            print("Restarting AmbientTemperature Test")
+
+            # ---------------- State reset ----------------
+            self.ambienttemp_results = ""
+            self.ambienttemp_passed = [False, False, False]
+            self.ambienttemp_failed = [False, False, False]
+            self.ambienttemp_completed = False
+            self.current_ambienttemp_step = 0
+            self.step_status = {}
+
+            # ---------------- UI reset ----------------
+            # Restore original instruction text
+            self.ambienttemplabel.setText(
+                "<b>1. Using the wall thermometer, measure the temperature in the adjacent"
+                " area of the test environment. </b><br><br>"
+                "<i>The temperature should be between 70° F (21° C) and 85° F (29° C).</i><br><br>"
+            )
+
+            # Remove "complete screen" buttons if they exist
+            if hasattr(self, "ambienttemprestart") and self.ambienttemprestart is not None:
+                self.ambienttemptestbuttonlayout.removeWidget(self.ambienttemprestart)
+                self.ambienttemprestart.deleteLater()
+                self.ambienttemprestart = None
+
+            if hasattr(self, "ambienttempnext") and self.ambienttempnext is not None:
+                self.ambienttemptestbuttonlayout.removeWidget(self.ambienttempnext)
+                self.ambienttempnext.deleteLater()
+                self.ambienttempnext = None
+
+            # Restore Begin button to original behavior
+            self.ambienttempbeginbutton.setText("Begin")
+            try:
+                self.ambienttempbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.ambienttempbeginbutton.clicked.connect(self.AmbientTemperature)
+
+        except Exception as e:
+            print(f"Error restarting AmbientTemperature Test: {e}")
 
     def AmbientTemperatureResults(self):
         print("Printing AmbientTemperature Test Results")

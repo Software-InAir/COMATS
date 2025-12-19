@@ -413,7 +413,54 @@ class DielectricTest(QWidget):
                         print(f"Error updating resistance result: {e}")
 
         def DielectricRestart(self):
-                print("Restarting Dielectric Test")
+
+                try:
+                        print("Restarting Dielectric Test")
+
+                        # ---------- State reset ----------
+                        self.dielectric_results = ""
+                        self.dielectric_passed = [False] * len(self.dielectric_passed)
+                        self.dielectric_failed = [False] * len(self.dielectric_failed)
+                        self.dielectric_completed = False
+                        self.current_dielectric_step = 0
+                        self.step_status = {}
+
+                        # ---------- Restore instructions ----------
+                        self.dielectriclabel.setText(
+                                """
+                Begin by removing side panel<br><br><br>
+                <b>1. Disconnect the P1 connector from J1 connector on circuit board.</b><br<br>
+                <b>2. Install IAS11003B circular box connector into power input.</b><br><br>
+                <i>Confirm test box leads are connected to hipot tester.</i><br><br>
+                <b>2a. Install red and black test box jumpers from C to H.<br><br>
+                Turn on the QuadTech Guardian 2510 Hipot Tester and press start.<br><br>
+                The tester will increase the voltage of the Hi Pot test set in increments of 250 to 500 volts per second<br>
+                until 1500 volts are applied across test connection and maintain the voltage at the 1500 volt level for 60 seconds.</b><br><br>
+                Press Begin to continue.<br><br>
+                """
+                        )
+
+                        # ---------- Remove completion buttons ----------
+                        if hasattr(self, "dielectricrestart") and self.dielectricrestart:
+                                self.dielectrictestbuttonlayout.removeWidget(self.dielectricrestart)
+                                self.dielectricrestart.deleteLater()
+                                self.dielectricrestart = None
+
+                        if hasattr(self, "dielectricnext") and self.dielectricnext:
+                                self.dielectrictestbuttonlayout.removeWidget(self.dielectricnext)
+                                self.dielectricnext.deleteLater()
+                                self.dielectricnext = None
+
+                        # ---------- Restore Begin button ----------
+                        self.dielectricbeginbutton.setText("Begin")
+                        try:
+                                self.dielectricbeginbutton.clicked.disconnect()
+                        except TypeError:
+                                pass
+                        self.dielectricbeginbutton.clicked.connect(self.Dielectric)
+
+                except Exception as e:
+                        print(f"Error restarting Dielectric Test: {e}")
 
         def DielectricResults(self):
                 print("Printing Dielectric Test Results")

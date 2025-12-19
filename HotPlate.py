@@ -392,7 +392,43 @@ class HotPlateTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def HotPlateRestart(self):
-        print("Restarting Hot Plate Test")
+        try:
+            print("Restarting HotPlate Test")
+
+            # ---------- State reset ----------
+            self.hotplate_results = ""
+            self.hotplate_passed = [False] * len(self.hotplate_passed)
+            self.hotplate_failed = [False] * len(self.hotplate_failed)
+            self.hotplate_completed = False
+            self.current_hotplate_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.hotplatelabel.setText(
+                "<b>Press the HOT PLATE button and verify that the HOT PLATE indicator turns on.</b><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "hotplaterestart") and self.hotplaterestart:
+                self.hotplatetestbuttonlayout.removeWidget(self.hotplaterestart)
+                self.hotplaterestart.deleteLater()
+                self.hotplaterestart = None
+
+            if hasattr(self, "hotplatenext") and self.hotplatenext:
+                self.hotplatetestbuttonlayout.removeWidget(self.hotplatenext)
+                self.hotplatenext.deleteLater()
+                self.hotplatenext = None
+
+            # ---------- Restore Begin button ----------
+            self.hotplatebeginbutton.setText("Begin")
+            try:
+                self.hotplatebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.hotplatebeginbutton.clicked.connect(self.HotPlate)
+
+        except Exception as e:
+            print(f"Error restarting HotPlate Test: {e}")
 
     def HotPlateResults(self):
         print("Printing Hot Plate Test Results")

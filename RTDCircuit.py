@@ -503,7 +503,53 @@ class RTDCircuitTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def RTDCircuitRestart(self):
-        print("Restarting RTDCircuit Test")
+        try:
+            print("Restarting RTDCircuit Test")
+
+            # ---------- State reset ----------
+            self.rtdcircuit_results = ""
+            self.rtdcircuit_passed = [False] * len(self.rtdcircuit_passed)
+            self.rtdcircuit_failed = [False] * len(self.rtdcircuit_failed)
+            self.rtdcircuit_completed = False
+            self.current_rtdcircuit_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.rtdcircuitlabel.setText(
+                "<b>1. With the Beverage Maker connected to the water supply and the red lever on the EDB in the OFF position,"
+            " remove the cover from the power module assy and disconnect the RTD assy plug (P4) from the J4"
+            " connector on the controller board assy.<br><br>"
+            "2. Connect the DMM (set to ohms scale) to the RTD simulator harness (IAS11003A).<br><br>"
+            "Rotate the knob until 1430±1 ohms is indicated on the DMM.<br><br>"
+            "Change DMM to DC volts then connect harness inline between the controller board assy (J4) and P4.<br><br>"
+            "3. Connect the Beverage Maker to the power supply.<br><br>"
+            "Set the red lever on the EDB to the ON position.<br><br>"
+            "4. Press the power button.<br><br>"
+            "<i>This should trip the safety latch.</i><br><br>"
+            "<i>(If the safety latch is tripped, there will be no current drawn to the heaters and the power indicator light should go into double-blink mode.)</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "rtdcircuitrestart") and self.rtdcircuitrestart:
+                self.rtdcircuittestbuttonlayout.removeWidget(self.rtdcircuitrestart)
+                self.rtdcircuitrestart.deleteLater()
+                self.rtdcircuitrestart = None
+
+            if hasattr(self, "rtdcircuitnext") and self.rtdcircuitnext:
+                self.rtdcircuittestbuttonlayout.removeWidget(self.rtdcircuitnext)
+                self.rtdcircuitnext.deleteLater()
+                self.rtdcircuitnext = None
+
+            # ---------- Restore Begin button ----------
+            self.rtdcircuitbeginbutton.setText("Begin")
+            try:
+                self.rtdcircuitbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.rtdcircuitbeginbutton.clicked.connect(self.RTDCircuit)
+
+        except Exception as e:
+            print(f"Error restarting RTDCircuit Test: {e}")
 
     def RTDCircuitResults(self):
         print("Printing RTDCircuit Test Results")

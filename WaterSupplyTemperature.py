@@ -286,7 +286,7 @@ class WaterTempTest(QWidget):
             print(f"Error: {e}")
 
     def updateWaterTempStep(self):
-        if self.watertemp_passed[0] or self.watertemp_failed[0]:
+        if self.watertemp_passed[0] or self.watertemp_failed[0] or self.current_watertemp_step > 0:
             self.watertemplabel.setText(
                 "<b>Test Complete.</b><br><br>"
                 "<b>The Water Supply Temperature test has been completed successfully.</b><br><br>"
@@ -358,7 +358,48 @@ class WaterTempTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def WaterTempRestart(self):
-        print("Restarting WaterTemp Test")
+        try:
+            print("Restarting WaterTemp Test")
+
+            # ---------- State reset ----------
+            self.watertemp_results = ""
+            self.watertemp_passed = [False] * len(self.watertemp_passed)
+            self.watertemp_failed = [False] * len(self.watertemp_failed)
+            self.watertemp_completed = False
+            self.current_watertemp_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.watertemplabel.setText(
+                "<b>1. If water supply is connected to the Beverage Maker, "
+                "disconnect water supply from the Beverage Maker. <br><br>"
+                "Open V9 for 10 seconds to flow water through TM2. <br><br>"
+                "2. Measure the temperature of the water from the water "
+                "supply by reading thermometer TM2. </b><br><br>"
+            "<i> The temperature of the water should be 62° F (17° C) to 72° F (22° C). </i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "watertemprestart") and self.watertemprestart:
+                self.watertemptestbuttonlayout.removeWidget(self.watertemprestart)
+                self.watertemprestart.deleteLater()
+                self.watertemprestart = None
+
+            if hasattr(self, "watertempnext") and self.watertempnext:
+                self.watertemptestbuttonlayout.removeWidget(self.watertempnext)
+                self.watertempnext.deleteLater()
+                self.watertempnext = None
+
+            # ---------- Restore Begin button ----------
+            self.watertempbeginbutton.setText("Begin")
+            try:
+                self.watertempbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.watertempbeginbutton.clicked.connect(self.WaterTemp)
+
+        except Exception as e:
+            print(f"Error restarting WaterTemp Test: {e}")
 
     def WaterTempResults(self):
         print("Printing WaterTemp Test Results")
@@ -367,6 +408,8 @@ class WaterTempTest(QWidget):
         self.test_id = test_id
         self.api_base_url = api_base_url.rstrip("/")
         print(f"[WaterTemp] Context set: test_id={self.test_id}, api_base_url={self.api_base_url}")
+
+        self.SubtestsCompleted()
 
     def PostWaterTempResults(self, status: str,data: dict, notes: str):
         if self.test_id is None or self.api_base_url is None:
@@ -536,6 +579,43 @@ class WaterTempTest(QWidget):
             self.start_webgl()
         except Exception as e:
             print(f"Error loading 3D Model: {e}")
+
+    def SubtestsCompleted(self):
+        if self.test_id is None or self.api_base_url is None:
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/watertemp"
+            r = requests.get(url, timeout=3)
+
+            if r.status_code == 404:
+                print("this")
+                return  # not run yet
+
+            r.raise_for_status()
+            payload = r.json()
+
+            status = payload.get("status", "").upper()
+            print(status)
+
+            if status in ("PASS", "FAIL", "COMPLETED"):
+                # Fully done → jump to completed screen
+                self.current_watertemp_step = 1
+                print(f"Current step: {self.current_watertemp_step}")
+                self.updateWaterTempStep()
+
+            elif status == "INCOMPLETE":
+                steps = payload.get("data", {}).get("steps", {})
+                # Resume at "next" step index
+                self.current_watertemp_step = len(steps)
+                print(f"Current step: {self.current_watertemp_step}")
+                self.updateWaterTempStep()
+                return
+
+            self.updateWaterTempStep()
+
+        except Exception as e:
+            print(f"[WaterTemp] sync_completed_from_db failed: {e}")
 
 
 

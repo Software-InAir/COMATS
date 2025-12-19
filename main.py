@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         self.setFixedSize(1280, 635)
 
 
-        self.api_base_url = "http://comats:8000"
+        self.api_base_url = "http://100.125.162.6:8000"
         self.current_test_id = None
 
 

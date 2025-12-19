@@ -346,7 +346,45 @@ class ServerRetainerTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def ServerRetainerRestart(self):
-        print("Restarting ServerRetainer Test")
+        try:
+            print("Restarting ServerRetainer Test")
+
+            # ---------- State reset ----------
+            self.serverretainer_results = ""
+            self.serverretainer_passed = [False] * len(self.serverretainer_passed)
+            self.serverretainer_failed = [False] * len(self.serverretainer_failed)
+            self.serverretainer_completed = False
+            self.current_serverretainer_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.serverretainerlabel.setText(
+                "<b>With a server and the brew cup installed, lower the brew handle.<br><br>"
+            "Pull on the server to make sure the server retainer is working correctly.</b><br><br>"
+            "<i>Server should remain firmly in place</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "serverretainerrestart") and self.serverretainerrestart:
+                self.serverretainertestbuttonlayout.removeWidget(self.serverretainerrestart)
+                self.serverretainerrestart.deleteLater()
+                self.serverretainerrestart = None
+
+            if hasattr(self, "serverretainernext") and self.serverretainernext:
+                self.serverretainertestbuttonlayout.removeWidget(self.serverretainernext)
+                self.serverretainernext.deleteLater()
+                self.serverretainernext = None
+
+            # ---------- Restore Begin button ----------
+            self.serverretainerbeginbutton.setText("Begin")
+            try:
+                self.serverretainerbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.serverretainerbeginbutton.clicked.connect(self.ServerRetainer)
+
+        except Exception as e:
+            print(f"Error restarting ServerRetainer Test: {e}")
 
     def ServerRetainerResults(self):
         print("Printing ServerRetainer Test Results")

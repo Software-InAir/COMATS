@@ -1,7 +1,7 @@
 Workorder Number: 001
 Unit Number: 11225-1
-Unit Serial Number: 242341
-Unit Part Number: 1452
+Unit Serial Number: 456
+Unit Part Number: 45646
 Technician Name: Carlos
 
 
@@ -10,15 +10,24 @@ Creating a 11225-1 Test File
 _Functional Tests_
 
 >>Visual Inspection Test<<
-Visual Inspection:														PASS
-Physical Damage or Missing Parts
+Visual Inspection:																FAIL
 Power Connector P2 Damage
 Water Inlet Plug Damage
 Improperly Tied Wiring
 Bent Rail Supports
 Brew Handle Damage
 Switch Lens Damage
-Electrical Enclosure Damage or Missing Parts
+Loose Terminal Blocks
+Damaged Electrical Enclosure Wiring
+Connector J1 Damage
+Relay Socket Damage or Corrosion
+Circuit Breaker CB1 Damage
+
+Power Connector P2 Damage
+Water Inlet Plug Damage
+Improperly Tied Wiring
+Brew Handle Damage
+Switch Lens Damage
 Loose Terminal Blocks
 Damaged Electrical Enclosure Wiring
 Connector J1 Damage
@@ -41,14 +50,13 @@ Circuit Breaker CB1 Damage
 
 
 >>Low Water Test<<
-Low Water Indicator Test: 										FAIL
 Phase B Amperage Test: 0.0												PASS
 Phase A Amperage Test: 0.0												PASS
 Low Water Indicator Light Deactivate Test: 										PASS
-ON/OFF and Low Water Indicator Light Test: 										FAIL
+ON/OFF and Low Water Indicator Light Test: 										PASS
 
 >>Water Leaks Inspection Test<<
-Water Leaks Inspection Test: 	PASS
+Water Leaks Inspection Test: 	FAIL
 Water PSIG: 0.0	FAIL
 
 >>Heater Current Test<<
@@ -64,19 +72,35 @@ Hot Water Light Test: 	PASS
 >>Brew Test<<
 Water Level: 0.0 inches
 	FAIL
+	FAIL
+	FAIL
+	FAIL
+	PASS
+	PASS
+	FAIL
+	FAIL
+	FAIL
+	FAIL
 Brew Cycle Duration: 0.0 seconds
+	FAIL
+	FAIL
+	FAIL
+	FAIL
 	FAIL
 
 >>Temperature Test<<
 Server Temperature: 0.0°F
 	FAIL
 	FAIL
+	FAIL
 Brew Cup Temperature: 0.0°F 
+	FAIL
 	FAIL
 	FAIL
 
 >>Heated Water Test<<
 Heated Water Flow Rate: 0.0GPM 
+	FAIL
 	FAIL
 
 >>Lamp Test<<
@@ -92,18 +116,18 @@ Power Interrupt Test: 	PASS
 >>Brew Interrupt Test<<
 Brew Flow: 0.0GPM 
 	PASS
+	PASS
 Brew Interrupt Test: 	PASS
 
 >>IRED Monitor Test<<
-Brew Flow: 0.0GPM 
-	PASS
-	PASS
-IRED Monitor Test: 	FAIL
+IRED Monitor Test: 	PASS
 
 >>Pressure Relief Valve Test<<
 Vented Pressure: 0.0 PSIG 
 	PASS
+	PASS
 Pressure Relief Valve Leak Check: 	PASS
 Pressure Relief Valve Operational Pressure: 0.0 PSIG 
+	FAIL
 	FAIL
 

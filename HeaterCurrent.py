@@ -414,14 +414,58 @@ class HeaterCurrentTest(QWidget):
 
     def updateHeaterCurrentStep(self):
 
+        # ----------------------------
+        # Completion screen MUST win
+        # ----------------------------
+        if (self.heatercurrent_passed[2] or self.heatercurrent_failed[2] or
+                self.current_heatercurrent_step > 4):
+
+            self.heatercurrentlabel.setText(
+                "<b>Test Completed</b><br><br>"
+                "The Heater Current test has been completed successfully!</b><br><br>"
+            )
+
+            self.heatercurrentbeginbutton.setText("Results")
+            try:
+                self.heatercurrentbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.heatercurrentbeginbutton.clicked.connect(self.HeaterCurrentResults)
+
+            # Don't stack duplicate buttons if updateHeaterCurrentStep runs again
+            if not (hasattr(self, "heatercurrentrestart") and self.heatercurrentrestart):
+                self.heatercurrentrestart = QPushButton("Restart", self)
+                self.heatercurrentrestart.clicked.connect(self.HeaterCurrentRestart)
+                self.heatercurrentrestart.setFixedWidth(200)
+                self.heatercurrenttestbuttonlayout.addWidget(
+                    self.heatercurrentrestart,
+                    alignment=Qt.AlignmentFlag.AlignCenter
+                )
+
+            if not (hasattr(self, "heatercurrentnext") and self.heatercurrentnext):
+                self.heatercurrentnext = QPushButton("Next", self)
+                self.heatercurrentnext.clicked.connect(self.HeaterCurrentNext)
+                self.heatercurrentnext.setFixedWidth(200)
+                self.heatercurrenttestbuttonlayout.addWidget(
+                    self.heatercurrentnext,
+                    alignment=Qt.AlignmentFlag.AlignCenter
+                )
+
+            return  # critical: prevent step screens below from overwriting completion UI
+
+        # ----------------------------
+        # Step screens (kept EXACTLY)
+        # ----------------------------
         if self.heatercurrent_passed[0] or self.heatercurrent_failed[0]:
             print("Update Heater Current Step")
             self.heatercurrentlabel.setText(
                 "  <i> The LOW WATER lamp should turn off once tank is full. </i><br><br>"
-
             )
             self.heatercurrentbeginbutton.setText("Continue")
-            self.heatercurrentbeginbutton.clicked.disconnect()
+            try:
+                self.heatercurrentbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
             self.heatercurrentbeginbutton.clicked.connect(self.HeaterCurrent)
 
         if self.heatercurrent_passed[1] or self.heatercurrent_failed[1]:
@@ -431,29 +475,11 @@ class HeaterCurrentTest(QWidget):
                 " <i>  Please enter the amperage of Phase A as displayed by the self.phase readings window </i><br><br>"
             )
             self.heatercurrentbeginbutton.setText("Continue")
-            self.heatercurrentbeginbutton.clicked.disconnect()
+            try:
+                self.heatercurrentbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
             self.heatercurrentbeginbutton.clicked.connect(self.HeaterCurrent)
-
-
-        if self.heatercurrent_passed[2] or self.heatercurrent_failed[2] or self.current_heatercurrent_step > 4:
-            self.heatercurrentlabel.setText(
-                "<b>Test Completed</b><br><br>"
-                "The Heater Current test has been completed successfully!</b><br><br>"
-            )
-            self.heatercurrentbeginbutton.setText("Results")
-            self.heatercurrentbeginbutton.clicked.disconnect()
-            self.heatercurrentbeginbutton.clicked.connect(self.HeaterCurrentResults)
-
-            self.heatercurrentrestart = QPushButton("Restart", self)
-            self.heatercurrentrestart.clicked.connect(self.HeaterCurrentRestart)
-            self.heatercurrentrestart.setFixedWidth(200)
-            self.heatercurrenttestbuttonlayout.addWidget(self.heatercurrentrestart, alignment=Qt.AlignmentFlag.AlignCenter)
-
-            self.heatercurrentnext = QPushButton("Next", self)
-            self.heatercurrentnext.clicked.connect(self.HeaterCurrentNext)
-            self.heatercurrentnext.setFixedWidth(200)
-            self.heatercurrenttestbuttonlayout.addWidget(self.heatercurrentnext,
-                                                            alignment=Qt.AlignmentFlag.AlignCenter)
 
     def HeaterCurrentNext(self):
         current =self.tabs.currentIndex()
@@ -506,7 +532,44 @@ class HeaterCurrentTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def HeaterCurrentRestart(self):
-        print("Restarting HeaterCurrent Test")
+        try:
+            print("Restarting HeaterCurrent Test")
+
+            # ---------- State reset ----------
+            self.heatercurrent_results = ""
+            self.heatercurrent_passed = [False] * len(self.heatercurrent_passed)
+            self.heatercurrent_failed = [False] * len(self.heatercurrent_failed)
+            self.heatercurrent_completed = False
+            self.current_heatercurrent_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.heatercurrentlabel.setText(
+                "<b>Press ON/OFF switch (this activates the electric vent valve).</b> <br><br>"
+            "<i>   FM should read above 0 as the water tank completes filling. </i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "heatercurrentrestart") and self.heatercurrentrestart:
+                self.heatercurrenttestbuttonlayout.removeWidget(self.heatercurrentrestart)
+                self.heatercurrentrestart.deleteLater()
+                self.heatercurrentrestart = None
+
+            if hasattr(self, "heatercurrentnext") and self.heatercurrentnext:
+                self.heatercurrenttestbuttonlayout.removeWidget(self.heatercurrentnext)
+                self.heatercurrentnext.deleteLater()
+                self.heatercurrentnext = None
+
+            # ---------- Restore Begin button ----------
+            self.heatercurrentbeginbutton.setText("Begin")
+            try:
+                self.heatercurrentbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.heatercurrentbeginbutton.clicked.connect(self.HeaterCurrent)
+
+        except Exception as e:
+            print(f"Error restarting HeaterCurrent Test: {e}")
 
     def HeaterCurrentResults(self):
         print("Printing HeaterCurrent Test Results")
@@ -701,7 +764,7 @@ class HeaterCurrentTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_heatercurrent_step = 2
+                self.current_heatercurrent_step = 5
                 print(f"Current step: {self.current_heatercurrent_step}")
                 self.updateHeaterCurrentStep()
 

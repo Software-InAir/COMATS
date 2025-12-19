@@ -457,7 +457,54 @@ class TankPressureTest(QWidget):
             print(f"Error updating tank pressure result: {e}")
 
     def TankPressureRestart(self):
-        print("Restarting TankPressure Test")
+        try:
+            print("Restarting TankPressure Test")
+
+            # ---------- State reset ----------
+            self.tankpressure_results = ""
+            self.tankpressure_passed = [False] * len(self.tankpressure_passed)
+            self.tankpressure_failed = [False] * len(self.tankpressure_failed)
+            self.tankpressure_completed = False
+            self.current_tankpressure_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.tankpressurelabel.setText(
+                "<b>Remove plastic drain tube from clip behind server.<br><br>"
+            "Use 11/16 wrench to remove pressure relief valve.<br><br>"
+            "Use a 7/16 wrench to secure 1/8 inch NPT plug wrapped with teflon tape.<br><br>"
+            "1. Replace the pressure relief valve with a 1/8 inch NPT plug prior to " 
+            "testing.<br><br>"
+            "Close V10 then turn V8 vertical. <br><br>"
+            "2. Connect the Beverage Maker to water supply and then open V10.<br><br>"
+            "3. Let tank fill with water. Flow meter will go to zero when tank is full.<br><br>" 
+            "4. Adjust water pressure by rotating V7 clockwise until PG2 reads 130 psig (8.96 barg).<br><br>"
+            "Hold for a minimum of 5 minutes.<br><br>"
+            "Inspect tank for leaks.<br><br>"
+            "<i>No leaks are allowed.</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "tankpressurerestart") and self.tankpressurerestart:
+                self.tankpressuretestbuttonlayout.removeWidget(self.tankpressurerestart)
+                self.tankpressurerestart.deleteLater()
+                self.tankpressurerestart = None
+
+            if hasattr(self, "tankpressurenext") and self.tankpressurenext:
+                self.tankpressuretestbuttonlayout.removeWidget(self.tankpressurenext)
+                self.tankpressurenext.deleteLater()
+                self.tankpressurenext = None
+
+            # ---------- Restore Begin button ----------
+            self.tankpressurebeginbutton.setText("Begin")
+            try:
+                self.tankpressurebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.tankpressurebeginbutton.clicked.connect(self.TankPressure)
+
+        except Exception as e:
+            print(f"Error restarting TankPressure Test: {e}")
 
     def TankPressureResults(self):
         print("Printing TankPressure Test Results")

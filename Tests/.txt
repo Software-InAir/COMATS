@@ -1,7 +1,7 @@
-Workorder Number: 002
+Workorder Number: 
 Unit Number: 11225-1
-Unit Serial Number: 24525
-Unit Part Number: 2455
+Unit Serial Number: 
+Unit Part Number: 
 Technician Name: Carlos
 
 
@@ -16,11 +16,6 @@ _Functional Tests_
 >>Water Leaks Inspection Test<<
 
 >>Heater Current Test<<
-Phase C: 0.0 A	FAIL
-Phase B: 0.0 A	FAIL
-Phase A: 0.0 A	FAIL
-LOW Indicator Light Test: 	PASS
-Flow Meter Test: 	PASS
 
 >>Hot Water Light Test<<
 

@@ -454,7 +454,45 @@ class ResistanceTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def ResistanceRestart(self):
-        print("Restarting Resistance Test")
+        try:
+            print("Restarting Resistance Test")
+
+            # ---------- State reset ----------
+            self.resistance_results = ""
+            self.resistance_passed = [False] * len(self.resistance_passed)
+            self.resistance_failed = [False] * len(self.resistance_failed)
+            self.resistance_completed = False
+            self.current_resistance_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.resistancelabel.setText(
+                "<b>Turn QuadTech Milliohm Meter on. <br><br>"
+                "1. Check resistance from plug lead G to un-anodized brew shelf.</b><br><br> "
+                "<i> The millohm meter should not exceed 4.5 milliohms. </i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "resistancerestart") and self.resistancerestart:
+                self.resistancetestbuttonlayout.removeWidget(self.resistancerestart)
+                self.resistancerestart.deleteLater()
+                self.resistancerestart = None
+
+            if hasattr(self, "resistancenext") and self.resistancenext:
+                self.resistancetestbuttonlayout.removeWidget(self.resistancenext)
+                self.resistancenext.deleteLater()
+                self.resistancenext = None
+
+            # ---------- Restore Begin button ----------
+            self.resistancebeginbutton.setText("Begin")
+            try:
+                self.resistancebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.resistancebeginbutton.clicked.connect(self.Resistance)
+
+        except Exception as e:
+            print(f"Error restarting Resistance Test: {e}")
 
     def ResistanceResults(self):
         print("Printing Resistance Test Results")

@@ -445,7 +445,49 @@ class PressureReliefValveTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def PressureReliefValveRestart(self):
-        print("Restarting Pressure Relief Valve Test")
+        try:
+            print("Restarting PressureReliefValve Test")
+
+            # ---------- State reset ----------
+            self.pressurereliefvalve_results = ""
+            self.pressurereliefvalve_passed = [False] * len(self.pressurereliefvalve_passed)
+            self.pressurereliefvalve_failed = [False] * len(self.pressurereliefvalve_failed)
+            self.pressurereliefvalve_completed = False
+            self.current_pressurereliefvalve_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.pressurereliefvalvelabel.setText(
+                "<b>Remove brew cup assembly. <br><br>"
+            "Close V10 then turn V8 vertical. <br><br>"
+            "Connect the Coffee Maker to water supply and then open V10. <br><br>"
+            "Let tank fill with water, FM will go to zero when full. <br><br>"
+            "With water tank full, increase source water pressure by rotating V7 clockwise while venting V9 periodically until pressure relief valve opens.<br><br>"
+            "Verify the pressure relief valve opens as indicated by water dripping in brew cup assembly housing. </b><br><br>"
+            "<i>Make sure that the pressure relief valve opens at 95±10 PSIG.</i> <br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "pressurereliefvalverestart") and self.pressurereliefvalverestart:
+                self.pressurereliefvalvetestbuttonlayout.removeWidget(self.pressurereliefvalverestart)
+                self.pressurereliefvalverestart.deleteLater()
+                self.pressurereliefvalverestart = None
+
+            if hasattr(self, "pressurereliefvalvenext") and self.pressurereliefvalvenext:
+                self.pressurereliefvalvetestbuttonlayout.removeWidget(self.pressurereliefvalvenext)
+                self.pressurereliefvalvenext.deleteLater()
+                self.pressurereliefvalvenext = None
+
+            # ---------- Restore Begin button ----------
+            self.pressurereliefvalvebeginbutton.setText("Begin")
+            try:
+                self.pressurereliefvalvebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.pressurereliefvalvebeginbutton.clicked.connect(self.PressureReliefValve)
+
+        except Exception as e:
+            print(f"Error restarting PressureReliefValve Test: {e}")
 
     def PressureReliefValveResults(self):
         print("Printing Pressure Relief Valve Test Results")

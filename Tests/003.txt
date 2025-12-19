@@ -1,0 +1,64 @@
+Workorder Number: 003
+Unit Number: 4510-28UG-00
+Unit Serial Number: 54424
+Unit Part Number: 2424
+Technician Name: Carlos
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+Megaohmmeter Resistance Test 2: 0.0 mΩ	FAIL
+Hi Pot Current Test 1: 0.0 mA	PASS
+
+>>Resistance Test<<
+Resistance Test 3: 0.0 mΩ	PASS
+Resistance Test 2: 0.0 mΩ	PASS
+Resistance Test 1: 0.0 mΩ	PASS
+
+>>Water Supply Temperature Test<<
+Water Supply Temperature Test 1: 0.0°C 	FAIL
+
+>>Ambient Temperature Test<<
+Ambient Temperature Test 1: 0.0°C 	FAIL
+
+>>Tank Pressure Test<<
+Tank Pressure Test 3: 0.0 PSI 	PASS
+Vent Valve Test: 	PASS
+Leak Check Test: 	PASS
+
+>>Power and Low Indicator Light Test<<
+Power Indicator Light deactivated: 	PASS
+No tank leaks found and Power Indicator Light activated: 	PASS
+Power Indicator Light deactivates after being pressed: 	PASS
+Power and Low Indicator Light activated: 	PASS
+
+>>RTD Test<<
+
+>>Heated Water Test<<
+Heated Water Flow Rate: 0.0GPM 
+	FAIL
+
+>>Hot Plate Test<<
+Hot Plate Temperature: 	PASS
+Hot Plate Indicator Light: 	PASS
+
+>>Tank Heater and Preheater Test<<
+Elapsed Time Test: 	PASS
+Phase C current: 0.0 A	FAIL
+Phase B current: 0.0 A	FAIL
+Phase A current: 0.0 A	FAIL
+
+>>Brew Test<<
+Power Indicator Test: 											PASS
+Brew Temperature Test: 0.0°C 									FAIL
+Consecutive Brew Test: 											PASS
+Brew Continuation Test: 										PASS
+Brew Interruption Test: 										PASS
+
+>>Server Retainer Test<<
+Server Retainer Test: 	PASS
+
+>>Tea Test<<Tea Option: 	INSTALLED

@@ -471,7 +471,43 @@ class TeaTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def TeaRestart(self):
-        print("Restarting Tea Test")
+        try:
+            print("Restarting Tea Test")
+
+            # ---------- State reset ----------
+            self.tea_results = ""
+            self.tea_passed = [False] * len(self.tea_passed)
+            self.tea_failed = [False] * len(self.tea_failed)
+            self.tea_completed = False
+            self.current_tea_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.tealabel.setText(
+                "<b>Is the tea option installed on current unit?</b><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "tearestart") and self.tearestart:
+                self.teatestbuttonlayout.removeWidget(self.tearestart)
+                self.tearestart.deleteLater()
+                self.tearestart = None
+
+            if hasattr(self, "teanext") and self.teanext:
+                self.teatestbuttonlayout.removeWidget(self.teanext)
+                self.teanext.deleteLater()
+                self.teanext = None
+
+            # ---------- Restore Begin button ----------
+            self.teabeginbutton.setText("Begin")
+            try:
+                self.teabeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.teabeginbutton.clicked.connect(self.Tea)
+
+        except Exception as e:
+            print(f"Error restarting Tea Test: {e}")
 
     def TeaResults(self):
         print("Printing Tea Test Results")

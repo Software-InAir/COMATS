@@ -399,7 +399,48 @@ class WaterLeaksTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def WaterLeaksRestart(self):
-        print("Restarting WaterLeaks Test")
+        try:
+            print("Restarting WaterLeaks Test")
+
+            # ---------- State reset ----------
+            self.waterleaks_results = ""
+            self.waterleaks_passed = [False] * len(self.waterleaks_passed)
+            self.waterleaks_failed = [False] * len(self.waterleaks_failed)
+            self.waterleaks_completed = False
+            self.current_waterleaks_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.waterleakslabel.setText(
+                "<b>Turn off the ON/OFF switch. <br><br>"
+            "   Ensure unit is drained by closing V10 and opening V11. <br><br>"
+            "   Turn PG2 on. <br><br>"
+            "   Turn on the water supply by closing V11 and opening V10. <br><br>"
+            "<i>Verify water pressure is 26 PSIG by checking PG2 while water is flowing.<br><br>"
+            "   Water flow rate should be greater than .25 gallons per minute as indicated by FM.</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "waterleaksrestart") and self.waterleaksrestart:
+                self.waterleakstestbuttonlayout.removeWidget(self.waterleaksrestart)
+                self.waterleaksrestart.deleteLater()
+                self.waterleaksrestart = None
+
+            if hasattr(self, "waterleaksnext") and self.waterleaksnext:
+                self.waterleakstestbuttonlayout.removeWidget(self.waterleaksnext)
+                self.waterleaksnext.deleteLater()
+                self.waterleaksnext = None
+
+            # ---------- Restore Begin button ----------
+            self.waterleaksbeginbutton.setText("Begin")
+            try:
+                self.waterleaksbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.waterleaksbeginbutton.clicked.connect(self.WaterLeaks)
+
+        except Exception as e:
+            print(f"Error restarting WaterLeaks Test: {e}")
 
     def WaterLeaksResults(self):
         print("Printing WaterLeaks Test Results")

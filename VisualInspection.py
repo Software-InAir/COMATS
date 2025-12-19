@@ -455,7 +455,112 @@ class VisualInspectionTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def VisualInspectionRestart(self):
-        print("Restarting VisualInspection Test")
+        try:
+            print("Restarting Test")
+
+            # Reset state
+            self.current_visualinspection_step = 0
+
+            # Restore instructions (keep your existing HTML)
+            self.visualinspectionlabel.setText(
+                "<b>1. Inspect Coffee Maker for physical damage and verify all parts are present and secure.<br>"
+                "   2. Inspect power connector P2 for damage, verify pins are straight and not excessively worn.<br>"
+                "   3. Inspect water inlet plug for damage and/or contamination.<br>"
+                "   4. Inspect bottom of Coffee Maker to verify all wires are properly tied, "
+                "   and that the Coffee Maker is free of obstruction to installation.<br>"
+                "   5. Check rail supports for straightness.<br>"
+                "   6. Check brew handle for proper operation.<br>"
+                "   7. Inspect switch lens caps for cracks, marks, or illegible printing.<br><br>"
+                "   Electrical Enclosure:<br>"
+                "   1. Check that all parts are present and undamaged.<br>"
+                "   2. Check terminal block attachments for tightness.<br>"
+                "   3. Check that wires are undamaged, secured and routed out of the way as much as possible.<br>"
+                "   4. Check connector J1 for damaged contacts and good solder joints.<br>"
+                "   5. Inspect relay socket for corrosion or overheated wires.<br>"
+                "   6. Check the circuit breaker CB1 for proper operation.</b><br>"
+                "<i></i><br><br>"
+            )
+
+            # --- 1) Remove "complete screen" buttons if they exist ---
+            if hasattr(self, "visualinspectionrestart") and self.visualinspectionrestart:
+                self.visualinspectiontestbuttonlayout.removeWidget(self.visualinspectionrestart)
+                self.visualinspectionrestart.deleteLater()
+                self.visualinspectionrestart = None
+
+            if hasattr(self, "visualinspectionnext") and self.visualinspectionnext:
+                self.visualinspectiontestbuttonlayout.removeWidget(self.visualinspectionnext)
+                self.visualinspectionnext.deleteLater()
+                self.visualinspectionnext = None
+
+            # --- 2) Clear old checklist widgets FIRST (this is the key fix) ---
+            while self.visualinspectionchecklayout.count():
+                child = self.visualinspectionchecklayout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+
+            # --- 3) Rebuild the checklist ---
+            self.checkList1 = QCheckBox()
+            self.checkList1.setStyleSheet("padding-top: 55px; margin-bottom: 20px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList1)
+
+            self.checkList2 = QCheckBox()
+            self.checkList2.setStyleSheet("margin-bottom: 20px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList2)
+
+            self.checkList3 = QCheckBox()
+            self.checkList3.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList3)
+
+            self.checkList4 = QCheckBox()
+            self.checkList4.setStyleSheet("margin-bottom: 40px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList4)
+
+            self.checkList5 = QCheckBox()
+            self.checkList5.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList5)
+
+            self.checkList6 = QCheckBox()
+            self.checkList6.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList6)
+
+            self.checkList7 = QCheckBox()
+            self.checkList7.setStyleSheet("margin-bottom: 50px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList7)
+
+            self.checkList8 = QCheckBox()
+            self.checkList8.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList8)
+
+            self.checkList9 = QCheckBox()
+            self.checkList9.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList9)
+
+            self.checkList10 = QCheckBox()
+            self.checkList10.setStyleSheet("margin-bottom: 30px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList10)
+
+            self.checkList11 = QCheckBox()
+            self.checkList11.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList11)
+
+            self.checkList12 = QCheckBox()
+            self.checkList12.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList12)
+
+            self.checkList13 = QCheckBox()
+            self.checkList13.setStyleSheet("margin-bottom: 0px;")
+            self.visualinspectionchecklayout.addWidget(self.checkList13)
+
+            # --- 4) Restore begin button (don't recreate it; just reset it) ---
+            self.visualinspectionbeginbutton.setText("Submit Inspection")
+            try:
+                self.visualinspectionbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.visualinspectionbeginbutton.clicked.connect(self.VisualInspection)
+
+        except Exception as e:
+            print(f"Error restarting: {e}")
 
     def VisualInspectionResults(self):
         print("Printing VisualInspection Test Results")

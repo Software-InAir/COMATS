@@ -481,7 +481,48 @@ class PowerAndLowLightTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def PowerAndLowLightRestart(self):
-        print("Restarting PowerAndLowLight Test")
+        try:
+            print("Restarting PowerAndLowLight Test")
+
+            # ---------- State reset ----------
+            self.powerandlowlight_results = ""
+            self.powerandlowlight_passed = [False] * len(self.powerandlowlight_passed)
+            self.powerandlowlight_failed = [False] * len(self.powerandlowlight_failed)
+            self.powerandlowlight_completed = False
+            self.current_powerandlowlight_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.powerandlowlightlabel.setText(
+                "1. Connect the Beverage Maker to the power supply.<br><br>"
+            "<i>Ensure EDB is in the ON position.</i><br><br>"
+            "2. If connected, disconnect the water supply from the Beverage Maker by closing V10 and opening V11.<br><br>"
+            "3. Press the power button.<br><br>"
+            "4.<i>>Both the power and low water indicators should be lit without the heaters activating "
+            "<br>(as indicated by ~0 A readings for each self.phase of the power supply).</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "powerandlowlightrestart") and self.powerandlowlightrestart:
+                self.powerandlowlighttestbuttonlayout.removeWidget(self.powerandlowlightrestart)
+                self.powerandlowlightrestart.deleteLater()
+                self.powerandlowlightrestart = None
+
+            if hasattr(self, "powerandlowlightnext") and self.powerandlowlightnext:
+                self.powerandlowlighttestbuttonlayout.removeWidget(self.powerandlowlightnext)
+                self.powerandlowlightnext.deleteLater()
+                self.powerandlowlightnext = None
+
+            # ---------- Restore Begin button ----------
+            self.powerandlowlightbeginbutton.setText("Begin")
+            try:
+                self.powerandlowlightbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.powerandlowlightbeginbutton.clicked.connect(self.PowerAndLowLight)
+
+        except Exception as e:
+            print(f"Error restarting PowerAndLowLight Test: {e}")
 
     def PowerAndLowLightResults(self):
         print("Printing PowerAndLowLight Test Results")

@@ -364,7 +364,44 @@ class PowerInterruptTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def PowerInterruptRestart(self):
-        print("Restarting Power Interrupt Test")
+        try:
+            print("Restarting PowerInterrupt Test")
+
+            # ---------- State reset ----------
+            self.powerinterrupt_results = ""
+            self.powerinterrupt_passed = [False] * len(self.powerinterrupt_passed)
+            self.powerinterrupt_failed = [False] * len(self.powerinterrupt_failed)
+            self.powerinterrupt_completed = False
+            self.current_powerinterrupt_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.powerinterruptlabel.setText(
+                "<b> During a brew cycle turn off the Coffee Maker by pressing ON/OFF, then quickly turn it back on by pressing ON/OFF again. <br><br>"
+                  "<i> Verify that the BREW light remains on.  </i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "powerinterruptrestart") and self.powerinterruptrestart:
+                self.powerinterrupttestbuttonlayout.removeWidget(self.powerinterruptrestart)
+                self.powerinterruptrestart.deleteLater()
+                self.powerinterruptrestart = None
+
+            if hasattr(self, "powerinterruptnext") and self.powerinterruptnext:
+                self.powerinterrupttestbuttonlayout.removeWidget(self.powerinterruptnext)
+                self.powerinterruptnext.deleteLater()
+                self.powerinterruptnext = None
+
+            # ---------- Restore Begin button ----------
+            self.powerinterruptbeginbutton.setText("Begin")
+            try:
+                self.powerinterruptbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.powerinterruptbeginbutton.clicked.connect(self.PowerInterrupt)
+
+        except Exception as e:
+            print(f"Error restarting PowerInterrupt Test: {e}")
 
     def PowerInterruptResults(self):
         print("Printing Power Interrupt Test Results")

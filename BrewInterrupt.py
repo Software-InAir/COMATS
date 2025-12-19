@@ -404,7 +404,52 @@ class BrewInterruptTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def BrewInterruptRestart(self):
-        print("Restarting Brew Interrupt Test")
+        try:
+            print("Restarting Brew Interrupt Test")
+
+            # ---------------- State reset ----------------
+            self.brewinterrupt_results = ""
+            self.brewinterrupt_passed = [False, False, False, False]
+            self.brewinterrupt_failed = [False, False, False, False]
+            self.brewinterrupt_completed = False
+            self.current_brewinterrupt_step = 0
+            self.step_status = {}
+
+            # Optional visual reset
+            self.phase1read = 0
+            self.phase2read = 0
+            self.phase3read = 0
+            self.phase1reading.setText("0")
+            self.phase2reading.setText("0")
+            self.phase3reading.setText("0")
+
+            # ---------------- Restore instructions ----------------
+            self.brewinterruptlabel.setText(
+                "<b>During a brew cycle raise the brew handle.</b><br><br>"
+                "<i>The BREW light should deactivate.</i><br><br>"
+            )
+
+            # ---------------- Remove completion buttons ----------------
+            if hasattr(self, "brewinterruptrestart") and self.brewinterruptrestart:
+                self.brewinterrupttestbuttonlayout.removeWidget(self.brewinterruptrestart)
+                self.brewinterruptrestart.deleteLater()
+                self.brewinterruptrestart = None
+
+            if hasattr(self, "brewinterruptnext") and self.brewinterruptnext:
+                self.brewinterrupttestbuttonlayout.removeWidget(self.brewinterruptnext)
+                self.brewinterruptnext.deleteLater()
+                self.brewinterruptnext = None
+
+            # ---------------- Restore Begin button ----------------
+            self.brewinterruptbeginbutton.setText("Begin")
+            try:
+                self.brewinterruptbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.brewinterruptbeginbutton.clicked.connect(self.BrewInterrupt)
+
+        except Exception as e:
+            print(f"Error restarting Brew Interrupt Test: {e}")
 
     def BrewInterruptResults(self):
         print("Printing Brew Interrupt Test Results")

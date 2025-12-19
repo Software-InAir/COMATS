@@ -462,7 +462,49 @@ class HeaterAndPreheaterTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def HeaterAndPreheaterRestart(self):
-        print("Restarting HeaterAndPreheater Test")
+        try:
+            print("Restarting HeaterAndPreheater Test")
+
+            # ---------- State reset ----------
+            self.heaterandpreheater_results = ""
+            self.heaterandpreheater_passed = [False] * len(self.heaterandpreheater_passed)
+            self.heaterandpreheater_failed = [False] * len(self.heaterandpreheater_failed)
+            self.heaterandpreheater_completed = False
+            self.current_heaterandpreheater_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.heaterandpreheaterlabel.setText(
+                "<b>1. With the Beverage Maker tank filled with water, be prepared to time preheating before pressing the power button.<br><br>"
+            "2. Press the POWER button and start the provided stopwatch.<br><br>"
+            "Turn on warmer (if applicable).<b><br><br>"
+            "<i>Make sure the amperes for the self.phases are measured as follows:</br>"
+            "Phase A: 8.1 +0.6/-0.9 amperes<br>"
+            "Phase B:7.8 +0.4/-0.7 amperes<br>"
+            "Phase C:7.8 +0.4/-0.7 amperes</i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "heaterandpreheaterrestart") and self.heaterandpreheaterrestart:
+                self.heaterandpreheatertestbuttonlayout.removeWidget(self.heaterandpreheaterrestart)
+                self.heaterandpreheaterrestart.deleteLater()
+                self.heaterandpreheaterrestart = None
+
+            if hasattr(self, "heaterandpreheaternext") and self.heaterandpreheaternext:
+                self.heaterandpreheatertestbuttonlayout.removeWidget(self.heaterandpreheaternext)
+                self.heaterandpreheaternext.deleteLater()
+                self.heaterandpreheaternext = None
+
+            # ---------- Restore Begin button ----------
+            self.heaterandpreheaterbeginbutton.setText("Begin")
+            try:
+                self.heaterandpreheaterbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.heaterandpreheaterbeginbutton.clicked.connect(self.HeaterAndPreheater)
+
+        except Exception as e:
+            print(f"Error restarting HeaterAndPreheater Test: {e}")
 
     def HeaterAndPreheaterResults(self):
         print("Printing HeaterAndPreheater Test Results")

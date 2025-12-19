@@ -261,6 +261,7 @@ class BrewBETest(QWidget):
                             self.brewbe_failed[0] = True
                         self.insert_brewbe_result(result_line)
                         self.current_brewbe_step += 1
+
                         self.updateBrewBEStep()
 
 
@@ -278,7 +279,7 @@ class BrewBETest(QWidget):
                     self.brewbe_results += f""
                     if ok:
                         result_line = f"Water Level: {value1} inches\n"
-                        if value1 >= 110 and value1 <= 190:
+                        if value1 >= 3.8 and value1 <= 4.4:
                             result_line += "\tPASS"
                             self.step_status["step2_brew_level"] = {
                                 "status": "PASS",
@@ -290,7 +291,7 @@ class BrewBETest(QWidget):
                         else:
                             result_line += "\tFAIL"
                             self.step_status["step2_brew_level"] = {
-                                "status": "PASS",
+                                "status": "FAIL",
                                 "value": value1
                             }
                             self.post_brewbe_snapshot()
@@ -409,7 +410,47 @@ class BrewBETest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def BrewBERestart(self):
-        print("Restarting BrewBE Test")
+        try:
+            print("Restarting BrewBE Test")
+
+            # -------- State reset --------
+            self.brewbe_results = ""
+            self.brewbe_passed = [False, False, False, False]
+            self.brewbe_failed = [False, False, False, False]
+            self.brewbe_completed = False
+            self.current_brewbe_step = 0
+            self.step_status = {}
+
+            # -------- Restore instructions --------
+            self.brewbelabel.setText(
+                "<b>    Starting with a hot tank as indicated by HOT WATER light being illuminated, use a stopwatch to time "
+                "       a brew cycle from when the BREW button is pushed until the BREW button light goes out. </b><br><br>"
+                "  <i> The brew cycle time for Coffee Maker PN 11225-31 should be 2 minutes 30 seconds ±40 seconds. </i><br><br>"
+                "<b> All other Coffee Makers should have a brew cycle time of 3 minutes 15 seconds ±40 seconds. <br><br>"
+                "<i>NOTE: Brews started in mid cycle can be extended by a recovery time of up to 90 seconds.</i></b><br><br>"
+            )
+
+            # -------- Remove completion buttons --------
+            if hasattr(self, "brewberestart") and self.brewberestart:
+                self.brewbetestbuttonlayout.removeWidget(self.brewberestart)
+                self.brewberestart.deleteLater()
+                self.brewberestart = None
+
+            if hasattr(self, "brewbenext") and self.brewbenext:
+                self.brewbetestbuttonlayout.removeWidget(self.brewbenext)
+                self.brewbenext.deleteLater()
+                self.brewbenext = None
+
+            # -------- Restore Begin button --------
+            self.brewbebeginbutton.setText("Begin")
+            try:
+                self.brewbebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.brewbebeginbutton.clicked.connect(self.BrewBE)
+
+        except Exception as e:
+            print(f"Error restarting BrewBE Test: {e}")
 
     def BrewBEResults(self):
         print("Printing BrewBE Test Results")

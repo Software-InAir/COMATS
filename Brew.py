@@ -160,6 +160,7 @@ class BrewTest(QWidget):
         except Exception as e:
             print(f"Error while opening workorder: {e}")
 
+
         # -------------------------------------------------------------------- Phase Readings
         self.phaselayout = QHBoxLayout()
 
@@ -595,7 +596,67 @@ class BrewTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def BrewRestart(self):
-        print("Restarting Brew Test")
+        try:
+            print("Restarting Brew Test")
+
+            # ---------------- State reset ----------------
+            self.brew_results = ""
+            self.brew_passed = [False, False, False, False, False, False]
+            self.brew_failed = [False, False, False, False, False, False]
+            self.brew_completed = False
+            self.current_brew_step = 0
+            self.step_status = {}
+
+            # Optional: reset displayed phase values (if you want the UI to "feel" reset)
+            self.phase1read = 0
+            self.phase2read = 0
+            self.phase3read = 0
+            self.phase1reading.setText(f"{self.phase1read}")
+            self.phase2reading.setText(f"{self.phase2read}")
+            self.phase3reading.setText(f"{self.phase3read}")
+
+            # ---------------- UI reset ----------------
+            # Restore original instructions (Step 0 screen)
+            self.brewlabel.setText(
+                "<b>1. Start this test by making sure the tank is filled with water by closing V11 and opening V10.<br><br>"
+                "The water supply pressure should be set to 24 to 29 psig (1.66 to 2.0 barg) as indicated by reading gauge PG2.<br>"
+                "The power indicator light should be lit.<br><br>"
+                "(NOTE: The WARMER (where applicable) must be on before starting this test.)<br><br>"
+                "Put an empty server in the Beverage Maker and lower the brew handle.<br><br>"
+                "2. Press the BREW button and observe the flow meter (FM).<br><br>"
+                "When flow starts, simultaneously start the provided stopwatch.<br><br>"
+                "(NOTE: Brew does not start until the water in the tank is heated.<br>"
+                "After the start of flow, there will be an interruption for approximately 10 seconds.<br>"
+                "This is normal behaviour and the time is included and accounted for in the brew cycle time.)<br><br>"
+                "3. Stop the stopwatch when the flow meter (FM) reaches zero for the second time.</b><br><br>"
+                "<i>Elapsed time between when flow begins and ends should be between 2 minutes and 30 seconds and 3 minutes and 35 seconds.</i><br><br>"
+            )
+
+            # Remove "complete screen" buttons if they exist
+            if hasattr(self, "brewrestart") and self.brewrestart is not None:
+                self.brewtestbuttonlayout.removeWidget(self.brewrestart)
+                self.brewrestart.deleteLater()
+                self.brewrestart = None
+
+            if hasattr(self, "brewnext") and self.brewnext is not None:
+                self.brewtestbuttonlayout.removeWidget(self.brewnext)
+                self.brewnext.deleteLater()
+                self.brewnext = None
+
+            # Restore Begin button to original behavior (not Results)
+            self.brewbeginbutton.setText("Begin")
+            try:
+                self.brewbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.brewbeginbutton.clicked.connect(self.Brew)
+
+            # Ensure the "complete screen" condition doesn't immediately re-trigger
+            # (Your updateBrewStep checks current_brew_step > 5 for completion) :contentReference[oaicite:1]{index=1}
+            # We've reset to 0, so we're safe.
+
+        except Exception as e:
+            print(f"Error restarting Brew Test: {e}")
 
     def BrewResults(self):
         print("Printing Brew Test Results")
@@ -789,7 +850,7 @@ class BrewTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_brew_step = 2
+                self.current_brew_step = 6
                 print(f"Current step: {self.current_brew_step}")
                 self.updateBrewStep()
 

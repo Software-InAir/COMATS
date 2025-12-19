@@ -364,7 +364,44 @@ class HotWaterLightTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def HotWaterLightRestart(self):
-        print("Restarting HotWaterLight Test")
+        try:
+            print("Restarting HotWaterLight Test")
+
+            # ---------- State reset ----------
+            self.hotwaterlight_results = ""
+            self.hotwaterlight_passed = [False] * len(self.hotwaterlight_passed)
+            self.hotwaterlight_failed = [False] * len(self.hotwaterlight_failed)
+            self.hotwaterlight_completed = False
+            self.current_hotwaterlight_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.hotwaterlightlabel.setText(
+                "<i> Once water is hot (approximately two minutes) the HOT WATER light should <br><br>"
+            "   come on while heaters should turn off (indicated by current drop) as shown by the phase readings.</i>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "hotwaterlightrestart") and self.hotwaterlightrestart:
+                self.hotwaterlighttestbuttonlayout.removeWidget(self.hotwaterlightrestart)
+                self.hotwaterlightrestart.deleteLater()
+                self.hotwaterlightrestart = None
+
+            if hasattr(self, "hotwaterlightnext") and self.hotwaterlightnext:
+                self.hotwaterlighttestbuttonlayout.removeWidget(self.hotwaterlightnext)
+                self.hotwaterlightnext.deleteLater()
+                self.hotwaterlightnext = None
+
+            # ---------- Restore Begin button ----------
+            self.hotwaterlightbeginbutton.setText("Begin")
+            try:
+                self.hotwaterlightbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.hotwaterlightbeginbutton.clicked.connect(self.HotWaterLight)
+
+        except Exception as e:
+            print(f"Error restarting HotWaterLight Test: {e}")
 
     def HotWaterLightResults(self):
         print("Printing HotWaterLight Test Results")

@@ -354,7 +354,45 @@ class HeatedWaterTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def HeatedWaterRestart(self):
-        print("Restarting HeatedWater Test")
+        try:
+            print("Restarting HeatedWater Test")
+
+            # ---------- State reset ----------
+            self.heatedwater_results = ""
+            self.heatedwater_passed = [False] * len(self.heatedwater_passed)
+            self.heatedwater_failed = [False] * len(self.heatedwater_failed)
+            self.heatedwater_completed = False
+            self.current_heatedwater_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.heatedwaterlabel.setText(
+                "<b> Place server under faucet. <br><br>"
+            "   Push the HOT WATER button and verify that heated water comes out of the faucet. </b> <br><br>"
+            "<i> Verify flow rate is greater than 0.23 gallons per minute as indicated by FM. </i>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "heatedwaterrestart") and self.heatedwaterrestart:
+                self.heatedwatertestbuttonlayout.removeWidget(self.heatedwaterrestart)
+                self.heatedwaterrestart.deleteLater()
+                self.heatedwaterrestart = None
+
+            if hasattr(self, "heatedwaternext") and self.heatedwaternext:
+                self.heatedwatertestbuttonlayout.removeWidget(self.heatedwaternext)
+                self.heatedwaternext.deleteLater()
+                self.heatedwaternext = None
+
+            # ---------- Restore Begin button ----------
+            self.heatedwaterbeginbutton.setText("Begin")
+            try:
+                self.heatedwaterbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.heatedwaterbeginbutton.clicked.connect(self.HeatedWater)
+
+        except Exception as e:
+            print(f"Error restarting HeatedWater Test: {e}")
 
     def HeatedWaterResults(self):
         print("Printing HeatedWater Test Results")

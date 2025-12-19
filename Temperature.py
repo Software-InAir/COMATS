@@ -400,7 +400,46 @@ class TemperatureTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def TemperatureRestart(self):
-        print("Restarting Temperature Test")
+        try:
+            print("Restarting Temperature Test")
+
+            # ---------- State reset ----------
+            self.temperature_results = ""
+            self.temperature_passed = [False] * len(self.temperature_passed)
+            self.temperature_failed = [False] * len(self.temperature_failed)
+            self.temperature_completed = False
+            self.current_temperature_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.temperaturelabel.setText(
+                "<b><i> PERFORM AT LEAST THREE BREW CYCLES BEFORE TAKING TEMPERATURE AND TIMING MEASUREMENTS. </i><br><br>"
+                "Measure the brew cup peak temperature using the temperature test brew cup IAS2405001 </b> <br><br>"
+                "<i>Temperature for PN 11225-31 should be 193°±3° F. <br><br>"
+                "All other units should have a measured temperature of 188°±3° F. </i><br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "temperaturerestart") and self.temperaturerestart:
+                self.temperaturetestbuttonlayout.removeWidget(self.temperaturerestart)
+                self.temperaturerestart.deleteLater()
+                self.temperaturerestart = None
+
+            if hasattr(self, "temperaturenext") and self.temperaturenext:
+                self.temperaturetestbuttonlayout.removeWidget(self.temperaturenext)
+                self.temperaturenext.deleteLater()
+                self.temperaturenext = None
+
+            # ---------- Restore Begin button ----------
+            self.temperaturebeginbutton.setText("Begin")
+            try:
+                self.temperaturebeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.temperaturebeginbutton.clicked.connect(self.Temperature)
+
+        except Exception as e:
+            print(f"Error restarting Temperature Test: {e}")
 
     def TemperatureResults(self):
         print("Printing Temperature Test Results")

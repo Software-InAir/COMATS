@@ -344,7 +344,44 @@ class LampTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def LampRestart(self):
-        print("Restarting Lamp Test")
+        try:
+            print("Restarting Lamp Test")
+
+            # ---------- State reset ----------
+            self.lamp_results = ""
+            self.lamp_passed = [False] * len(self.lamp_passed)
+            self.lamp_failed = [False] * len(self.lamp_failed)
+            self.lamp_completed = False
+            self.current_lamp_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.lamplabel.setText(
+                "<b> Push the TEST/LOW WATER button and verify that all five lamps are illuminated.</b> <br><br>" 
+            "<i> All five indicator lights should be illuminated. </i> <br><br>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "lamprestart") and self.lamprestart:
+                self.lamptestbuttonlayout.removeWidget(self.lamprestart)
+                self.lamprestart.deleteLater()
+                self.lamprestart = None
+
+            if hasattr(self, "lampnext") and self.lampnext:
+                self.lamptestbuttonlayout.removeWidget(self.lampnext)
+                self.lampnext.deleteLater()
+                self.lampnext = None
+
+            # ---------- Restore Begin button ----------
+            self.lampbeginbutton.setText("Begin")
+            try:
+                self.lampbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.lampbeginbutton.clicked.connect(self.Lamp)
+
+        except Exception as e:
+            print(f"Error restarting Lamp Test: {e}")
 
     def LampResults(self):
         print("Printing Lamp Test Results")

@@ -351,7 +351,45 @@ class UnheatedWaterTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def UnheatedWaterRestart(self):
-        print("Restarting Unheated Water Test")
+        try:
+            print("Restarting UnheatedWater Test")
+
+            # ---------- State reset ----------
+            self.unheatedwater_results = ""
+            self.unheatedwater_passed = [False] * len(self.unheatedwater_passed)
+            self.unheatedwater_failed = [False] * len(self.unheatedwater_failed)
+            self.unheatedwater_completed = False
+            self.current_unheatedwater_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.unheatedwaterlabel.setText(
+                "<b> Place server under faucet. <br><br>"
+            "   Push the COLD WATER button and verify that unheated water comes out of the faucet. </b> <br><br>"
+            "<i> Verify flow rate is greater than 0.23 gallons per minute as indicated by FM. </i>"
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "unheatedwaterrestart") and self.unheatedwaterrestart:
+                self.unheatedwatertestbuttonlayout.removeWidget(self.unheatedwaterrestart)
+                self.unheatedwaterrestart.deleteLater()
+                self.unheatedwaterrestart = None
+
+            if hasattr(self, "unheatedwaternext") and self.unheatedwaternext:
+                self.unheatedwatertestbuttonlayout.removeWidget(self.unheatedwaternext)
+                self.unheatedwaternext.deleteLater()
+                self.unheatedwaternext = None
+
+            # ---------- Restore Begin button ----------
+            self.unheatedwaterbeginbutton.setText("Begin")
+            try:
+                self.unheatedwaterbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.unheatedwaterbeginbutton.clicked.connect(self.UnheatedWater)
+
+        except Exception as e:
+            print(f"Error restarting UnheatedWater Test: {e}")
 
     def UnheatedWaterResults(self):
         print("Printing Unheated Water Test Results")

@@ -121,9 +121,6 @@ class IREDMonitorTest(QWidget):
         self.iredmonitorlabel = QLabel(
             "<b>With the brew handle raised, insert a piece of 0.125 inch black heat shrink tubing into the left optical sensor cavity to block the infra-red beam.</b> <br><br>"
             "<i>The circuit breaker should open as indicated by hearing an audible clicking noise as the circuit breaker is pushed out on the back of unit. This will reveal a white inner core.</i> <br><br>"
-
-
-
         )
 
         self.iredmonitorlabel.setTextFormat(Qt.TextFormat.RichText)
@@ -400,7 +397,45 @@ class IREDMonitorTest(QWidget):
             print(f"Error updating resistance result: {e}")
 
     def IREDMonitorRestart(self):
-        print("Restarting IRED Monitor Test")
+        try:
+            print("Restarting IREDMonitor Test")
+
+            # ---------- State reset ----------
+            self.iredmonitor_results = ""
+            self.iredmonitor_passed = [False] * len(self.iredmonitor_passed)
+            self.iredmonitor_failed = [False] * len(self.iredmonitor_failed)
+            self.iredmonitor_completed = False
+            self.current_iredmonitor_step = 0
+            self.step_status = {}
+
+            # ---------- Restore instructions ----------
+            self.iredmonitorlabel.setText(
+                 "<b>With the brew handle raised, insert a piece of 0.125 inch black heat shrink tubing into the left optical sensor cavity to block the infra-red beam.</b> <br><br>"
+            "<i>The circuit breaker should open as indicated by hearing an audible clicking noise as the circuit breaker is pushed out on the back of unit. This will reveal a white inner core.</i> <br><br>"
+
+            )
+
+            # ---------- Remove completion buttons ----------
+            if hasattr(self, "iredmonitorrestart") and self.iredmonitorrestart:
+                self.iredmonitortestbuttonlayout.removeWidget(self.iredmonitorrestart)
+                self.iredmonitorrestart.deleteLater()
+                self.iredmonitorrestart = None
+
+            if hasattr(self, "iredmonitornext") and self.iredmonitornext:
+                self.iredmonitortestbuttonlayout.removeWidget(self.iredmonitornext)
+                self.iredmonitornext.deleteLater()
+                self.iredmonitornext = None
+
+            # ---------- Restore Begin button ----------
+            self.iredmonitorbeginbutton.setText("Begin")
+            try:
+                self.iredmonitorbeginbutton.clicked.disconnect()
+            except TypeError:
+                pass
+            self.iredmonitorbeginbutton.clicked.connect(self.IREDMonitor)
+
+        except Exception as e:
+            print(f"Error restarting IREDMonitor Test: {e}")
 
     def IREDMonitorResults(self):
         print("Printing IRED Monitor Test Results")
