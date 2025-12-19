@@ -208,15 +208,15 @@ class HotPlateTest(QWidget):
 
     @pyqtSlot(float)
     def show_current1(self, amps):
-        self.phase1.setText(f"Phase 1: {amps:.3f} A")
+        self.phase1reading.setText(f"{amps:.3f} A")
 
     @pyqtSlot(float)
     def show_current2(self, amps):
-        self.phase2.setText(f"Phase 2: {amps:.3f} A")
+        self.phase2reading.setText(f"{amps:.3f} A")
 
     @pyqtSlot(float)
     def show_current3(self, amps):
-        self.phase3.setText(f"Phase 3: {amps:.3f} A")
+        self.phase3reading.setText(f"{amps:.3f} A")
 
     def HotPlate(self):
         try:
