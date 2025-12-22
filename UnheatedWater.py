@@ -261,6 +261,7 @@ class UnheatedWaterTest(QWidget):
                         self.insert_unheatedwater_result(result_line)
                         self.current_unheatedwater_step += 1
                         self.unheatedwater_completed = True
+                        self.post_unheatedwater_snapshot()
                         self.updateUnheatedWaterStep()
 
 
@@ -304,8 +305,218 @@ class UnheatedWaterTest(QWidget):
         current =self.tabs.currentIndex()
         self.tabs.setCurrentIndex(current+1)
 
-    def GetUnheatedWaterResults(self):
-        return self.unheatedwater_results
+    def _show_results_window(self, title: str, html: str, w: int = 750, h: int = 520,
+                             attr_name: str = "_results_window"):
+        win = QMainWindow(self)
+        win.setWindowTitle(title)
+        win.resize(w, h)
+
+        label = QLabel(html)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        # keep reference so GC doesn't nuke it
+        setattr(self, attr_name, win)
+
+    def _fetch_subtest_result(self, subtest_slug: str):
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return None
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/{subtest_slug}"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", f"{subtest_slug} has not been run yet.")
+                return None
+
+            r.raise_for_status()
+            return r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return None
+
+    def _build_results_html(self, heading: str, result: dict, report_block: str | None = None) -> str:
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+
+        html = f"<h2>{heading}</h2>"
+        html += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            html += "<b>Failures:</b><ul>"
+            for f in failures:
+                html += f"<li>{f}</li>"
+            html += "</ul><br>"
+        else:
+            html += "<b>Failures:</b> None<br><br>"
+
+        if report_block:
+            html += (
+                "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+                "font-size: 14px; white-space: pre; "
+                "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+                f"{report_block}"
+                "</div><br>"
+            )
+
+        if notes:
+            html += f"<b>Notes:</b><br>{notes}<br>"
+
+        # Optional: if you still want *some* data shown, show it cleanly:
+        # (no repr dumps, no raw dicts)
+        # Example: completed flag
+        if "completed" in data:
+            html += f"<br><b>Completed:</b> {'Yes' if bool(data.get('completed')) else 'No'}<br>"
+
+        return html
+
+    def UnheatedWaterResults(self):
+        print("Printing UnheatedWater Test Results")
+
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/unheatedwater"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", "UnheatedWater has not been run yet.")
+                return
+
+            r.raise_for_status()
+            result = r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return
+
+        # ---------- Parse ----------
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+        completed = bool(data.get("completed", False))
+        steps = data.get("steps", {}) or {}
+
+        # Friendly labels that match your text file
+        step_labels = {
+            "step1_unheatedwater_flow": "Unheated Water Flow Rate Verification (GPM):",
+        }
+
+        ordered_keys = [
+            "step1_unheatedwater_flow",
+        ]
+
+        def unpack_step(step_obj):
+            # supports: "PASS" or {"status":"PASS","value":0.0}
+            if isinstance(step_obj, str):
+                return step_obj.upper(), None
+            if isinstance(step_obj, dict):
+                st = (step_obj.get("status") or "UNKNOWN").upper()
+                val = step_obj.get("value", None)
+                return st, val
+            return "UNKNOWN", None
+
+        # Build the "passed tests" block (always show it)
+        col_width = 68
+        report_lines = []
+        report_lines.append("Unheated Water Test")
+
+        for k in ordered_keys:
+            label = step_labels.get(k, f"{k}:")
+            raw = steps.get(k)
+
+            # If step isn't present yet, show blank status
+            if raw is None:
+                report_lines.append(label.ljust(col_width))
+                continue
+
+            st, val = unpack_step(raw)
+
+            if val is not None:
+                left = f"{label} {val}"
+            else:
+                left = label
+
+            report_lines.append(left.ljust(col_width) + (st if st != "UNKNOWN" else ""))
+
+        report_pre = "\n".join(report_lines)
+
+        # ---------- Build display ----------
+        text = "<h2>Unheated Water Results</h2>"
+        text += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            text += "<b>Failures:</b><ul>"
+            for f in failures:
+                text += f"<li>{f}</li>"
+            text += "</ul><br>"
+        else:
+            text += "<b>Failures:</b> None<br><br>"
+
+        text += f"<b>Completed:</b> {'Yes' if completed else 'No'}<br><br>"
+
+        # ✅ Always show what it passed (and any missing lines)
+        text += (
+            "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+            "font-size: 14px; white-space: pre; "
+            "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+            f"{report_pre}"
+            "</div><br>"
+        )
+
+        if notes:
+            text += f"<b>Notes:</b><br>{notes}<br>"
+
+        # ---------- Show window ----------
+        win = QMainWindow(self)
+        win.setWindowTitle("Unheated Water Results")
+        win.resize(750, 520)
+
+        label = QLabel(text)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        self._unheatedwater_results_window = win
 
     def UnheatedWaterTestPath(self, path):
         self.test_path = path
@@ -391,8 +602,6 @@ class UnheatedWaterTest(QWidget):
         except Exception as e:
             print(f"Error restarting UnheatedWater Test: {e}")
 
-    def UnheatedWaterResults(self):
-        print("Printing Unheated Water Test Results")
 
     def set_test_context(self, test_id: int, api_base_url: str):
         self.test_id = test_id

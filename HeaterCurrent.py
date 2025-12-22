@@ -317,7 +317,7 @@ class HeaterCurrentTest(QWidget):
                         else:
                             result_line += "\tFAIL"
                             self.step_status["step3_heatercurrent_phasea"] = {
-                                "status": "value",
+                                "status": "FAIL",
                                 "value": value1
                             }
                             self.post_heatercurrent_snapshot()
@@ -395,8 +395,11 @@ class HeaterCurrentTest(QWidget):
                                             self.heatercurrent_passed[3] = False
                                             self.heatercurrent_failed[3] = True
                                         self.insert_heatercurrent_result(result_line)
+                                        self.heatercurrent_completed = True
                                         self.updateHeaterCurrentStep()
                                         self.current_heatercurrent_step += 1
+                                        self.post_heatercurrent_snapshot()
+
 
 
 
@@ -485,8 +488,226 @@ class HeaterCurrentTest(QWidget):
         current =self.tabs.currentIndex()
         self.tabs.setCurrentIndex(current+1)
 
-    def GetHeaterCurrentResults(self):
-        return self.heatercurrent_results
+    def _show_results_window(self, title: str, html: str, w: int = 750, h: int = 520,
+                             attr_name: str = "_results_window"):
+        win = QMainWindow(self)
+        win.setWindowTitle(title)
+        win.resize(w, h)
+
+        label = QLabel(html)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        # keep reference so GC doesn't nuke it
+        setattr(self, attr_name, win)
+
+    def _fetch_subtest_result(self, subtest_slug: str):
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return None
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/{subtest_slug}"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", f"{subtest_slug} has not been run yet.")
+                return None
+
+            r.raise_for_status()
+            return r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return None
+
+    def _build_results_html(self, heading: str, result: dict, report_block: str | None = None) -> str:
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+
+        html = f"<h2>{heading}</h2>"
+        html += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            html += "<b>Failures:</b><ul>"
+            for f in failures:
+                html += f"<li>{f}</li>"
+            html += "</ul><br>"
+        else:
+            html += "<b>Failures:</b> None<br><br>"
+
+        if report_block:
+            html += (
+                "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+                "font-size: 14px; white-space: pre; "
+                "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+                f"{report_block}"
+                "</div><br>"
+            )
+
+        if notes:
+            html += f"<b>Notes:</b><br>{notes}<br>"
+
+        # Optional: if you still want *some* data shown, show it cleanly:
+        # (no repr dumps, no raw dicts)
+        # Example: completed flag
+        if "completed" in data:
+            html += f"<br><b>Completed:</b> {'Yes' if bool(data.get('completed')) else 'No'}<br>"
+
+        return html
+
+    def HeaterCurrentResults(self):
+        print("Printing HeaterCurrent Test Results")
+
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/heatercurrent"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", "HeaterCurrent has not been run yet.")
+                return
+
+            r.raise_for_status()
+            result = r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return
+
+        # ---------- Parse ----------
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+        completed = bool(data.get("completed", False))
+        steps = data.get("steps", {}) or {}
+
+        # Friendly labels that match your text file
+        step_labels = {
+            "step1_heatercurrent_flow": "Flow Meter Verification Test:",
+            "step2_heatercurrent_lowindicator": "LOW Indicator Light Test:",
+            "step3_heatercurrent_phasea": "Phase A Heater Current (A):",
+            "step4_heatercurrent_phaseb": "Phase B Heater Current (A):",
+            "step5_heatercurrent_phasec": "Phase C Heater Current (A):",
+        }
+
+        ordered_keys = [
+            "step1_heatercurrent_flow",
+            "step2_heatercurrent_lowindicator",
+            "step3_heatercurrent_phasea",
+            "step4_heatercurrent_phaseb",
+            "step5_heatercurrent_phasec",
+        ]
+
+        def unpack_step(step_obj):
+            # supports: "PASS" or {"status":"PASS","value":0.0}
+            if isinstance(step_obj, str):
+                return step_obj.upper(), None
+            if isinstance(step_obj, dict):
+                st = (step_obj.get("status") or "UNKNOWN").upper()
+                val = step_obj.get("value", None)
+                return st, val
+            return "UNKNOWN", None
+
+        # Build the "passed tests" block (always show it)
+        col_width = 68
+        report_lines = []
+        report_lines.append("Heater Current Test")
+
+        for k in ordered_keys:
+            label = step_labels.get(k, f"{k}:")
+            raw = steps.get(k)
+
+            # If step isn't present yet, show blank status
+            if raw is None:
+                report_lines.append(label.ljust(col_width))
+                continue
+
+            st, val = unpack_step(raw)
+
+            if val is not None:
+                left = f"{label} {val}"
+            else:
+                left = label
+
+            report_lines.append(left.ljust(col_width) + (st if st != "UNKNOWN" else ""))
+
+        report_pre = "\n".join(report_lines)
+
+        # ---------- Build display ----------
+        text = "<h2>Heater Current Results</h2>"
+        text += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            text += "<b>Failures:</b><ul>"
+            for f in failures:
+                text += f"<li>{f}</li>"
+            text += "</ul><br>"
+        else:
+            text += "<b>Failures:</b> None<br><br>"
+
+        text += f"<b>Completed:</b> {'Yes' if completed else 'No'}<br><br>"
+
+        # ✅ Always show what it passed (and any missing lines)
+        text += (
+            "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+            "font-size: 14px; white-space: pre; "
+            "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+            f"{report_pre}"
+            "</div><br>"
+        )
+
+        if notes:
+            text += f"<b>Notes:</b><br>{notes}<br>"
+
+        # ---------- Show window ----------
+        win = QMainWindow(self)
+        win.setWindowTitle("Heater Current Results")
+        win.resize(750, 520)
+
+        label = QLabel(text)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        self._heatercurrent_results_window = win
 
     def HeaterCurrentTestPath(self, path):
         self.test_path = path
@@ -571,8 +792,6 @@ class HeaterCurrentTest(QWidget):
         except Exception as e:
             print(f"Error restarting HeaterCurrent Test: {e}")
 
-    def HeaterCurrentResults(self):
-        print("Printing HeaterCurrent Test Results")
 
     def set_test_context(self, test_id: int, api_base_url: str):
         self.test_id = test_id

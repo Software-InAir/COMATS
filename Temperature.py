@@ -42,8 +42,8 @@ class TemperatureTest(QWidget):
         self.web = None
 
         self.temperature_results = ""
-        self.temperature_passed = [False, False, False, False]
-        self.temperature_failed = [False, False, False, False]
+        self.temperature_passed = [False, False]
+        self.temperature_failed = [False, False]
         self.temperature_completed = False
         self.current_temperature_step = 0
 
@@ -242,7 +242,7 @@ class TemperatureTest(QWidget):
                     self.temperature_results += f""
                     if ok:
                         result_line = f"Brew Cup Temperature: {value1}°F \n"
-                        if value1 >= 185 and value1 <= 191:
+                        if value1 >= 190 and value1 <= 196:
                             result_line += "\tPASS"
                             self.step_status["step1_temperature_brewcuptemp"] = {
                                 "status": "PASS",
@@ -251,7 +251,7 @@ class TemperatureTest(QWidget):
                             self.post_temperature_snapshot()
                             self.temperature_passed[0] = True
                             self.temperature_failed[0] = False
-                        if value1 == 35786:
+                        elif value1 == 35786:
                             self.LoadEasterEgg()
                         else:
                             result_line += "\tFAIL"
@@ -301,6 +301,7 @@ class TemperatureTest(QWidget):
                         self.insert_temperature_result(result_line)
                         self.current_temperature_step += 1
                         self.temperature_completed = True
+                        self.post_temperature_snapshot()
                         self.updateTemperatureStep()
 
 
@@ -353,8 +354,220 @@ class TemperatureTest(QWidget):
         current =self.tabs.currentIndex()
         self.tabs.setCurrentIndex(current+1)
 
-    def GetTemperatureResults(self):
-        return self.temperature_results
+    def _show_results_window(self, title: str, html: str, w: int = 750, h: int = 520,
+                             attr_name: str = "_results_window"):
+        win = QMainWindow(self)
+        win.setWindowTitle(title)
+        win.resize(w, h)
+
+        label = QLabel(html)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        # keep reference so GC doesn't nuke it
+        setattr(self, attr_name, win)
+
+    def _fetch_subtest_result(self, subtest_slug: str):
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return None
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/{subtest_slug}"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", f"{subtest_slug} has not been run yet.")
+                return None
+
+            r.raise_for_status()
+            return r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return None
+
+    def _build_results_html(self, heading: str, result: dict, report_block: str | None = None) -> str:
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+
+        html = f"<h2>{heading}</h2>"
+        html += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            html += "<b>Failures:</b><ul>"
+            for f in failures:
+                html += f"<li>{f}</li>"
+            html += "</ul><br>"
+        else:
+            html += "<b>Failures:</b> None<br><br>"
+
+        if report_block:
+            html += (
+                "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+                "font-size: 14px; white-space: pre; "
+                "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+                f"{report_block}"
+                "</div><br>"
+            )
+
+        if notes:
+            html += f"<b>Notes:</b><br>{notes}<br>"
+
+        # Optional: if you still want *some* data shown, show it cleanly:
+        # (no repr dumps, no raw dicts)
+        # Example: completed flag
+        if "completed" in data:
+            html += f"<br><b>Completed:</b> {'Yes' if bool(data.get('completed')) else 'No'}<br>"
+
+        return html
+
+    def TemperatureResults(self):
+        print("Printing Temperature Test Results")
+
+        if self.test_id is None or self.api_base_url is None:
+            QMessageBox.warning(self, "No Context", "Test context not set.")
+            return
+
+        try:
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/temperature"
+            r = requests.get(url, timeout=5)
+
+            if r.status_code == 404:
+                QMessageBox.information(self, "No Results", "Temperature has not been run yet.")
+                return
+
+            r.raise_for_status()
+            result = r.json()
+
+        except Exception as e:
+            QMessageBox.critical(self, "API Error", str(e))
+            return
+
+        # ---------- Parse ----------
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
+        data = result.get("data", {}) or {}
+        failures = data.get("failures", []) or []
+        completed = bool(data.get("completed", False))
+        steps = data.get("steps", {}) or {}
+
+        # Friendly labels that match your text file
+        step_labels = {
+            "step1_temperature_brewcuptemp": "Brew Cup Peak Temperature (°F):",
+            "step2_temperature_server": "Server Temperature Measurement (°F):",
+        }
+
+        ordered_keys = [
+            "step1_temperature_brewcuptemp",
+            "step2_temperature_server",
+        ]
+
+        def unpack_step(step_obj):
+            # supports: "PASS" or {"status":"PASS","value":0.0}
+            if isinstance(step_obj, str):
+                return step_obj.upper(), None
+            if isinstance(step_obj, dict):
+                st = (step_obj.get("status") or "UNKNOWN").upper()
+                val = step_obj.get("value", None)
+                return st, val
+            return "UNKNOWN", None
+
+        # Build the "passed tests" block (always show it)
+        col_width = 68
+        report_lines = []
+        report_lines.append("Temperature Test")
+
+        for k in ordered_keys:
+            label = step_labels.get(k, f"{k}:")
+            raw = steps.get(k)
+
+            # If step isn't present yet, show blank status
+            if raw is None:
+                report_lines.append(label.ljust(col_width))
+                continue
+
+            st, val = unpack_step(raw)
+
+            if val is not None:
+                left = f"{label} {val}"
+            else:
+                left = label
+
+            report_lines.append(left.ljust(col_width) + (st if st != "UNKNOWN" else ""))
+
+        report_pre = "\n".join(report_lines)
+
+        # ---------- Build display ----------
+        text = "<h2>Temperature Results</h2>"
+        text += f"<b>Status:</b> {status}<br><br>"
+
+        if failures:
+            text += "<b>Failures:</b><ul>"
+            for f in failures:
+                text += f"<li>{f}</li>"
+            text += "</ul><br>"
+        else:
+            text += "<b>Failures:</b> None<br><br>"
+
+        text += f"<b>Completed:</b> {'Yes' if completed else 'No'}<br><br>"
+
+        # ✅ Always show what it passed (and any missing lines)
+        text += (
+            "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+            "font-size: 14px; white-space: pre; "
+            "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+            f"{report_pre}"
+            "</div><br>"
+        )
+
+        if notes:
+            text += f"<b>Notes:</b><br>{notes}<br>"
+
+        # ---------- Show window ----------
+        win = QMainWindow(self)
+        win.setWindowTitle("Temperature Results")
+        win.resize(750, 520)
+
+        label = QLabel(text)
+        label.setWordWrap(True)
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(label)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(win.close)
+        btn_row.addWidget(close_btn)
+
+        layout.addLayout(btn_row)
+
+        win.setCentralWidget(container)
+        win.show()
+
+        self._temperature_results_window = win
 
     def TemperatureTestPath(self, path):
         self.test_path = path
@@ -441,8 +654,6 @@ class TemperatureTest(QWidget):
         except Exception as e:
             print(f"Error restarting Temperature Test: {e}")
 
-    def TemperatureResults(self):
-        print("Printing Temperature Test Results")
 
     def set_test_context(self, test_id: int, api_base_url: str):
         self.test_id = test_id

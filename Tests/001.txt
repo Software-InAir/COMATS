@@ -10,7 +10,7 @@ Creating a 11225-1 Test File
 _Functional Tests_
 
 >>Visual Inspection Test<<
-Visual Inspection:																FAIL
+Visual Inspection:														PASS
 Physical Damage or Missing Parts
 Water Inlet Plug Damage
 Improperly Tied Wiring
@@ -68,13 +68,13 @@ Low Water Indicator Light Deactivate Test: 										PASS
 ON/OFF and Low Water Indicator Light Test: 										PASS
 
 >>Water Leaks Inspection Test<<
-Water Leaks Inspection Test: 	FAIL
-Water PSIG: 0.0	FAIL
+Water Leaks Inspection Test: 	PASS
+Water PSIG: 25.0	PASS
 
 >>Heater Current Test<<
-Phase C: 0.0 A	FAIL
-Phase B: 0.0 A	FAIL
-Phase A: 0.0 A	FAIL
+Phase C: 7.0 A	PASS
+Phase B: 7.0 A	PASS
+Phase A: 7.0 A	PASS
 LOW Indicator Light Test: 	PASS
 Flow Meter Test: 	PASS
 
@@ -82,7 +82,10 @@ Flow Meter Test: 	PASS
 Hot Water Light Test: 	PASS
 
 >>Brew Test<<
-Water Level: 0.0 inches
+Water Level: 4.2 inches
+	PASS
+	PASS
+	FAIL
 	FAIL
 	FAIL
 	FAIL
@@ -93,7 +96,10 @@ Water Level: 0.0 inches
 	FAIL
 	FAIL
 	FAIL
-Brew Cycle Duration: 0.0 seconds
+Brew Cycle Duration: 150.0 seconds
+	PASS
+	PASS
+	FAIL
 	FAIL
 	FAIL
 	FAIL
@@ -101,17 +107,35 @@ Brew Cycle Duration: 0.0 seconds
 	FAIL
 
 >>Temperature Test<<
-Server Temperature: 0.0°F
+Server Temperature: 175.0°F
+	PASS
+	PASS
+	PASS
+	PASS
+	PASS
+	PASS
+	PASS
 	FAIL
 	FAIL
 	FAIL
-Brew Cup Temperature: 0.0°F 
+	FAIL
+Brew Cup Temperature: 193.0°F 
+	PASS
+	PASS
+	PASS	FAIL
+	PASS	FAIL
+	FAIL
+	FAIL
+	FAIL
+	FAIL
 	FAIL
 	FAIL
 	FAIL
 
 >>Heated Water Test<<
-Heated Water Flow Rate: 0.0GPM 
+Heated Water Flow Rate: 0.5GPM 
+	PASS
+	FAIL
 	FAIL
 	FAIL
 
@@ -129,17 +153,32 @@ Power Interrupt Test: 	PASS
 Brew Flow: 0.0GPM 
 	PASS
 	PASS
+	PASS
+	PASS
 Brew Interrupt Test: 	PASS
 
 >>IRED Monitor Test<<
+Brew Flow: 0.0GPM 
+	PASS
+	PASS
+	PASS
 IRED Monitor Test: 	PASS
 
 >>Pressure Relief Valve Test<<
-Vented Pressure: 0.0 PSIG 
+Vented Pressure: 21.0 PSIG 
+	PASS
+	PASS
+	FAIL
+	FAIL
+	FAIL
+	PASS
 	PASS
 	PASS
 Pressure Relief Valve Leak Check: 	PASS
-Pressure Relief Valve Operational Pressure: 0.0 PSIG 
+Pressure Relief Valve Operational Pressure: 95.0 PSIG 
+	PASS
+	FAIL
+	PASS
 	FAIL
 	FAIL
 
