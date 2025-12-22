@@ -63,7 +63,7 @@ class ResistanceTest(QWidget):
         #layout.addSpacerItem(spacer)
 
         self.resistancelabellayout = QHBoxLayout()
-        resistancetestbuttonlayout = QHBoxLayout()
+        self.resistancetestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -142,12 +142,12 @@ class ResistanceTest(QWidget):
 
         self.resistancelabellayout.addWidget(scroll)
         layout.addLayout(self.resistancelabellayout)
-        layout.addLayout(resistancetestbuttonlayout)
+        layout.addLayout(self.resistancetestbuttonlayout)
         try:
             self.resistancebeginbutton = QPushButton("Begin")
             self.resistancebeginbutton.setFixedWidth(200)
             self.resistancebeginbutton.clicked.connect(self.Resistance)
-            resistancetestbuttonlayout.addWidget(self.resistancebeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.resistancetestbuttonlayout.addWidget(self.resistancebeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
         except Exception as e:
             print(f"Error while opening workorder: {e}")
@@ -395,15 +395,15 @@ class ResistanceTest(QWidget):
             self.resistancebeginbutton.clicked.disconnect()
             self.resistancebeginbutton.clicked.connect(self.ResistanceResults)
 
-            self.resistancerestart = QPushButton("Restart", self)
-            self.resistancerestart.clicked.connect(self.ResistanceRestart)
-            self.resistancerestart.setFixedWidth(200)
-            self.resistancetestbuttonlayout.addWidget(self.resistancerestart, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.resistancerestartbutton = QPushButton("Restart", self)
+            self.resistancerestartbutton.clicked.connect(self.ResistanceRestart)
+            self.resistancerestartbutton.setFixedWidth(200)
+            self.resistancetestbuttonlayout.addWidget(self.resistancerestartbutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            self.resistancenext = QPushButton("Next", self)
-            self.resistancenext.clicked.connect(self.ResistanceNext)
-            self.resistancenext.setFixedWidth(200)
-            self.resistancetestbuttonlayout.addWidget(self.resistancenext,
+            self.resistancenextbutton = QPushButton("Next", self)
+            self.resistancenextbutton.clicked.connect(self.ResistanceNext)
+            self.resistancenextbutton.setFixedWidth(200)
+            self.resistancetestbuttonlayout.addWidget(self.resistancenextbutton,
                                                             alignment=Qt.AlignmentFlag.AlignCenter)
 
     def ResistanceNext(self):
@@ -902,7 +902,7 @@ class ResistanceTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_resistance_step = 2
+                self.current_resistance_step = 3
                 print(f"Current step: {self.current_resistance_step}")
                 self.updateResistanceStep()
 

@@ -299,7 +299,7 @@ class TankPressureTest(QWidget):
                     self.current_tankpressure_step += 1
 
             # STEP 2 — 5.12 mΩ
-            if self.current_tankpressure_step == 2:
+            elif self.current_tankpressure_step == 2:
                 value, ok = NumericKeypadDialog.getValue(
                     self,
                     "Check Pressure",
@@ -318,6 +318,8 @@ class TankPressureTest(QWidget):
                             "status": "PASS",
                             "value": value
                         }
+                        self.tankpressure_passed[2] = True
+                        self.tankpressure_failed[2] = False
                         self.post_tankpressure_snapshot()
                     else:
                         result_line += "\tFAIL"
@@ -325,13 +327,13 @@ class TankPressureTest(QWidget):
                             "status": "FAIL",
                             "value": value
                         }
+                        self.tankpressure_passed[2] = False
+                        self.tankpressure_failed[2] = True
                         self.post_tankpressure_snapshot()
 
                     self.insert_tankpressure_result(result_line)
                     print(f"User entered: {value} PSI")
                     self.tankpressure_results += f"Test {self.current_tankpressure_step + 1} Result: {value}\n"
-                    self.tankpressure_passed[0] = True
-                    self.tankpressure_failed[0] = False
                     self.tankpressure_completed = True
                     self.post_tankpressure_snapshot()
                     self.current_tankpressure_step += 1
@@ -386,7 +388,7 @@ class TankPressureTest(QWidget):
             self.tankpressurebeginbutton.clicked.disconnect()
             self.tankpressurebeginbutton.clicked.connect(self.TankPressure)
 
-        if self.tankpressure_passed[1] or self.tankpressure_failed[1] or self.current_tankpressure_step > 2:
+        if self.tankpressure_passed[2] or self.tankpressure_failed[2] or self.current_tankpressure_step > 2:
             self.tankpressurelabel.setText(
                     "Test Complete.<br><br>"
                     "Tank Pressure Test has been completed successfully!<br>"
@@ -912,7 +914,7 @@ class TankPressureTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_tankpressure_step = 2
+                self.current_tankpressure_step = 3
                 print(f"Current step: {self.current_tankpressure_step}")
                 self.updateTankPressureStep()
 

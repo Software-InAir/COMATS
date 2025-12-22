@@ -62,7 +62,7 @@ class TeaTest(QWidget):
 
         self.ambientlabellayout = QHBoxLayout()
 
-        teatestbuttonlayout = QHBoxLayout()
+        self.teatestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -140,12 +140,12 @@ class TeaTest(QWidget):
 
         self.ambientlabellayout.addWidget(scroll)
         layout.addLayout(self.ambientlabellayout)
-        layout.addLayout(teatestbuttonlayout)
+        layout.addLayout(self.teatestbuttonlayout)
         try:
             self.teabeginbutton = QPushButton("Begin")
             self.teabeginbutton.setFixedWidth(200)
             self.teabeginbutton.clicked.connect(self.Tea)
-            teatestbuttonlayout.addWidget(self.teabeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.teatestbuttonlayout.addWidget(self.teabeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
         except Exception as e:
             print(f"Error while opening workorder: {e}")
@@ -916,7 +916,7 @@ class TeaTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_tea_step = 2
+                self.current_tea_step = 3
                 print(f"Current step: {self.current_tea_step}")
                 self.updateTeaStep()
 

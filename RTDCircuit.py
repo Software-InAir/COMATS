@@ -281,9 +281,10 @@ class RTDCircuitTest(QWidget):
                     self.step_status["step2_rtdcircuit_safetylatch"] = {
                         "status": "PASS",
                     }
-                    self.post_rtdcircuit_snapshot()
+
                     self.rtdcircuit_passed[1] = True
                     self.rtdcircuit_failed[1] = False
+                    self.post_rtdcircuit_snapshot()
                     self.updateRTDCircuitStep()
                     self.current_rtdcircuit_step += 1
                 elif msg1.clickedButton() == fail_button:
@@ -293,9 +294,10 @@ class RTDCircuitTest(QWidget):
                     self.step_status["step2_rtdcircuit_safetylatch"] = {
                         "status": "FAIL",
                     }
-                    self.post_rtdcircuit_snapshot()
+
                     self.rtdcircuit_passed[1] = False
                     self.rtdcircuit_failed[1] = True
+                    self.post_rtdcircuit_snapshot()
                     self.updateRTDCircuitStep()
                     self.current_rtdcircuit_step += 1
 
@@ -335,8 +337,6 @@ class RTDCircuitTest(QWidget):
                     else:
                         self.rtdcircuit_passed[2] = False
                         self.rtdcircuit_failed[2] = True
-
-                    self.rtdcircuit_completed = True
                     self.post_rtdcircuit_snapshot()
                     self.updateRTDCircuitStep()
                     self.current_rtdcircuit_step += 1
@@ -361,6 +361,7 @@ class RTDCircuitTest(QWidget):
                         self.rtdcircuit_passed[3] = True
                         self.rtdcircuit_failed[3] = False
                         self.rtdcircuit_completed = True
+                        self.post_rtdcircuit_snapshot()
                         self.updateRTDCircuitStep()
                         self.current_rtdcircuit_step += 1
                     elif msg1.clickedButton() == fail_button:
@@ -373,6 +374,8 @@ class RTDCircuitTest(QWidget):
                         self.post_rtdcircuit_snapshot()
                         self.rtdcircuit_passed[3] = False
                         self.rtdcircuit_failed[3] = True
+                        self.rtdcircuit_completed = True
+                        self.post_rtdcircuit_snapshot()
                         self.updateRTDCircuitStep()
                         self.current_rtdcircuit_step += 1
 
@@ -961,7 +964,7 @@ class RTDCircuitTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_rtdcircuit_step = 2
+                self.current_rtdcircuit_step = 4
                 print(f"Current step: {self.current_rtdcircuit_step}")
                 self.updateRTDCircuitStep()
 

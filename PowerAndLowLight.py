@@ -41,8 +41,8 @@ class PowerAndLowLightTest(QWidget):
         self.web = None
 
         self.powerandlowlight_results = ""
-        self.powerandlowlight_passed = [False, False, False, False, False]
-        self.powerandlowlight_failed = [False, False, False, False, False]
+        self.powerandlowlight_passed = [False, False, False, False]
+        self.powerandlowlight_failed = [False, False, False, False]
         self.powerandlowlight_completed = False
         self.current_powerandlowlight_step = 0
 
@@ -346,7 +346,7 @@ class PowerAndLowLightTest(QWidget):
                         self.powerandlowlight_passed[3] = True
                         self.powerandlowlight_failed[3] = False
                         self.powerandlowlight_completed = True
-                        self.post_powerandlowlight_completed = True
+                        self.post_powerandlowlight_snapshot()
                         self.updatePowerAndLowLightStep()
                         self.current_powerandlowlight_step += 1
                     elif msg1.clickedButton() == fail_button:
@@ -933,7 +933,7 @@ class PowerAndLowLightTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_powerandlowlight_step = 2
+                self.current_powerandlowlight_step = 4
                 print(f"Current step: {self.current_powerandlowlight_step}")
                 self.updatePowerAndLowLightStep()
 

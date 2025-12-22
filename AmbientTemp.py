@@ -43,8 +43,8 @@ class AmbientTemperatureTest(QWidget):
         self.web = None
 
         self.ambienttemp_results = ""
-        self.ambienttemp_passed = [False, False, False]
-        self.ambienttemp_failed = [False, False, False]
+        self.ambienttemp_passed = [False]
+        self.ambienttemp_failed = [False]
         self.ambienttemp_completed = False
         self.current_ambienttemp_step = 0
 
@@ -299,7 +299,7 @@ class AmbientTemperatureTest(QWidget):
             )
             self.ambienttempbeginbutton.setText("Results")
             self.ambienttempbeginbutton.clicked.disconnect()
-            self.ambienttempbeginbutton.clicked.connect(self.AmbientTemperatureResults)
+            self.ambienttempbeginbutton.clicked.connect(self.AmbientTempResults)
 
             self.ambienttemprestart = QPushButton("Restart", self)
             self.ambienttemprestart.clicked.connect(self.AmbientTemperatureRestart)
@@ -493,8 +493,8 @@ class AmbientTemperatureTest(QWidget):
 
             # ---------------- State reset ----------------
             self.ambienttemp_results = ""
-            self.ambienttemp_passed = [False, False, False]
-            self.ambienttemp_failed = [False, False, False]
+            self.ambienttemp_passed = [False]
+            self.ambienttemp_failed = [False]
             self.ambienttemp_completed = False
             self.current_ambienttemp_step = 0
             self.step_status = {}
@@ -614,7 +614,7 @@ class AmbientTemperatureTest(QWidget):
 
         return html
 
-    def AmbientTemperatureResults(self):
+    def AmbientTempResults(self):
         print("Printing AmbientTemp Test Results")
 
         if self.test_id is None or self.api_base_url is None:
@@ -636,13 +636,60 @@ class AmbientTemperatureTest(QWidget):
             QMessageBox.critical(self, "API Error", str(e))
             return
 
-        # ---------- Build display ----------
-        status = result.get("status", "UNKNOWN")
-        notes = result.get("notes", "")
+        # ---------- Parse ----------
+        status = (result.get("status", "UNKNOWN") or "UNKNOWN").upper()
+        notes = result.get("notes", "") or ""
         data = result.get("data", {}) or {}
         failures = data.get("failures", []) or []
+        completed = bool(data.get("completed", False))
+        steps = data.get("steps", {}) or {}
 
-        text = "<h2>AmbientTemp Results</h2>"
+        # Friendly labels that match your text file
+        step_labels = {
+            "step1_ambienttemp_temp": "Ambient Temperature Measurement:",
+        }
+
+        ordered_keys = [
+            "step1_ambienttemp_temp",
+        ]
+
+        def unpack_step(step_obj):
+            # supports: "PASS" or {"status":"PASS","value":0.0}
+            if isinstance(step_obj, str):
+                return step_obj.upper(), None
+            if isinstance(step_obj, dict):
+                st = (step_obj.get("status") or "UNKNOWN").upper()
+                val = step_obj.get("value", None)
+                return st, val
+            return "UNKNOWN", None
+
+        # Build the "passed tests" block (always show it)
+        col_width = 68
+        report_lines = []
+        report_lines.append("Low Water Test")
+
+        for k in ordered_keys:
+            label = step_labels.get(k, f"{k}:")
+            raw = steps.get(k)
+
+            # If step isn't present yet, show blank status
+            if raw is None:
+                report_lines.append(label.ljust(col_width))
+                continue
+
+            st, val = unpack_step(raw)
+
+            if val is not None:
+                left = f"{label} {val}"
+            else:
+                left = label
+
+            report_lines.append(left.ljust(col_width) + (st if st != "UNKNOWN" else ""))
+
+        report_pre = "\n".join(report_lines)
+
+        # ---------- Build display ----------
+        text = "<h2>Ambient Temp Results</h2>"
         text += f"<b>Status:</b> {status}<br><br>"
 
         if failures:
@@ -653,21 +700,24 @@ class AmbientTemperatureTest(QWidget):
         else:
             text += "<b>Failures:</b> None<br><br>"
 
+        text += f"<b>Completed:</b> {'Yes' if completed else 'No'}<br><br>"
+
+        # ✅ Always show what it passed (and any missing lines)
+        text += (
+            "<div style=\"font-family: Consolas, 'Courier New', monospace; "
+            "font-size: 14px; white-space: pre; "
+            "padding: 10px; border: 1px solid #ddd; background: #f7f7f7;\">"
+            f"{report_pre}"
+            "</div><br>"
+        )
+
         if notes:
             text += f"<b>Notes:</b><br>{notes}<br>"
 
-        # Optional: dump remaining data keys (helps during early bring-up)
-        extra_keys = [k for k in data.keys() if k != "failures"]
-        if extra_keys:
-            text += "<br><b>Data:</b><ul>"
-            for k in extra_keys:
-                text += f"<li><b>{k}</b>: {data.get(k)!r}</li>"
-            text += "</ul>"
-
         # ---------- Show window ----------
         win = QMainWindow(self)
-        win.setWindowTitle("AmbientTemp Results")
-        win.resize(700, 500)
+        win.setWindowTitle("Ambient Temp Results")
+        win.resize(750, 520)
 
         label = QLabel(text)
         label.setWordWrap(True)
@@ -690,7 +740,6 @@ class AmbientTemperatureTest(QWidget):
         win.setCentralWidget(container)
         win.show()
 
-        # keep reference so GC doesn't nuke it
         self._ambienttemp_results_window = win
 
     def set_test_context(self, test_id: int, api_base_url: str):

@@ -10,7 +10,7 @@ Technician Name: Carlos
 _Functional Tests_
 
 >>Dielectric Test<<
-Megaohmmeter Resistance Test 2: 0.0 mΩ	FAIL
+Megaohmmeter Resistance Test 2: 3.0 mΩ	PASS
 Hi Pot Current Test 1: 0.0 mA	PASS
 
 >>Resistance Test<<
@@ -19,10 +19,10 @@ Resistance Test 2: 0.0 mΩ	PASS
 Resistance Test 1: 0.0 mΩ	PASS
 
 >>Water Supply Temperature Test<<
-Water Supply Temperature Test 1: 0.0°C 	FAIL
+Water Supply Temperature Test 1: 65.0°F 	PASS
 
 >>Ambient Temperature Test<<
-Ambient Temperature Test 1: 0.0°C 	FAIL
+Ambient Temperature Test 1: 80.0°F 	PASS
 
 >>Tank Pressure Test<<
 Tank Pressure Test 3: 0.0 PSI 	PASS
@@ -38,7 +38,9 @@ Power and Low Indicator Light activated: 	PASS
 >>RTD Test<<
 
 >>Heated Water Test<<
-Heated Water Flow Rate: 0.0GPM 
+Heated Water Flow Rate: 0.5GPM 
+	PASS
+	FAIL
 	FAIL
 
 >>Hot Plate Test<<
@@ -47,13 +49,13 @@ Hot Plate Indicator Light: 	PASS
 
 >>Tank Heater and Preheater Test<<
 Elapsed Time Test: 	PASS
-Phase C current: 0.0 A	FAIL
-Phase B current: 0.0 A	FAIL
-Phase A current: 0.0 A	FAIL
+Phase C current: 8.0 A	PASS
+Phase B current: 8.0 A	PASS
+Phase A current: 8.0 A	PASS
 
 >>Brew Test<<
 Power Indicator Test: 											PASS
-Brew Temperature Test: 0.0°C 									FAIL
+Brew Temperature Test: 180.0°F 									PASS
 Consecutive Brew Test: 											PASS
 Brew Continuation Test: 										PASS
 Brew Interruption Test: 										PASS

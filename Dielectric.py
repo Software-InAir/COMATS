@@ -295,6 +295,8 @@ class DielectricTest(QWidget):
                                                     "status": "PASS",
                                                     "value": value
                                                 }
+                                                self.dielectric_passed[1] = True
+                                                self.dielectric_failed[1] = False
                                                 self.post_dielectric_snapshot()
                                         else:
                                                 result_line += "\tFAIL"
@@ -302,12 +304,13 @@ class DielectricTest(QWidget):
                                                     "status": "FAIL",
                                                     "value": value
                                                 }
+                                                self.dielectric_passed[1] = False
+                                                self.dielectric_failed[1] = True
                                                 self.post_dielectric_snapshot()
                                         self.insert_dielectric_result(result_line)
                                         print(f"User entered: {value} mΩ")
                                         self.dielectric_results += f"Test {self.current_dielectric_step + 1} Result: {value} mΩ\n"
-                                        self.dielectric_passed[1] = True
-                                        self.dielectric_failed[1] = False
+
                                         self.dielectric_completed = True
                                         self.updateDielectricStep()
                                         self.post_dielectric_snapshot()

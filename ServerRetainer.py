@@ -41,8 +41,8 @@ class ServerRetainerTest(QWidget):
         self.web = None
 
         self.serverretainer_results = ""
-        self.serverretainer_passed = [False, False, False]
-        self.serverretainer_failed = [False, False, False]
+        self.serverretainer_passed = [False]
+        self.serverretainer_failed = [False]
         self.serverretainer_completed = False
         self.current_serverretainer_step = 0
 

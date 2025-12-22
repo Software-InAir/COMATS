@@ -43,8 +43,8 @@ class WaterTempTest(QWidget):
         self.web = None
 
         self.watertemp_results = ""
-        self.watertemp_passed = [False, False, False]
-        self.watertemp_failed = [False, False, False]
+        self.watertemp_passed = [False]
+        self.watertemp_failed = [False]
         self.watertemp_completed = False
 
         self.current_watertemp_step = 0
@@ -250,6 +250,8 @@ class WaterTempTest(QWidget):
                                 "status": "PASS",
                                 "value": value
                             }
+                            self.watertemp_passed[0] = True
+                            self.watertemp_failed[0] = False
                             self.post_watertemp_snapshot()
                         else:
                             result_line += "\tFAIL"
@@ -257,6 +259,8 @@ class WaterTempTest(QWidget):
                                 "status": "FAIL",
                                 "value": value
                             }
+                            self.watertemp_passed[0] = False
+                            self.watertemp_failed[0] = True
                             self.post_watertemp_snapshot()
                     elif tempsystem == "C":
                         if value >= 17 and value <=22:
@@ -265,6 +269,8 @@ class WaterTempTest(QWidget):
                                 "status": "PASS",
                                 "value": value
                             }
+                            self.watertemp_passed[0] = True
+                            self.watertemp_failed[0] = False
                             self.post_watertemp_snapshot()
                         else:
                             result_line += "\tFAIL"
@@ -272,12 +278,12 @@ class WaterTempTest(QWidget):
                                 "status": "FAIL",
                                 "value": value
                             }
+                            self.watertemp_passed[0] = False
+                            self.watertemp_failed[0] = True
                             self.post_watertemp_snapshot()
                     self.insert_watertemp_result(result_line)
                     print(f"User entered: {value} mA")
                     self.watertemp_results += f"Test {self.current_watertemp_step + 1} Result: {value} mA\n"
-                    self.watertemp_passed[0] = True
-                    self.watertemp_failed[0] = False
                     self.watertemp_completed = True
                     self.post_watertemp_snapshot()
                     self.current_watertemp_step += 1
@@ -287,7 +293,7 @@ class WaterTempTest(QWidget):
             print(f"Error: {e}")
 
     def updateWaterTempStep(self):
-        if self.watertemp_passed[0] or self.watertemp_failed[0] or self.current_watertemp_step > 0:
+        if self.current_watertemp_step > 0:
             self.watertemplabel.setText(
                 "<b>Test Complete.</b><br><br>"
                 "<b>The Water Supply Temperature test has been completed successfully.</b><br><br>"
@@ -397,19 +403,19 @@ class WaterTempTest(QWidget):
 
         return html
 
-    def WaterSupplyTempResults(self):
-        print("Printing WaterSupplyTemp Test Results")
+    def WaterTempResults(self):
+        print("Printing WaterTemp Test Results")
 
         if self.test_id is None or self.api_base_url is None:
             QMessageBox.warning(self, "No Context", "Test context not set.")
             return
 
         try:
-            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/watersupplytemp"
+            url = f"{self.api_base_url}/tests/{self.test_id}/subtests/watertemp"
             r = requests.get(url, timeout=5)
 
             if r.status_code == 404:
-                QMessageBox.information(self, "No Results", "WaterSupplyTemp has not been run yet.")
+                QMessageBox.information(self, "No Results", "Water Temp has not been run yet.")
                 return
 
             r.raise_for_status()
@@ -666,10 +672,7 @@ class WaterTempTest(QWidget):
 
         self.PostWaterTempResults(status=overall_status, data=data, notes=notes)
 
-        if self.watertemp_completed:
-            # You said you want this field in the parent JSON:
-            #   "status": "completed"
-            self.PostParentTestStatus(status="completed", completed=True)
+
 
 
     def OnResources(self):
@@ -808,7 +811,7 @@ class WaterTempTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_watertemp_step = 1
+                self.current_watertemp_step = 2
                 print(f"Current step: {self.current_watertemp_step}")
                 self.updateWaterTempStep()
 

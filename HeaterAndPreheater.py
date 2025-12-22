@@ -44,8 +44,8 @@ class HeaterAndPreheaterTest(QWidget):
         self.web = None
 
         self.heaterandpreheater_results = ""
-        self.heaterandpreheater_passed = [False, False, False]
-        self.heaterandpreheater_failed = [False, False, False]
+        self.heaterandpreheater_passed = [False, False, False, False]
+        self.heaterandpreheater_failed = [False, False, False, False]
         self.heaterandpreheater_completed = False
         self.current_heaterandpreheater_step = 0
 
@@ -61,7 +61,7 @@ class HeaterAndPreheaterTest(QWidget):
         #layout.addSpacerItem(spacer)
 
         self.heaterandpreheaterlayout = QHBoxLayout()
-        heaterandpreheatertestbuttonlayout = QHBoxLayout()
+        self.heaterandpreheatertestbuttonlayout = QHBoxLayout()
 
         scroll = QScrollArea()
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -144,12 +144,12 @@ class HeaterAndPreheaterTest(QWidget):
 
         self.heaterandpreheaterlayout.addWidget(scroll)
         layout.addLayout(self.heaterandpreheaterlayout)
-        layout.addLayout(heaterandpreheatertestbuttonlayout)
+        layout.addLayout(self.heaterandpreheatertestbuttonlayout)
         try:
             self.heaterandpreheaterbeginbutton = QPushButton("Begin")
             self.heaterandpreheaterbeginbutton.setFixedWidth(200)
             self.heaterandpreheaterbeginbutton.clicked.connect(self.HeaterAndPreheater)
-            heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaterbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaterbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
 
         except Exception as e:
             print(f"Error while opening workorder: {e}")
@@ -250,6 +250,8 @@ class HeaterAndPreheaterTest(QWidget):
                             "status": "PASS",
                             "value": value1
                         }
+                        self.heaterandpreheater_passed[0] = True
+                        self.heaterandpreheater_failed[0] = False
                         self.post_heaterandpreheater_snapshot()
                     else:
                         result_line += "\tFAIL"
@@ -257,6 +259,8 @@ class HeaterAndPreheaterTest(QWidget):
                             "status": "FAIL",
                             "value": value1
                         }
+                        self.heaterandpreheater_passed[0] = False
+                        self.heaterandpreheater_failed[0] = True
                         self.post_heaterandpreheater_snapshot()
                     self.insert_heaterandpreheater_result(result_line)
 
@@ -275,15 +279,19 @@ class HeaterAndPreheaterTest(QWidget):
                             result_line += "\tPASS"
                             self.step_status["step2_heaterandpreheater_phaseb"] = {
                                 "status": "PASS",
-                                "value": value1
+                                "value": value2
                             }
+                            self.heaterandpreheater_passed[1] = True
+                            self.heaterandpreheater_failed[1] = False
                             self.post_heaterandpreheater_snapshot()
                         else:
                             result_line += "\tFAIL"
                             self.step_status["step2_heaterandpreheater_phaseb"] = {
                                 "status": "FAIL",
-                                "value": value1
+                                "value": value2
                             }
+                            self.heaterandpreheater_passed[1] = False
+                            self.heaterandpreheater_failed[1] = True
                             self.post_heaterandpreheater_snapshot()
                         self.insert_heaterandpreheater_result(result_line)
 
@@ -297,35 +305,29 @@ class HeaterAndPreheaterTest(QWidget):
                         )
                         self.heaterandpreheater_results += f"Phase C current: {value3} A\n"
                         if ok:
-                            self.current_heaterandpreheater_step += 1
-                            print(self.current_heaterandpreheater_step)
-
                             result_line = f"Phase C current: {value3} A"
                             if value3 >= 7.1 and value3 <= 8.2:
                                 result_line += "\tPASS"
                                 self.step_status["step3_heaterandpreheater_phasec"] = {
                                     "status": "PASS",
-                                    "value": value1
+                                    "value": value3
                                 }
+                                self.heaterandpreheater_passed[2] = True
+                                self.heaterandpreheater_failed[2] = False
                                 self.post_heaterandpreheater_snapshot()
                             else:
                                 result_line += "\tFAIL"
                                 self.step_status["step3_heaterandpreheater_phasec"] = {
                                     "status": "FAIL",
-                                    "value": value1
+                                    "value": value3
                                 }
+                                self.heaterandpreheater_passed[2] = False
+                                self.heaterandpreheater_failed[2] = True
                                 self.post_heaterandpreheater_snapshot()
                             self.insert_heaterandpreheater_result(result_line)
-                            if value3 >= 7.1 and value3 <= 8.2 and value2 >= 7.1 and value2 <= 8.2 and value1 >= 7.2 and value1 <= 8.7 :
-                                self.heaterandpreheater_passed[0] = True
-                                self.heaterandpreheater_failed[0] = False
-                                self.heaterandpreheater_completed = True
-                            else:
-                                self.heaterandpreheater_passed[0] = False
-                                self.heaterandpreheater_failed[0] = True
+                            self.current_heaterandpreheater_step += 1
+                            print(self.current_heaterandpreheater_step)
                             self.updateHeaterAndPreheaterStep()
-
-
 
                         return
 
@@ -347,8 +349,8 @@ class HeaterAndPreheaterTest(QWidget):
                         "status": "PASS",
                     }
                     self.post_heaterandpreheater_snapshot()
-                    self.heaterandpreheater_passed[1] = True
-                    self.heaterandpreheater_failed[1] = False
+                    self.heaterandpreheater_passed[3] = True
+                    self.heaterandpreheater_failed[3] = False
                     self.heaterandpreheater_completed = True
                     self.updateHeaterAndPreheaterStep()
                     self.current_heaterandpreheater_step += 1
@@ -361,8 +363,8 @@ class HeaterAndPreheaterTest(QWidget):
                         "status": "FAIL",
                     }
                     self.post_heaterandpreheater_snapshot()
-                    self.heaterandpreheater_passed[1] = False
-                    self.heaterandpreheater_failed[1] = True
+                    self.heaterandpreheater_passed[3] = False
+                    self.heaterandpreheater_failed[3] = True
                     self.heaterandpreheater_completed = True
                     self.updateHeaterAndPreheaterStep()
                     self.current_heaterandpreheater_step += 1
@@ -382,37 +384,109 @@ class HeaterAndPreheaterTest(QWidget):
             print(f"Error: {e}")
 
     def updateHeaterAndPreheaterStep(self):
-        if self.heaterandpreheater_passed[0] or self.heaterandpreheater_failed[0]:
+        """
+        Drop-in replacement.
+        Fixes:
+          - Begin button always wired correctly (safe disconnect)
+          - UI stage is driven by current_heaterandpreheater_step (no stomping)
+          - Completion screen only after step 1 (elapsed time) completes
+          - Adds Restart/Next only once
+        """
+
+        # --- helpers ---
+        def _safe_reconnect(btn, slot):
+            try:
+                btn.clicked.disconnect()
+            except TypeError:
+                pass
+            btn.clicked.connect(slot)
+
+        # If these attrs don't exist yet, create them so we can guard button stacking
+        if not hasattr(self, "heaterandpreheaterrestart"):
+            self.heaterandpreheaterrestart = None
+        if not hasattr(self, "heaterandpreheaternext"):
+            self.heaterandpreheaternext = None
+
+        step = int(getattr(self, "current_heaterandpreheater_step", 0))
+
+        # ----------------------
+        # Completed screen
+        # ----------------------
+        if bool(getattr(self, "heaterandpreheater_completed", False)) or step > 1:
             self.heaterandpreheaterlabel.setText(
-                "<b>4. Stop the stopwatch when the current on Phase B goes to zero.</b><br><br>"
-                "<i>The elapsed time should be 3 minutes and 30 seconds at maximum (The measured time must begin from room temperature contents.<br><br>"
-                "(NOTE: A small amount of water may come out of pressure relief valve drain line as the tank completes preheating. This is normal behaviour.)"
-            )
-
-            self.heaterandpreheaterbeginbutton.setText("Continue")
-            self.heaterandpreheaterbeginbutton.clicked.disconnect()
-            self.heaterandpreheaterbeginbutton.clicked.connect(self.HeaterAndPreheater)
-
-
-        if self.heaterandpreheater_passed[1] or self.heaterandpreheater_failed[1] or self.current_heaterandpreheater_step > 1:
-            self.heaterandpreheaterlabel.setText(
-                "<b>Test Completed.<br><br>"
-                "<bThe >Heater And Preheater Test has been completed successfully!</b><br><br>"
+                "<b>Heater and Preheater Test Completed!</b><br><br>"
+                "<b>The Heater and Preheater test has been completed.</b><br><br>"
             )
             self.heaterandpreheaterbeginbutton.setText("Results")
-            self.heaterandpreheaterbeginbutton.clicked.disconnect()
-            self.heaterandpreheaterbeginbutton.clicked.connect(self.HeaterAndPreheaterResults)
+            _safe_reconnect(self.heaterandpreheaterbeginbutton, self.HeaterAndPreheaterResults)
 
-            self.heaterandpreheaterrestart = QPushButton("Restart", self)
-            self.heaterandpreheaterrestart.clicked.connect(self.HeaterAndPreheaterRestart)
-            self.heaterandpreheaterrestart.setFixedWidth(200)
-            self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaterrestart, alignment=Qt.AlignmentFlag.AlignCenter)
+            # Add Restart/Next once
+            if self.heaterandpreheaterrestart is None:
+                self.heaterandpreheaterrestart = QPushButton("Restart", self)
+                self.heaterandpreheaterrestart.setFixedWidth(200)
+                self.heaterandpreheaterrestart.clicked.connect(self.HeaterAndPreheaterRestart)
+                self.heaterandpreheatertestbuttonlayout.addWidget(
+                    self.heaterandpreheaterrestart,
+                    alignment=Qt.AlignmentFlag.AlignCenter
+                )
 
-            self.heaterandpreheaternext = QPushButton("Next", self)
-            self.heaterandpreheaternext.clicked.connect(self.HeaterAndPreheaterNext)
-            self.heaterandpreheaternext.setFixedWidth(200)
-            self.heaterandpreheatertestbuttonlayout.addWidget(self.heaterandpreheaternext,
-                                                            alignment=Qt.AlignmentFlag.AlignCenter)
+            if self.heaterandpreheaternext is None:
+                self.heaterandpreheaternext = QPushButton("Next", self)
+                self.heaterandpreheaternext.setFixedWidth(200)
+                self.heaterandpreheaternext.clicked.connect(self.HeaterAndPreheaterNext)
+                self.heaterandpreheatertestbuttonlayout.addWidget(
+                    self.heaterandpreheaternext,
+                    alignment=Qt.AlignmentFlag.AlignCenter
+                )
+
+            return
+
+        # If not completed, ensure Restart/Next are removed (optional hygiene)
+        if self.heaterandpreheaterrestart is not None:
+            self.heaterandpreheatertestbuttonlayout.removeWidget(self.heaterandpreheaterrestart)
+            self.heaterandpreheaterrestart.deleteLater()
+            self.heaterandpreheaterrestart = None
+        if self.heaterandpreheaternext is not None:
+            self.heaterandpreheatertestbuttonlayout.removeWidget(self.heaterandpreheaternext)
+            self.heaterandpreheaternext.deleteLater()
+            self.heaterandpreheaternext = None
+
+        # ----------------------
+        # Step 0: Phase currents entry (A/B/C)
+        # ----------------------
+        if step == 0:
+            self.heaterandpreheaterlabel.setText(
+                "1. With the Beverage Maker tank filled with water, be prepared to time preheating before pressing the power button.<br><br>"
+                "2. Press the POWER button and start the provided stopwatch.<br><br>"
+                "Turn on warmer (if applicable).<br><br>"
+                "<b><i>Make sure the amperes for the self.phases are measured as follows:</i></b><br>"
+                "Phase A: 8.1 +0.6/-0.9 amperes<br>"
+                "Phase B: 7.8 +0.4/-0.7 amperes<br>"
+                "Phase C: 7.8 +0.4/-0.7 amperes<br>"
+            )
+            self.heaterandpreheaterbeginbutton.setText("Begin")
+            _safe_reconnect(self.heaterandpreheaterbeginbutton, self.HeaterAndPreheater)
+            return
+
+        # ----------------------
+        # Step 1: Preheat elapsed time entry
+        # ----------------------
+        if step == 1:
+            self.heaterandpreheaterlabel.setText(
+                "<b>4. Stop the stopwatch when the current on Phase B goes to zero.</b><br><br>"
+                "<i>The elapsed time should be 3 minutes and 30 seconds at maximum "
+                "(The measured time must begin from room temperature contents).</i><br><br>"
+                "(NOTE: A small amount of water may come out of the pressure relief valve drain line "
+                "as the tank completes preheating. This is normal behaviour.)"
+            )
+            self.heaterandpreheaterbeginbutton.setText("Continue")
+            _safe_reconnect(self.heaterandpreheaterbeginbutton, self.HeaterAndPreheater)
+            return
+
+        # Fallback
+        self.heaterandpreheaterlabel.setText("<b>Heater and Preheater</b><br><br>Ready.")
+        self.heaterandpreheaterbeginbutton.setText("Begin")
+        _safe_reconnect(self.heaterandpreheaterbeginbutton, self.HeaterAndPreheater)
 
     def HeaterAndPreheaterNext(self):
         current =self.tabs.currentIndex()
@@ -917,7 +991,7 @@ class HeaterAndPreheaterTest(QWidget):
 
             if status in ("PASS", "FAIL", "COMPLETED"):
                 # Fully done → jump to completed screen
-                self.current_heaterandpreheater_step = 2
+                self.current_heaterandpreheater_step = 4
                 print(f"Current step: {self.current_heaterandpreheater_step}")
                 self.updateHeaterAndPreheaterStep()
 
