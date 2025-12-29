@@ -43,14 +43,14 @@ class DielectricTest(QWidget):
                 self.web = None
 
                 #temp self.phase
-                self.phase1read = 0
-                self.phase2read = 0
-                self.phase3read = 0
+                self.phaseAread = 0
+                self.phaseBread = 0
+                self.phaseCread = 0
 
                 self.dielectric_results = ""
 
-                self.dielectric_passed = [False, False]
-                self.dielectric_failed = [False, False]
+                self.dielectric_passed = [False, False, False]
+                self.dielectric_failed = [False, False, False]
                 self.dielectric_completed = False
                 self.current_dielectric_step = 0
 
@@ -128,16 +128,10 @@ class DielectricTest(QWidget):
                 self.scroll.setMaximumWidth(1200)
                 self.scroll.setWidgetResizable(True)
 
+
                 self.dielectriclabel = QLabel("""
-                Begin by removing side panel<br><br><br>
-                <b>1. Disconnect the P1 connector from J1 connector on circuit board.</b><br<br>
-                <b>2. Install IAS11003B circular box connector into power input.</b><br><br>
-                <i>Confirm test box leads are connected to hipot tester.</i><br><br>
-                <b>2a. Install red and black test box jumpers from C to H.<br><br>
-                Turn on the QuadTech Guardian 2510 Hipot Tester and press start.<br><br>
-                The tester will increase the voltage of the Hi Pot test set in increments of 250 to 500 volts per second<br>
-                until 1500 volts are applied across test connection and maintain the voltage at the 1500 volt level for 60 seconds.</b><br><br>
-                Press Begin to continue.<br><br>
+                <b>If a major rewiring is required, press begin to start the Dielectic test.<br<br>
+                Otherwise select N/A</b> 
                 """)
 
                 self.dielectriclabel.setTextFormat(Qt.TextFormat.RichText)
@@ -160,88 +154,135 @@ class DielectricTest(QWidget):
                 try:
                         self.dielectricbeginbutton = QPushButton("Begin", self)
                         self.dielectricbeginbutton.setFixedWidth(200)
-                        self.dielectricbeginbutton.clicked.connect(self.Dielectric)
+                        self.dielectricbeginbutton.clicked.connect(self.updateDielectricStep)
                         self.dielectrictestbuttonlayout.addWidget(self.dielectricbeginbutton, alignment=Qt.AlignmentFlag.AlignCenter)
+
+                        self.dielectricnabutton = QPushButton("N/A", self)
+                        self.dielectricnabutton.setFixedWidth(200)
+                        self.dielectricnabutton.clicked.connect(self.NA)
+                        self.dielectrictestbuttonlayout.addWidget(self.dielectricnabutton,
+                                                                  alignment=Qt.AlignmentFlag.AlignCenter)
 
                 except Exception as e:
                         print(f"Error while opening workorder: {e}")
 
-                #-------------------------------------------------------------------- Phase Readings
+                # -------------------------------------------------------------------- Phase Readings
 
-                self.phaselayout = QHBoxLayout()
+                self.bottomToolbar = QHBoxLayout()
+
+                self.phaselayout = QVBoxLayout()
 
                 self.resources = QPushButton("Resources")
                 self.resources.setFixedWidth(200)
                 self.resources.clicked.connect(self.OnResources)
-                self.phaselayout.addWidget(self.resources)
+                self.bottomToolbar.addWidget(self.resources)
 
                 spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-                layout.addSpacerItem(spacer1)
+                self.bottomToolbar.addSpacerItem(spacer1)
 
                 spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-                self.phaselayout.addSpacerItem(spacer2)
+                self.bottomToolbar.addSpacerItem(spacer2)
 
-                self.phase1 = QLabel("Phase A:")
-                self.phase1.setStyleSheet("""
-                                                        font: 24px;
-                                                        """)
-                self.phaselayout.addWidget(self.phase1)
+                self.phaseAlayout = QHBoxLayout()
+                self.phaseA = QLabel("Phase A:")
+                self.phaseA.setStyleSheet("""
+                                                    font: 18px;
+                                                    """)
+                self.phaseAlayout.addWidget(self.phaseA)
 
-                self.phase1reading = QLabel(f"{self.phase1read}")
-                self.phase1reading.setStyleSheet("""
-                                                font: 24px;
-                                                """)
-                self.phaselayout.addWidget(self.phase1reading)
+                self.phaseAreading = QLabel(f"{self.phaseAread}")
+                self.phaseAreading.setStyleSheet("""
+                                            font: 18px;
+                                            """)
+                self.phaseAlayout.addWidget(self.phaseAreading)
 
-                self.phase2 = QLabel("  Phase B:")
-                self.phase2.setStyleSheet("""
-                                                                font: 24px;
-                                                                """)
-                self.phaselayout.addWidget(self.phase2)
+                self.phaselayout.addLayout(self.phaseAlayout)
 
-                self.phase2reading = QLabel(f"{self.phase2read}")
-                self.phase2reading.setStyleSheet("""
-                                                        font: 24px;
-                                                        """)
-                self.phaselayout.addWidget(self.phase2reading)
+                self.phaseBlayout = QHBoxLayout()
 
-                self.phase3 = QLabel("  Phase C:")
-                self.phase3.setStyleSheet("""
-                                                                font: 24px;
-                                                                """)
-                self.phaselayout.addWidget(self.phase3)
+                self.phaseB = QLabel("Phase B:")
+                self.phaseB.setStyleSheet("""
+                                                            font: 18px;
+                                                            """)
+                self.phaseBlayout.addWidget(self.phaseB)
 
-                self.phase3reading = QLabel(f"{self.phase3read}")
-                self.phase3reading.setStyleSheet("""
-                                                        font: 24px;
-                                                        """)
-                self.phaselayout.addWidget(self.phase3reading)
+                self.phaseBreading = QLabel(f"{self.phaseBread}")
+                self.phaseBreading.setStyleSheet("""
+                                                    font: 18px;
+                                                    """)
+                self.phaseBlayout.addWidget(self.phaseBreading)
 
-                layout.addLayout(self.phaselayout)
+                self.phaselayout.addLayout(self.phaseBlayout)
+
+                self.phaseClayout = QHBoxLayout()
+
+                self.phaseC = QLabel("Phase C:")
+                self.phaseC.setStyleSheet("""
+                                                            font: 18px;
+                                                            """)
+                self.phaseClayout.addWidget(self.phaseC)
+
+                self.phaseCreading = QLabel(f"{self.phaseCread}")
+                self.phaseCreading.setStyleSheet("""
+                                                    font: 18px;
+                                                    """)
+                self.phaseClayout.addWidget(self.phaseCreading)
+
+                self.phaselayout.addLayout(self.phaseClayout)
+
+                self.bottomToolbar.addLayout(self.phaselayout)
+
+                layout.addLayout(self.bottomToolbar)
 
                 self.setLayout(layout)
 
                 if self.instrument is not None:
-                    self.instrument.ch1.connect(self.show_current1)
-                    self.instrument.ch2.connect(self.show_current2)
-                    self.instrument.ch3.connect(self.show_current3)
+                        self.instrument.ch1.connect(self.show_current1)
+                        self.instrument.ch2.connect(self.show_current2)
+                        self.instrument.ch3.connect(self.show_current3)
 
         @pyqtSlot(float)
         def show_current1(self, amps):
-                self.phase1reading.setText(f"{amps:.3f} A")
+                self.phaseAreading.setText(f"{amps:.3f} A")
 
         @pyqtSlot(float)
         def show_current2(self, amps):
-                self.phase2reading.setText(f"{amps:.3f} A")
+                self.phaseBreading.setText(f"{amps:.3f} A")
 
         @pyqtSlot(float)
         def show_current3(self, amps):
-                self.phase3reading.setText(f"{amps:.3f} A")
+                self.phaseCreading.setText(f"{amps:.3f} A")
+
+        def NA(self):
+                try:
+                        self.dielectriclabel.setText(
+                                """
+                                <b>Dielectric Test Not Applicable</b>
+                                                """
+                        )
+                        self.dielectricbeginbutton.setVisible(False)
+                        self.dielectricnabutton.setVisible(False)
+                        self.dielectricrestart = QPushButton("Restart", self)
+                        self.dielectricrestart.clicked.connect(self.DielectricRestart)
+                        self.dielectricrestart.setFixedWidth(200)
+                        self.dielectrictestbuttonlayout.addWidget(self.dielectricrestart,
+                                                                  alignment=Qt.AlignmentFlag.AlignCenter)
+
+                        self.dielectricnext = QPushButton("Next", self)
+                        self.dielectricnext.clicked.connect(self.DielectricNext)
+                        self.dielectricnext.setFixedWidth(200)
+                        self.dielectrictestbuttonlayout.addWidget(self.dielectricnext,
+                                                                  alignment=Qt.AlignmentFlag.AlignCenter)
+                except Exception as e:
+                        print(f"Error while N/A: {e}")
+
+
 
         def Dielectric(self):
+
                 try:
                                         # STEP 1 — 4.5 mΩ
-                        if self.current_dielectric_step == 0:
+                        if self.current_dielectric_step == 1:
                                 value, ok = NumericKeypadDialog.getValue(
                                         self,
                                         "Check Hi Pot Current",
@@ -270,14 +311,14 @@ class DielectricTest(QWidget):
                                         self.insert_dielectric_result(result_line)
                                         print(f"User entered: {value} mA")
                                         self.dielectric_results += f"Test {self.current_dielectric_step + 1} Result: {value} mA\n"
-                                        self.dielectric_passed[0] = True
-                                        self.dielectric_failed[0] = False
+                                        self.dielectric_passed[1] = True
+                                        self.dielectric_failed[1] = False
                                         self.current_dielectric_step += 1
                                         self.updateDielectricStep()
 
 
 
-                        elif self.current_dielectric_step == 1:
+                        elif self.current_dielectric_step == 2:
                                 value, ok = NumericKeypadDialog.getValue(
                                         self,
                                         "Check Megaohmmeter",
@@ -295,8 +336,8 @@ class DielectricTest(QWidget):
                                                     "status": "PASS",
                                                     "value": value
                                                 }
-                                                self.dielectric_passed[1] = True
-                                                self.dielectric_failed[1] = False
+                                                self.dielectric_passed[2] = True
+                                                self.dielectric_failed[2] = False
                                                 self.post_dielectric_snapshot()
                                         else:
                                                 result_line += "\tFAIL"
@@ -304,8 +345,8 @@ class DielectricTest(QWidget):
                                                     "status": "FAIL",
                                                     "value": value
                                                 }
-                                                self.dielectric_passed[1] = False
-                                                self.dielectric_failed[1] = True
+                                                self.dielectric_passed[2] = False
+                                                self.dielectric_failed[2] = True
                                                 self.post_dielectric_snapshot()
                                         self.insert_dielectric_result(result_line)
                                         print(f"User entered: {value} mΩ")
@@ -331,7 +372,27 @@ class DielectricTest(QWidget):
 
 
         def updateDielectricStep(self):
-                if self.dielectric_passed[0] or self.dielectric_failed[0]:
+                if self.current_dielectric_step == 0:
+                        self.dielectricnabutton.deleteLater()
+                        self.current_dielectric_step += 1
+                        self.dielectriclabel.setText(
+                                """     Begin by removing side panel<br><br><br>
+                                        <b>1. Disconnect the P1 connector from J1 connector on circuit board.</b><br<br>
+                                        <b>2. Install IAS11003B circular box connector into power input.</b><br><br>
+                                        <i>Confirm test box leads are connected to hipot tester.</i><br><br>
+                                        <b>2a. Install red and black test box jumpers from C to H.<br><br>
+                                        Turn on the QuadTech Guardian 2510 Hipot Tester and press start.<br><br>
+                                        The tester will increase the voltage of the Hi Pot test set in increments of 250 to 500 volts per second<br>
+                                        until 1500 volts are applied across test connection and maintain the voltage at the 1500 volt level for 60 seconds.</b><br><br>
+                                        Press Begin to continue.<br><br>
+                                                """
+                        )
+
+                        self.dielectricbeginbutton.setText("Continue")
+                        self.dielectricbeginbutton.clicked.disconnect()
+                        self.dielectricbeginbutton.clicked.connect(self.Dielectric)
+
+                if self.dielectric_passed[1] or self.dielectric_failed[1]:
                         self.dielectriclabel.setText(
                                 "<b>3. Connect QuadTech megohmmeter by connecting C and M jumpers on the test box.<br><br>"
                                 "Set scale on megohmmeter to 500 volts and 100M.<br><br>"
@@ -343,7 +404,7 @@ class DielectricTest(QWidget):
                         self.dielectricbeginbutton.clicked.disconnect()
                         self.dielectricbeginbutton.clicked.connect(self.Dielectric)
 
-                if self.dielectric_passed[1] or self.dielectric_failed[1] or self.current_dielectric_step > 1:
+                if self.dielectric_passed[2] or self.dielectric_failed[2] or self.current_dielectric_step > 2:
                         self.dielectriclabel.setText(
                                 "<b>Test Complete.<br><br>"
                                 "The Dielectric Test has been completed successfully!<br><br>"
@@ -634,12 +695,16 @@ class DielectricTest(QWidget):
                 try:
                         print("Restarting Dielectric Test")
 
+                        self.dielectricbeginbutton.setVisible(True)
+                        self.dielectricnabutton.setVisible(True)
+
+
                         # ---------- State reset ----------
                         self.dielectric_results = ""
                         self.dielectric_passed = [False] * len(self.dielectric_passed)
                         self.dielectric_failed = [False] * len(self.dielectric_failed)
                         self.dielectric_completed = False
-                        self.current_dielectric_step = 0
+                        self.current_dielectric_step = 1
                         self.step_status = {}
 
                         # ---------- Restore instructions ----------
@@ -867,7 +932,7 @@ class DielectricTest(QWidget):
 
                         if status in ("PASS", "FAIL", "COMPLETED"):
                                 # Fully done → jump to completed screen
-                                self.current_dielectric_step = 2
+                                self.current_dielectric_step = 3
                                 print(f"Current step: {self.current_dielectric_step}")
                                 self.updateDielectricStep()
 

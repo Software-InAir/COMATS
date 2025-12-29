@@ -52,9 +52,9 @@ class HeaterAndPreheaterTest(QWidget):
         self.step_status = {}
 
         # -------- temp self.phase
-        self.phase1read = 0
-        self.phase2read = 0
-        self.phase3read = 0
+        self.phaseAread = 0
+        self.phaseBread = 0
+        self.phaseCread = 0
 
         layout = QVBoxLayout()
         #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -155,59 +155,74 @@ class HeaterAndPreheaterTest(QWidget):
             print(f"Error while opening workorder: {e}")
 
         # -------------------------------------------------------------------- Phase Readings
-        self.phaselayout = QHBoxLayout()
+
+        self.bottomToolbar = QHBoxLayout()
+
+        self.phaselayout = QVBoxLayout()
 
         self.resources = QPushButton("Resources")
         self.resources.setFixedWidth(200)
         self.resources.clicked.connect(self.OnResources)
-        self.phaselayout.addWidget(self.resources)
+        self.bottomToolbar.addWidget(self.resources)
 
         spacer1 = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        layout.addSpacerItem(spacer1)
+        self.bottomToolbar.addSpacerItem(spacer1)
 
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        self.phaselayout.addSpacerItem(spacer2)
+        self.bottomToolbar.addSpacerItem(spacer2)
 
-        self.phase1 = QLabel("Phase A:")
-        self.phase1.setStyleSheet("""
-                                                font: 24px;
+        self.phaseAlayout = QHBoxLayout()
+        self.phaseA = QLabel("Phase A:")
+        self.phaseA.setStyleSheet("""
+                                                font: 18px;
                                                 """)
-        self.phaselayout.addWidget(self.phase1)
+        self.phaseAlayout.addWidget(self.phaseA)
 
-        self.phase1reading = QLabel(f"{self.phase1read}")
-        self.phase1reading.setStyleSheet("""
-                                        font: 24px;
+        self.phaseAreading = QLabel(f"{self.phaseAread}")
+        self.phaseAreading.setStyleSheet("""
+                                        font: 18px;
                                         """)
-        self.phaselayout.addWidget(self.phase1reading)
+        self.phaseAlayout.addWidget(self.phaseAreading)
 
-        self.phase2 = QLabel("  Phase B:")
-        self.phase2.setStyleSheet("""
-                                                        font: 24px;
+        self.phaselayout.addLayout(self.phaseAlayout)
+
+        self.phaseBlayout = QHBoxLayout()
+
+        self.phaseB = QLabel("Phase B:")
+        self.phaseB.setStyleSheet("""
+                                                        font: 18px;
                                                         """)
-        self.phaselayout.addWidget(self.phase2)
+        self.phaseBlayout.addWidget(self.phaseB)
 
-        self.phase2reading = QLabel(f"{self.phase2read}")
-        self.phase2reading.setStyleSheet("""
-                                                font: 24px;
+        self.phaseBreading = QLabel(f"{self.phaseBread}")
+        self.phaseBreading.setStyleSheet("""
+                                                font: 18px;
                                                 """)
-        self.phaselayout.addWidget(self.phase2reading)
+        self.phaseBlayout.addWidget(self.phaseBreading)
 
-        self.phase3 = QLabel("  Phase C:")
-        self.phase3.setStyleSheet("""
-                                                        font: 24px;
+        self.phaselayout.addLayout(self.phaseBlayout)
+
+        self.phaseClayout = QHBoxLayout()
+
+        self.phaseC = QLabel("Phase C:")
+        self.phaseC.setStyleSheet("""
+                                                        font: 18px;
                                                         """)
-        self.phaselayout.addWidget(self.phase3)
+        self.phaseClayout.addWidget(self.phaseC)
 
-        self.phase3reading = QLabel(f"{self.phase3read}")
-        self.phase3reading.setStyleSheet("""
-                                                font: 24px;
+        self.phaseCreading = QLabel(f"{self.phaseCread}")
+        self.phaseCreading.setStyleSheet("""
+                                                font: 18px;
                                                 """)
-        self.phaselayout.addWidget(self.phase3reading)
+        self.phaseClayout.addWidget(self.phaseCreading)
 
-        layout.addLayout(self.phaselayout)
+        self.phaselayout.addLayout(self.phaseClayout)
+
+        self.bottomToolbar.addLayout(self.phaselayout)
+
+        layout.addLayout(self.bottomToolbar)
 
         self.setLayout(layout)
-
 
         if self.instrument is not None:
             self.instrument.ch1.connect(self.show_current1)
@@ -216,15 +231,15 @@ class HeaterAndPreheaterTest(QWidget):
 
     @pyqtSlot(float)
     def show_current1(self, amps):
-        self.phase1reading.setText(f"{amps:.3f} A")
+        self.phaseAreading.setText(f"{amps:.3f} A")
 
     @pyqtSlot(float)
     def show_current2(self, amps):
-        self.phase2reading.setText(f"{amps:.3f} A")
+        self.phaseBreading.setText(f"{amps:.3f} A")
 
     @pyqtSlot(float)
     def show_current3(self, amps):
-        self.phase3reading.setText(f"{amps:.3f} A")
+        self.phaseCreading.setText(f"{amps:.3f} A")
 
     def HeaterAndPreheater(self):
         try:

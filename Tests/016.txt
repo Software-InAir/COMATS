@@ -1,0 +1,36 @@
+Workorder Number: 016
+Unit Number: 4510-28UG-00
+Unit Serial Number: 
+Unit Part Number: 
+Technician Name: Carlos
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+
+>>Resistance Test<<
+
+>>Water Supply Temperature Test<<
+
+>>Ambient Temperature Test<<
+
+>>Tank Pressure Test<<
+
+>>Power and Low Indicator Light Test<<
+
+>>RTD Test<<
+
+>>Heated Water Test<<
+
+>>Hot Plate Test<<
+
+>>Tank Heater and Preheater Test<<
+
+>>Brew Test<<
+
+>>Server Retainer Test<<
+
+>>Tea Test<<

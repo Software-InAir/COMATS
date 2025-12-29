@@ -240,6 +240,7 @@ class MainWindow(QMainWindow):
                         """)
             self.workordermodelfield.addItem("11225-1")
             self.workordermodelfield.addItem("4510-28UG-00")
+            self.workordermodelfield.addItem("4510-44UG-00")
             wofieldlayout.addWidget(self.workordermodelfield)
 
             self.serialnumber = QLabel("Unit Serial Number:  ")
@@ -520,7 +521,7 @@ class MainWindow(QMainWindow):
                           )
             if modelNumber == "11225-1":
                 model_code = "MODEL_A"
-            elif modelNumber == "4510-28UG-00":
+            elif modelNumber == "4510-28UG-00" or modelNumber == "4510-44UG-00":
                 model_code = "MODEL_B"
 
             payload = {
@@ -671,7 +672,7 @@ class MainWindow(QMainWindow):
                 print(f"Error while creating V.Inspect: {e}")
                 traceback.print_exc()
 
-        elif modelNumber == "4510-28UG-00":
+        elif modelNumber == "4510-28UG-00" or modelNumber == "4510-44UG-00":
             try:
                 self.setMinimumSize(1150, 700)
 
@@ -819,7 +820,7 @@ class MainWindow(QMainWindow):
 
             except Exception as e:
                 print(f"Error while setting test path: {e}")
-        elif modelNumber == "4510-28UG-00":
+        elif modelNumber == "4510-28UG-00" or modelNumber == "4510-44UG-00":
             try:
                 self.resistance_test.ResistanceTestPath(test_path)
                 self.dielectric_test.DielectricTestPath(test_path)
@@ -867,7 +868,7 @@ class MainWindow(QMainWindow):
                             )
                         except Exception as e:
                             print(f"Error while writing V.Inspect File: ")
-                    elif modelNumber == "4510-28UG-00":
+                    elif modelNumber == "4510-28UG-00" or modelNumber == "4510-44UG-00":
                         file.write(
                                    "\n\n"
                                    "_Functional Tests_"
@@ -927,7 +928,7 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Error while adding tab: {e}")
 
-        if modelNumber == "4510-28UG-00":
+        if modelNumber == "4510-28UG-00" or modelNumber == "4510-44UG-00":
             try:
                 self.tabs.addTab(self.dielectric_test, f"Dielectric")
                 self.tabs.addTab(self.resistance_test, f"Resistance")
@@ -936,12 +937,13 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(self.tankpressure_test, f"Tank Pressure")
                 self.tabs.addTab(self.powerandlowlight_test, f"Power and Low Light Indicator")
                 self.tabs.addTab(self.rtdcircuit_test, f"RTD Circuit")
-                self.tabs.addTab(self.heatedwater_test, "Heated Water")
-                self.tabs.addTab(self.hotplate_test, "Hot Plate")
                 self.tabs.addTab(self.heaterandpreheater_test, f"Tank Heater and Preheater")
                 self.tabs.addTab(self.brew_test, f"Brew")
-                self.tabs.addTab(self.serverretainer_test, f"Server Retainer")
                 self.tabs.addTab(self.tea_test, f"Tea")
+                self.tabs.addTab(self.heatedwater_test, "Heated Water")
+                self.tabs.addTab(self.hotplate_test, "Hot Plate")
+                self.tabs.addTab(self.serverretainer_test, f"Server Retainer")
+
             except Exception as e:
                 print(f"Error while adding tab: {e}")
 

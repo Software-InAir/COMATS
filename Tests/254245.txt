@@ -1,0 +1,38 @@
+Workorder Number: 254245
+Unit Number: 4510-28UG-00
+Unit Serial Number: 
+Unit Part Number: 
+Technician Name: Carlos
+
+
+
+
+_Functional Tests_
+
+>>Dielectric Test<<
+Megaohmmeter Resistance Test 3: 0.0 mΩ	FAIL
+Hi Pot Current Test 2: 0.0 mA	PASS
+
+>>Resistance Test<<
+
+>>Water Supply Temperature Test<<
+
+>>Ambient Temperature Test<<
+
+>>Tank Pressure Test<<
+
+>>Power and Low Indicator Light Test<<
+
+>>RTD Test<<
+
+>>Heated Water Test<<
+
+>>Hot Plate Test<<
+
+>>Tank Heater and Preheater Test<<
+
+>>Brew Test<<
+
+>>Server Retainer Test<<
+
+>>Tea Test<<
