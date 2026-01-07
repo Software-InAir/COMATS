@@ -47,7 +47,7 @@ from BrewInterrupt import BrewInterruptTest
 from IREDMonitor import IREDMonitorTest
 from PressureReliefValve import PressureReliefValveTest
 
-USE_INSTRUMENT = False
+USE_INSTRUMENT = True
 
 if USE_INSTRUMENT:
     rm = pyvisa.ResourceManager()

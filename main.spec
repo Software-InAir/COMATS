@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('COMATSeasteregg', 'COMATSeasteregg'), ('Images', 'Images'), ('Resources', 'Resources'), ('Tests', 'Tests'), ('Themes', 'Themes'), ('Unity', 'Unity')],
+    datas=[('Tests', 'Tests'), ('Themes', 'Themes'), ('Unity', 'Unity'), ('Resources', 'Resources'), ('Images', 'Images'), ('Fonts', 'Fonts'), ('COMATSeasteregg', 'COMATSeasteregg')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -32,7 +32,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    contents_directory='.',
 )
 coll = COLLECT(
     exe,

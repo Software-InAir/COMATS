@@ -77,9 +77,9 @@ class InstrumentWorker(QObject):
     @pyqtSlot()
     def _poll_once(self):
         try:
-            v1 = float(self._dev.query('MEAS:CURR 1?').strip())
-            v2 = float(self._dev.query('MEAS:CURR 2?').strip())
-            v3 = float(self._dev.query('MEAS:CURR 3?').strip())
+            v1 = float(self._dev.query('MEAS:CURR1?').strip())
+            v2 = float(self._dev.query('MEAS:CURR2?').strip())
+            v3 = float(self._dev.query('MEAS:CURR3?').strip())
             self.ch1.emit(v1)
             self.ch2.emit(v2)
             self.ch3.emit(v3)
