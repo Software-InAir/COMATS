@@ -47,6 +47,13 @@ from BrewInterrupt import BrewInterruptTest
 from IREDMonitor import IREDMonitorTest
 from PressureReliefValve import PressureReliefValveTest
 
+from Python.Automation.BDaq.InstantDoCtrl import InstantDoCtrl
+
+do = InstantDoCtrl("PCIE-1761H,BID#0")
+
+#Pump on relay command
+#ret = do.writeAny(0, 1, [0x01])
+
 USE_INSTRUMENT = False
 
 if USE_INSTRUMENT:
