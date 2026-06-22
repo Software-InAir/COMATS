@@ -1,90 +1,132 @@
-('C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\PYZ-00.pyz',
+('C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+ '(1)\\COMATS-0107sod\\build\\main\\PYZ-00.pyz',
  [('AmbientTemp',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\AmbientTemp.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\AmbientTemp.py',
    'PYMODULE'),
   ('Brew',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Brew.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Brew.py',
    'PYMODULE'),
   ('BrewBE',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\BrewBE.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\BrewBE.py',
    'PYMODULE'),
   ('BrewInterrupt',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\BrewInterrupt.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\BrewInterrupt.py',
    'PYMODULE'),
   ('Dielectric',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Dielectric.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Dielectric.py',
    'PYMODULE'),
   ('HeatedWater',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\HeatedWater.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\HeatedWater.py',
    'PYMODULE'),
   ('HeaterAndPreheater',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\HeaterAndPreheater.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\HeaterAndPreheater.py',
    'PYMODULE'),
   ('HeaterCurrent',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\HeaterCurrent.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\HeaterCurrent.py',
    'PYMODULE'),
   ('HotPlate',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\HotPlate.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\HotPlate.py',
    'PYMODULE'),
   ('HotWaterLight',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\HotWaterLight.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\HotWaterLight.py',
    'PYMODULE'),
   ('IREDMonitor',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\IREDMonitor.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\IREDMonitor.py',
    'PYMODULE'),
   ('InstrumentWorker',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\InstrumentWorker.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\InstrumentWorker.py',
    'PYMODULE'),
   ('Lamp',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Lamp.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Lamp.py',
    'PYMODULE'),
   ('LowWater',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\LowWater.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\LowWater.py',
    'PYMODULE'),
   ('NumPad',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\NumPad.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\NumPad.py',
    'PYMODULE'),
   ('PowerAndLowLight',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\PowerAndLowLight.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\PowerAndLowLight.py',
    'PYMODULE'),
   ('PowerInterrupt',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\PowerInterrupt.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\PowerInterrupt.py',
    'PYMODULE'),
   ('PressureReliefValve',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\PressureReliefValve.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\PressureReliefValve.py',
    'PYMODULE'),
   ('PyQt6',
    'C:\\Users\\c.stanley\\PycharmProjects\\COMATS\\.venv\\Lib\\site-packages\\PyQt6\\__init__.py',
    'PYMODULE'),
+  ('Python', '-', 'PYMODULE'),
+  ('Python.Automation',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Python\\Automation\\__init__.py',
+   'PYMODULE'),
+  ('Python.Automation.BDaq',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Python\\Automation\\BDaq\\__init__.py',
+   'PYMODULE'),
+  ('Python.Automation.BDaq.InstantDoCtrl',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Python\\Automation\\BDaq\\InstantDoCtrl.py',
+   'PYMODULE'),
   ('RTDCircuit',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\RTDCircuit.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\RTDCircuit.py',
    'PYMODULE'),
   ('Resistance',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Resistance.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Resistance.py',
    'PYMODULE'),
   ('ServerRetainer',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\ServerRetainer.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\ServerRetainer.py',
    'PYMODULE'),
   ('TankPressure',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\TankPressure.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\TankPressure.py',
    'PYMODULE'),
   ('Tea',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Tea.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Tea.py',
    'PYMODULE'),
   ('Temperature',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\Temperature.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\Temperature.py',
    'PYMODULE'),
   ('UnheatedWater',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\UnheatedWater.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\UnheatedWater.py',
    'PYMODULE'),
   ('VisualInspection',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\VisualInspection.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\VisualInspection.py',
    'PYMODULE'),
   ('WaterLeaks',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\WaterLeaks.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\WaterLeaks.py',
    'PYMODULE'),
   ('WaterSupplyTemperature',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\WaterSupplyTemperature.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\WaterSupplyTemperature.py',
    'PYMODULE'),
   ('__future__',
    'C:\\Users\\c.stanley\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\__future__.py',

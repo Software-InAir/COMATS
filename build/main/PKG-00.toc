@@ -1,4 +1,5 @@
-('C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\main.pkg',
+('C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+ '(1)\\COMATS-0107sod\\build\\main\\main.pkg',
  {'BINARY': True,
   'DATA': True,
   'EXECUTABLE': True,
@@ -10,22 +11,28 @@
   'SYMLINK': False},
  [('pyi-contents-directory _internal', '', 'OPTION'),
   ('PYZ-00.pyz',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\PYZ-00.pyz',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\PYZ-00.pyz',
    'PYZ'),
   ('struct',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\localpycs\\struct.pyc',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\localpycs\\struct.pyc',
    'PYMODULE'),
   ('pyimod01_archive',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\localpycs\\pyimod01_archive.pyc',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\localpycs\\pyimod01_archive.pyc',
    'PYMODULE'),
   ('pyimod02_importers',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\localpycs\\pyimod02_importers.pyc',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\localpycs\\pyimod02_importers.pyc',
    'PYMODULE'),
   ('pyimod03_ctypes',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\localpycs\\pyimod03_ctypes.pyc',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\localpycs\\pyimod03_ctypes.pyc',
    'PYMODULE'),
   ('pyimod04_pywin32',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\build\\main\\localpycs\\pyimod04_pywin32.pyc',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\build\\main\\localpycs\\pyimod04_pywin32.pyc',
    'PYMODULE'),
   ('pyiboot01_bootstrap',
    'C:\\Users\\c.stanley\\PycharmProjects\\COMATS\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
@@ -43,7 +50,8 @@
    'C:\\Users\\c.stanley\\PycharmProjects\\COMATS\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pyqt6.py',
    'PYSOURCE'),
   ('main',
-   'C:\\Users\\c.stanley\\Downloads\\COMATS-EE\\COMATS-EE\\COMATS-serverupgrade\\COMATS-testphase\\main.py',
+   'C:\\Users\\c.stanley\\Downloads\\COMATS-0107sod '
+   '(1)\\COMATS-0107sod\\main.py',
    'PYSOURCE')],
  'python312.dll',
  True,
