@@ -52,6 +52,14 @@ Name: "{commondesktop}\COMATS"; \
     WorkingDir: "{app}"; \
     Tasks: desktopicon
 
+[Registry]
+Root: HKLM; \
+    Subkey: "Software\COMATS"; \
+    ValueType: string; \
+    ValueName: "Version"; \
+    ValueData: "{#AppVersion}"; \
+    Flags: uninsdeletekey
+
 [Run]
 
 
