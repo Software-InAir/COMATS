@@ -41,10 +41,6 @@ Source: "{#RootDir}\dist\main\*"; \
     DestDir: "{app}"; \
     Flags: recursesubdirs createallsubdirs ignoreversion
 
-; Microsoft Visual C++ runtime
-Source: "{#RootDir}\VC_redist.x64.exe"; \
-    DestDir: "{tmp}"; \
-    Flags: deleteafterinstall skipifsourcedoesntexist
 
 [Icons]
 Name: "{group}\COMATS"; \
@@ -57,10 +53,7 @@ Name: "{commondesktop}\COMATS"; \
     Tasks: desktopicon
 
 [Run]
-Filename: "{tmp}\VC_redist.x64.exe"; \
-    Parameters: "/install /quiet /norestart"; \
-    StatusMsg: "Installing Microsoft Visual C++ Runtime..."; \
-    Flags: waituntilterminated runhidden skipifdoesntexist
+
 
 Filename: "{app}\main.exe"; \
     WorkingDir: "{app}"; \
