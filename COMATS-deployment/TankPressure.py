@@ -132,9 +132,7 @@ class TankPressureTest(QWidget):
             "2. Connect the Beverage Maker to water supply and then open V10.<br><br>"
             "3. Let tank fill with water. Flow meter will go to zero when tank is full.<br><br>" 
             "4. Adjust water pressure by rotating V7 clockwise until PG2 reads 130 psig (8.96 barg).<br><br>"
-            "Hold for a minimum of 5 minutes.<br><br>"
-            "Inspect tank for leaks.<br><br>"
-            "<i>No leaks are allowed.</i><br><br>"
+            "Begin Test Procedure.</b><br><br>"
         )
 
         self.tankpressurelabel.setTextFormat(Qt.TextFormat.RichText)
@@ -255,16 +253,28 @@ class TankPressureTest(QWidget):
 
     def TankPressure(self):
         try:
-            msg1 = QMessageBox()
+
             #msg1.setIcon(QMessageBox.Icon.Information)
-            do = InstantDoCtrl("PCIE-1761H,BID#0")
+            #do = InstantDoCtrl("PCIE-1761H,BID#0")
 
             # Pump on relay command
-            ret = do.writeAny(0, 1, [0x60])
-            print(ret)
+            #ret = do.writeAny(0, 1, [0x60])
+            #print(ret)
+
+            if self.current_tankpressure_step == 0:
+
+                self.tankpressurelabel.setText("<b>Open Timer Utility and observe pressure relief valve for 5 minutes.<br><br>"
+                                               "After the 5 minute window has elapsed, press Continue to proceed.<br><br></b>"
+                                               "<i>Any leaks within this window results in a failure for the leak test procedure</i><br><br>"
+                                               )
+                self.tankpressurebeginbutton.setText("Continue")
+                self.current_tankpressure_step += 1
+                self.tankpressurebeginbutton.clicked.disconnect()
+                self.tankpressurebeginbutton.clicked.connect(self.TankPressure)
 
             # STEP 1 — 4.5 mΩ
-            if self.current_tankpressure_step == 0:
+            elif self.current_tankpressure_step == 1:
+                msg1 = QMessageBox()
                 msg1.setWindowTitle("Check Tank")
                 msg1.setText("No tank leaks found.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
@@ -296,7 +306,8 @@ class TankPressureTest(QWidget):
                     self.updateTankPressureStep()
                     self.current_tankpressure_step += 1
 
-            elif self.current_tankpressure_step == 1:
+            elif self.current_tankpressure_step == 2:
+                msg1 = QMessageBox()
                 msg1.setWindowTitle("Check Vent Valve")
                 msg1.setText("Vent Valve operates as instructed.")
                 pass_button = msg1.addButton("Pass", QMessageBox.ButtonRole.AcceptRole)
@@ -329,7 +340,7 @@ class TankPressureTest(QWidget):
                     self.current_tankpressure_step += 1
 
             # STEP 2 — 5.12 mΩ
-            elif self.current_tankpressure_step == 2:
+            elif self.current_tankpressure_step == 3:
                 value, ok = NumericKeypadDialog.getValue(
                     self,
                     "Check Pressure",
@@ -389,7 +400,7 @@ class TankPressureTest(QWidget):
     def updateTankPressureStep(self):
         if self.tankpressure_passed[0] or self.tankpressure_failed[0]:
             self.tankpressurelabel.setText(
-                "Rotate V7 counterclockwise until PG2 reads below 70 psi.<br><br>"
+                "<b>Rotate V7 counterclockwise until PG2 reads below 70 psi.<br><br>"
                 "Open V9 periodically to verify pressure is below 70 psi.<br><br>"
                 "Close V10.<br><br>"
                 "5. Release pressure by opening V11 then remove plug.<br><br>"
@@ -398,10 +409,10 @@ class TankPressureTest(QWidget):
                 "Tighten with 11/16 wrench.<br>"
                 "Close V11 and open V10.7.<br><br>"
                 "Gradually increase the water pressure to the tank.<br>"
-                "Slowly rotate V7 clockwise while watching PG2.<br><br>"
+                "Slowly rotate V7 clockwise while watching PG2.</b><br><br>"
                 "<i>The relief valve should remain closed at pressures below 75 psig (5.17 barg).</i><br><br>"
-                "Continue to increase pressure ensuring the valve is fully open prior to or at 100 psig (6.89 barg).<br><br>"
-                "8. Disconnect water supply by turning V10 off and drain the Beverage Maker by opening V11.<br><br>"
+                "<b>Continue to increase pressure ensuring the valve is fully open prior to or at 100 psig (6.89 barg).<br><br>"
+                "8. Disconnect water supply by turning V10 off and drain the Beverage Maker by opening V11.</b><br><br>"
                 "<i>Ensure that vent valve operates correctly as described.</i><br><br>"
             )
 
@@ -412,9 +423,9 @@ class TankPressureTest(QWidget):
 
         if self.tankpressure_passed[1] or self.tankpressure_failed[1]:
             self.tankpressurelabel.setText(
-                "Turn V7 counterclockwise to return pressure to 50 psi while periodically opening V9 to verify.<br><br>"
+                "<b>Turn V7 counterclockwise to return pressure to 50 psi while periodically opening V9 to verify.<br><br>"
                 "Turn V8 horizontal.<br>"
-                "Open V9<br><br>"
+                "Open V9</b><br><br>"
                 "<i>Verify pressure is less than 30 on PG2.</i><br><br>"
             )
             self.tankpressurebeginbutton.setText("Continue")
@@ -423,7 +434,7 @@ class TankPressureTest(QWidget):
 
         if self.tankpressure_passed[2] or self.tankpressure_failed[2] or self.current_tankpressure_step > 2:
             self.tankpressurelabel.setText(
-                    "Test Complete.<br><br>"
+                    "<b>Test Complete.</b><br><br>"
                     "Tank Pressure Test has been completed successfully!<br>"
                 )
             self.tankpressurebeginbutton.setText("Results")
