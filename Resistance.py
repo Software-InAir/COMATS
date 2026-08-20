@@ -19,6 +19,8 @@ import sys
 from pathlib import Path
 from paths import resource_path
 
+from Python.Automation.BDaq.InstantDoCtrl import InstantDoCtrl
+
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -247,6 +249,9 @@ class ResistanceTest(QWidget):
 
     def Resistance(self):
             try:
+                do = InstantDoCtrl("PCIE-1761H,BID#0")
+                ret1 = do.writeAny(0, 1, [0x00])
+                print(ret1)
                 # STEP 1 — 4.5 mΩ
                 if self.current_resistance_step == 0:
                     value, ok = NumericKeypadDialog.getValue(

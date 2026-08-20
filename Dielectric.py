@@ -19,6 +19,8 @@ import sys
 from pathlib import Path
 from paths import resource_path
 
+from Python.Automation.BDaq.InstantDoCtrl import InstantDoCtrl
+
 
 
 class Worker(QObject):
@@ -287,7 +289,10 @@ class DielectricTest(QWidget):
         def Dielectric(self):
 
                 try:
-                                        # STEP 1 — 4.5 mΩ
+                        do = InstantDoCtrl("PCIE-1761H,BID#0")
+                        ret1 = do.writeAny(0, 1, [0x00])
+                        print(ret1)
+                        # STEP 1 — 4.5 mΩ
                         if self.current_dielectric_step == 1:
                                 value, ok = NumericKeypadDialog.getValue(
                                         self,

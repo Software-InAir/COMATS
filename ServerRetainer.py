@@ -17,6 +17,8 @@ import sys
 from pathlib import Path
 from paths import resource_path
 
+from Python.Automation.BDaq.InstantDoCtrl import InstantDoCtrl
+
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -245,6 +247,9 @@ class ServerRetainerTest(QWidget):
 
     def ServerRetainer(self):
         try:
+            do = InstantDoCtrl("PCIE-1761H,BID#0")
+            ret1 = do.writeAny(0, 1, [0x00])
+            print(ret1)
             msg1 = QMessageBox()
             #msg1.setIcon(QMessageBox.Icon.Information)
 
