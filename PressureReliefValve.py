@@ -253,7 +253,7 @@ class PressureReliefValveTest(QWidget):
     def PressureReliefValve(self):
         try:
             do = InstantDoCtrl("PCIE-1761H,BID#0")
-            ret1 = do.writeAny(0, 1, [0x00])
+            ret1 = do.writeAny(0, 1, [0x60])
             print(ret1)
             msg1 = QMessageBox()
 
