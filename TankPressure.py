@@ -255,11 +255,11 @@ class TankPressureTest(QWidget):
         try:
 
             #msg1.setIcon(QMessageBox.Icon.Information)
-            #do = InstantDoCtrl("PCIE-1761H,BID#0")
+            do = InstantDoCtrl("PCIE-1761H,BID#0")
 
             # Pump on relay command
-            #ret = do.writeAny(0, 1, [0x60])
-            #print(ret)
+            ret = do.writeAny(0, 1, [0x60])
+            print(ret)
 
             if self.current_tankpressure_step == 0:
 
