@@ -62,7 +62,7 @@ def resource_path(*parts: str) -> Path:
 #Pump on relay command
 #ret = do.writeAny(0, 1, [0x01])
 
-USE_INSTRUMENT = False
+USE_INSTRUMENT = True
 
 if USE_INSTRUMENT:
     rm = pyvisa.ResourceManager()
