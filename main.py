@@ -76,7 +76,7 @@ if USE_INSTRUMENT:
 
 
     my_instrument.write('OUTP 1')
-    my_instrument.write('SOUR:VOLT1 138.5')
+    my_instrument.write('SOUR:VOLT1 140.0')
     my_instrument.write('SOUR:VOLT2 115')
     my_instrument.write('SOUR:VOLT3 115')
     my_instrument.write('FREQ 400')
