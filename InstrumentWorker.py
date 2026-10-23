@@ -4,6 +4,9 @@ class InstrumentWorker(QObject):
     ch1 = pyqtSignal(float)
     ch2 = pyqtSignal(float)
     ch3 = pyqtSignal(float)
+    ch4 = pyqtSignal(float)
+    ch5 = pyqtSignal(float)
+    ch6 = pyqtSignal(float)
     status = pyqtSignal(str)
     finished = pyqtSignal()
 
@@ -80,9 +83,15 @@ class InstrumentWorker(QObject):
             v1 = float(self._dev.query('MEAS:CURR1?').strip())
             v2 = float(self._dev.query('MEAS:CURR2?').strip())
             v3 = float(self._dev.query('MEAS:CURR3?').strip())
+            v4 = float(self._dev.query('MEAS:VOLT1?').strip())
+            v5 = float(self._dev.query('MEAS:VOLT2?').strip())
+            v6 = float(self._dev.query('MEAS:VOLT3?').strip())
             self.ch1.emit(v1)
             self.ch2.emit(v2)
             self.ch3.emit(v3)
+            self.ch4.emit(v4)
+            self.ch5.emit(v5)
+            self.ch6.emit(v6)
         except Exception as e:
             self.status.emit(f"Poll error: {e}")
 

@@ -27,6 +27,9 @@ class Worker(QObject):
     ch1 = pyqtSignal(float)
     ch2 = pyqtSignal(float)
     ch3 = pyqtSignal(float)
+    ch4 = pyqtSignal(float)
+    ch5 = pyqtSignal(float)
+    ch6 = pyqtSignal(float)
     status = pyqtSignal(str)
 
 
@@ -57,6 +60,10 @@ class HeatedWaterTest(QWidget):
         self.phaseAread = 0
         self.phaseBread = 0
         self.phaseCread = 0
+
+        self.voltAread = 0
+        self.voltBread = 0
+        self.voltCread = 0
 
         layout = QVBoxLayout()
         #spacer = QSpacerItem(0, 400, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -159,6 +166,7 @@ class HeatedWaterTest(QWidget):
         self.bottomToolbar = QHBoxLayout()
 
         self.phaselayout = QVBoxLayout()
+        self.voltagelayout = QVBoxLayout()
 
         self.resources = QPushButton("Resources")
         self.resources.setFixedWidth(200)
@@ -175,6 +183,48 @@ class HeatedWaterTest(QWidget):
 
         spacer2 = QSpacerItem(800, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.bottomToolbar.addSpacerItem(spacer2)
+
+        self.voltageAlayout = QHBoxLayout()
+        self.voltageA = QLabel("Voltage A:")
+        self.voltageA.setStyleSheet("""
+                                                font: 18px;
+                                                """)
+        self.voltageAlayout.addWidget(self.voltageA)
+        self.voltageAreading = QLabel(f"{self.voltAread}")
+        self.voltageAreading.setStyleSheet("""
+                                                font: 18px;
+                                                """)
+        self.voltageAlayout.addWidget(self.voltageAreading)
+
+        self.voltagelayout.addLayout(self.voltageAlayout)
+
+        self.voltageBlayout = QHBoxLayout()
+        self.voltageB = QLabel("Voltage A:")
+        self.voltageB.setStyleSheet("""
+                                                        font: 18px;
+                                                        """)
+        self.voltageBlayout.addWidget(self.voltageB)
+        self.voltageBreading = QLabel(f"{self.voltBread}")
+        self.voltageBreading.setStyleSheet("""
+                                                        font: 18px;
+                                                        """)
+        self.voltageBlayout.addWidget(self.voltageBreading)
+
+        self.voltagelayout.addLayout(self.voltageBlayout)
+
+        self.voltageClayout = QHBoxLayout()
+        self.voltageC = QLabel("Voltage C:")
+        self.voltageC.setStyleSheet("""
+                                                        font: 18px;
+                                                        """)
+        self.voltageClayout.addWidget(self.voltageC)
+        self.voltageCreading = QLabel(f"{self.voltCread}")
+        self.voltageCreading.setStyleSheet("""
+                                                        font: 18px;
+                                                        """)
+        self.voltageClayout.addWidget(self.voltageCreading)
+
+        self.voltagelayout.addLayout(self.voltageClayout)
 
         self.phaseAlayout = QHBoxLayout()
         self.phaseA = QLabel("Phase A:")
@@ -223,6 +273,8 @@ class HeatedWaterTest(QWidget):
 
         self.phaselayout.addLayout(self.phaseClayout)
 
+        self.bottomToolbar.addLayout(self.voltagelayout)
+
         self.bottomToolbar.addLayout(self.phaselayout)
 
         layout.addLayout(self.bottomToolbar)
@@ -233,6 +285,9 @@ class HeatedWaterTest(QWidget):
             self.instrument.ch1.connect(self.show_current1)
             self.instrument.ch2.connect(self.show_current2)
             self.instrument.ch3.connect(self.show_current3)
+            self.instrument.ch4.connect(self.show_voltage1)
+            self.instrument.ch5.connect(self.show_voltage2)
+            self.instrument.ch6.connect(self.show_voltage3)
 
     @pyqtSlot(float)
     def show_current1(self, amps):
@@ -245,6 +300,18 @@ class HeatedWaterTest(QWidget):
     @pyqtSlot(float)
     def show_current3(self, amps):
         self.phaseCreading.setText(f"{amps:.3f} A")
+
+    @pyqtSlot(float)
+    def show_voltage1(self, volts):
+        self.voltageAreading.setText(f"{volts:.3f} V")
+
+    @pyqtSlot(float)
+    def show_voltage2(self, volts):
+        self.voltageBreading.setText(f"{volts:.3f} V")
+
+    @pyqtSlot(float)
+    def show_voltage3(self, volts):
+        self.voltageCreading.setText(f"{volts:.3f} V")
 
     def HeatedWater(self):
         try:
