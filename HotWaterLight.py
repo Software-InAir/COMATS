@@ -300,14 +300,20 @@ class HotWaterLightTest(QWidget):
     @pyqtSlot(float)
     def show_voltage1(self, volts):
         self.voltageAreading.setText(f"{volts:.3f} V")
+        if volts >= 119:
+            self.open_popup()
 
     @pyqtSlot(float)
     def show_voltage2(self, volts):
         self.voltageBreading.setText(f"{volts:.3f} V")
+        if volts >= 119:
+            self.open_popup()
 
     @pyqtSlot(float)
     def show_voltage3(self, volts):
         self.voltageCreading.setText(f"{volts:.3f} V")
+        if volts >= 119:
+            self.open_popup()
 
     def HotWaterLight(self):
         try:
@@ -974,3 +980,22 @@ class TimerPopup(QDialog):
         self.timer.stop()
         self.seconds = 0
         self.time_label.setText("00:00:00")
+
+class CustomPopup(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Phase Voltage Threshold")
+        self.resize(300, 150)
+
+        # Enforce modal behavior
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
+
+        layout = QVBoxLayout()
+        self.label = QLabel("Warning! Phase voltage exceeded limit. Please contact engineering before proceeding with test.", self)
+        self.close_button = QPushButton("Close", self)
+
+        layout.addWidget(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.close_button, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.setLayout(layout)
+
+        self.close_button.clicked.connect(self.accept)
