@@ -68,20 +68,30 @@ if USE_INSTRUMENT:
     rm = pyvisa.ResourceManager()
 
     my_instrument = rm.open_resource('GPIB0::3::INSTR')
-    my_instrument.write('COUP DIRECT')
-    my_instrument.write('CURR:LIM 9.0')
-    my_instrument.write('PROT:STAT 1')
-    my_instrument.write('CURR:PROT:LEV 9.1')
+    powersupply = my_instrument.query('*IDN?')
+    print(powersupply)
+    make = powersupply.split(',')[0]
+    ppsserial = powersupply.split(',')[3]
+    ciserial = powersupply.split(',')[2]
+    if make == 'PPSC':
+        my_instrument.write('COUP DIRECT')
+        my_instrument.write('CURR:LIM 9.0')
+        my_instrument.write('PROT:STAT 1')
+        my_instrument.write('CURR:PROT:LEV 9.1')
+        my_instrument.write('OUTP 1')
+        my_instrument.write('SOUR:VOLT1 115')
+        my_instrument.write('SOUR:VOLT2 115')
+        my_instrument.write('SOUR:VOLT3 115')
+        my_instrument.write('FREQ 400')
+        my_instrument.query('OUTP?')
 
-
-
-    my_instrument.write('OUTP 1')
-    my_instrument.write('SOUR:VOLT1 115')
-    my_instrument.write('SOUR:VOLT2 115')
-    my_instrument.write('SOUR:VOLT3 115')
-    my_instrument.write('FREQ 400')
-    my_instrument.query('OUTP?')
-
+    elif make == 'CALIFORNIA INSTRUMENTS':
+        my_instrument.write('INST:COUP ALL')
+        my_instrument.write('CURR:PROT:STAT 1')
+        my_instrument.write('OUTP 1')
+        my_instrument.write('VOLT 115')
+        my_instrument.write('FREQ 400')
+        my_instrument.query('OUTP?')
 
 
 # === Main application window ===
