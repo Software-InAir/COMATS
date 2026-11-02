@@ -1,0 +1,66 @@
+
+* {
+    font-family: "Segoe UI", "Helvetica", sans-serif;
+    font-size: 12pt;
+    color: #333;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+QWidget {
+    background-color: #f5f5f5;
+}
+
+/* === QPushButton === */
+QPushButton {
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px 12px;
+    transition: all 0.3s ease;
+}
+QPushButton:hover {
+    background-color: #d5d5d5;
+}
+QPushButton:pressed {
+    background-color: #bfbfbf;
+}
+
+/* === Small button override === */
+QPushButton[class="small"] {
+    min-width: 80px;
+    padding: 4px 6px;
+    font-size: 9.5pt;
+}
+
+/* === QLabel === */
+QLabel {
+    font-weight: normal;
+    color: #333;
+}
+
+/* === QLineEdit / QTextEdit === */
+QLineEdit, QTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #999;
+}
+
+/* === QScrollArea === */
+QScrollArea {
+    border: none;
+}
+QScrollBar:vertical {
+    background: #eee;
+    width: 10px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #bbb;
+    border-radi

@@ -1,0 +1,121 @@
+/* === BASE RESET === */
+* {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 10.5pt;
+    color: #2f3e2e;
+}
+
+/* === GENERAL BACKGROUND === */
+QWidget {
+    background-color: #f0f5ef;
+}
+
+/* === QPushButton === */
+QPushButton {
+    background-color: #d8e8d1;
+    color: #2f3e2e;
+    border: 1px solid #94b78c;
+    border-radius: 8px;
+    padding: 6px 20px;
+    min-width: 200px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #c1dab5;
+    border-color: #7aa975;
+}
+QPushButton:pressed {
+    background-color: #a9c398;
+    color: #1f291f;
+}
+
+/* === Small button override === */
+QPushButton[class="small"] {
+    min-width: 80px;
+    padding: 4px 8px;
+    font-size: 9.5pt;
+}
+
+/* === QLabel === */
+QLabel {
+    color: #2f3e2e;
+}
+
+/* === QLineEdit and QTextEdit === */
+QLineEdit, QTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #a0b9a0;
+    border-radius: 6px;
+    padding: 6px;
+    color: #2f3e2e;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border-color: #7aa975;
+    background-color: #f6fbf3;
+}
+
+/* === QComboBox === */
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #a0b9a0;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+QComboBox:hover {
+    border-color: #7aa975;
+}
+QComboBox::drop-down {
+    width: 20px;
+    border-left: 1px solid #a0b9a0;
+}
+QComboBox QAbstractItemView {
+    background-color: #f6fbf3;
+    border: 1px solid #a0b9a0;
+    selection-background-color: #d8e8d1;
+    selection-color: #1f291f;
+}
+
+/* === QTabWidget === */
+QTabWidget::pane {
+    border: 1px solid #a0b9a0;
+    border-radius: 6px;
+}
+QTabBar::tab {
+    background-color: #e9f1e3;
+    border: 1px solid #a0b9a0;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 6px 12px;
+    color: #4c5e4a;
+}
+QTabBar::tab:selected {
+    background-color: #ffffff;
+    color: #2f3e2e;
+    font-weight: bold;
+}
+
+/* === QScrollBar === */
+QScrollBar:vertical {
+    width: 10px;
+    background: #e4efe0;
+}
+QScrollBar::handle:vertical {
+    background: #a0b9a0;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #7aa975;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+/* === QToolTip === */
+QToolTip {
+    background-color: #4c5e4a;
+    color: #f0f5ef;
+    border: 1px solid #7aa975;
+    padding: 6px;
+    border-radius: 4px;
+}

@@ -1,0 +1,97 @@
+$ErrorActionPreference = "Stop"
+
+$deploymentRoot = "\\SERVER\COMATS-Deploy"
+$manifestPath  = Join-Path $deploymentRoot "manifest.json"
+$logDirectory = "C:\ProgramData\COMATS\Logs"
+$stagingDir    = "C:\ProgramData\COMATS\Updates"
+
+New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
+New-Item -ItemType Directory -Path $stagingDir -Force | Out-Null
+
+$logPath = Join-Path $logDirectory "update.log"
+
+function Write-UpdateLog {
+    param([string]$Message)
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    "$timestamp $Message" | Out-File $logPath -Append -Encoding utf8
+}
+
+try {
+    Write-UpdateLog "Starting COMATS update check."
+
+    if (-not (Test-Path $manifestPath)) {
+        throw "Deployment manifest is unavailable: $manifestPath"
+    }
+
+    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+
+    $localVersion = Get-ItemPropertyValue `
+        -Path "HKLM:\Software\COMATS" `
+        -Name "Version" `
+        -ErrorAction SilentlyContinue
+
+    if ([string]::IsNullOrWhiteSpace($localVersion)) {
+        $localVersion = "0.0.0"
+    }
+
+    $approvedVersion = [string]$manifest.version
+
+    Write-UpdateLog "Installed=$localVersion Approved=$approvedVersion"
+
+    if ([version]$localVersion -eq [version]$approvedVersion) {
+        Write-UpdateLog "COMATS is current."
+        exit 0
+    }
+
+    $sourceInstaller = Join-Path $deploymentRoot $manifest.installer
+    $localInstaller  = Join-Path $stagingDir $manifest.installer
+
+    if (-not (Test-Path $sourceInstaller)) {
+        throw "Approved installer does not exist: $sourceInstaller"
+    }
+
+    Copy-Item $sourceInstaller $localInstaller -Force
+
+    $actualHash = (
+        Get-FileHash $localInstaller -Algorithm SHA256
+    ).Hash
+
+    if ($actualHash -ne $manifest.sha256) {
+        throw "Installer SHA-256 verification failed."
+    }
+
+    Write-UpdateLog "Installing COMATS $approvedVersion."
+
+    $process = Start-Process `
+        -FilePath $localInstaller `
+        -ArgumentList @(
+            "/VERYSILENT",
+            "/SUPPRESSMSGBOXES",
+            "/NORESTART",
+            "/CLOSEAPPLICATIONS",
+            "/LOG=`"$logDirectory\inno-install.log`""
+        ) `
+        -Wait `
+        -PassThru
+
+    if ($process.ExitCode -ne 0) {
+        throw "Installer returned exit code $($process.ExitCode)."
+    }
+
+    $installedVersion = Get-ItemPropertyValue `
+        -Path "HKLM:\Software\COMATS" `
+        -Name "Version" `
+        -ErrorAction SilentlyContinue
+
+    if ([version]$installedVersion -ne [version]$approvedVersion) {
+        throw "Post-install version verification failed."
+    }
+
+    Write-UpdateLog "COMATS $installedVersion installed successfully."
+    exit 0
+}
+catch {
+    Write-UpdateLog "ERROR: $($_.Exception.Message)"
+    exit 1
+}
